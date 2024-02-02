@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/screens/home_page.dart';
+import 'package:mobile_app_arosaje/screens/user_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,49 +10,58 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
+    return MaterialApp(
+        title: 'Arosa\'je', color: Colors.white, home: const BaseLayout());
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class BaseLayout extends StatefulWidget {
+  const BaseLayout({super.key});
+
+  @override
+  State<BaseLayout> createState() => _BaseLayoutState();
+}
+
+class _BaseLayoutState extends State<BaseLayout> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      color: Colors.white,
-      home: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(70),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            leading: const Icon(Icons.account_circle_outlined),
-            title: const Center(
-              child: SizedBox(
-                height: 65,
-                child: Image(
-                  image: AssetImage("assets/images/logo.png"),
-                  height: 61,
-                ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+              onPressed: () {
+                navigatorKey.currentState!.pushNamed('/user');
+              },
+              icon: Icon(Icons.account_circle_outlined)),
+          title: const Center(
+            child: SizedBox(
+              height: 65,
+              child: Image(
+                image: AssetImage("assets/images/logo.png"),
+                height: 61,
               ),
             ),
-            actions: const [
-              Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Icon(
-                    Icons.chat_outlined,
-                  ))
-            ],
-            backgroundColor: Colors.white,
-            elevation: 5,
-            shadowColor: Colors.black,
           ),
+          actions: const [
+            Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Icon(
+                  Icons.chat_outlined,
+                ))
+          ],
+          backgroundColor: Colors.white,
+          elevation: 5,
+          shadowColor: Colors.black,
         ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {}, child: const Icon(Icons.add)),
-        bottomNavigationBar: Container(
+      ),
+      floatingActionButton:
+          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
+      bottomNavigationBar: Builder(builder: (context) {
+        return Container(
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -106,8 +116,25 @@ class MyHomePage extends StatelessWidget {
                   label: "")
             ],
           ),
-        ),
-        body: HomePage(),
+        );
+      }),
+      body: Navigator(
+        key: navigatorKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const HomePage();
+              break;
+            case '/user':
+              builder = (BuildContext _) => const UserPage();
+              break;
+            default:
+              throw Exception('Invalid route: ${settings.name}');
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        },
       ),
     );
   }
