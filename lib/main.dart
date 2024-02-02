@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inspector/inspector.dart';
+import 'package:mobile_app_arosaje/screens/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,10 +9,8 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MyHomePage(),
-      builder: (context, child) =>
-          Inspector(child: child!), // Wrap [child] with [Inspector]
     );
   }
 }
@@ -109,7 +107,7 @@ class MyHomePage extends StatelessWidget {
             ],
           ),
         ),
-        // body: ,
+        body: HomePage(),
       ),
     );
   }
