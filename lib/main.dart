@@ -24,6 +24,7 @@ class BaseLayout extends StatefulWidget {
 
 class _BaseLayoutState extends State<BaseLayout> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class _BaseLayoutState extends State<BaseLayout> {
               onPressed: () {
                 navigatorKey.currentState!.pushNamed('/user');
               },
-              icon: Icon(Icons.account_circle_outlined)),
+              icon: const Icon(Icons.account_circle_outlined)),
           title: const Center(
             child: SizedBox(
               height: 65,
@@ -58,8 +59,14 @@ class _BaseLayoutState extends State<BaseLayout> {
           shadowColor: Colors.black,
         ),
       ),
-      floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
+      floatingActionButton: ValueListenableBuilder<String>(
+          valueListenable: _routeNameNotifier,
+          builder: (context, value, child) {
+            return Visibility(
+                visible: value == '/' ? true : false,
+                child: FloatingActionButton(
+                    onPressed: () {}, child: const Icon(Icons.add)));
+          }),
       bottomNavigationBar: Builder(builder: (context) {
         return Container(
           decoration: BoxDecoration(
@@ -118,23 +125,27 @@ class _BaseLayoutState extends State<BaseLayout> {
           ),
         );
       }),
-      body: Navigator(
-        key: navigatorKey,
-        initialRoute: '/',
-        onGenerateRoute: (RouteSettings settings) {
-          WidgetBuilder builder;
-          switch (settings.name) {
-            case '/':
-              builder = (BuildContext _) => const HomePage();
-              break;
-            case '/user':
-              builder = (BuildContext _) => const UserPage();
-              break;
-            default:
-              throw Exception('Invalid route: ${settings.name}');
-          }
-          return MaterialPageRoute(builder: builder, settings: settings);
-        },
+      body: NavigatorPopHandler(
+        onPop: () => navigatorKey.currentState!.pop(),
+        child: Navigator(
+          key: navigatorKey,
+          initialRoute: '/',
+          onGenerateRoute: (RouteSettings settings) {
+            _routeNameNotifier.value = settings.name!;
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case '/':
+                builder = (BuildContext _) => const HomePage();
+                break;
+              case '/user':
+                builder = (BuildContext _) => const UserPage();
+                break;
+              default:
+                throw Exception('Invalid route: ${settings.name}');
+            }
+            return MaterialPageRoute(builder: builder, settings: settings);
+          },
+        ),
       ),
     );
   }
