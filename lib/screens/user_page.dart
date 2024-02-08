@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_arosaje/widgets/user_adresses.dart';
+
+import '../widgets/attributed_gardenkeeping.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);
@@ -8,6 +11,8 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
@@ -26,18 +31,9 @@ class _UserPageState extends State<UserPage> {
             height: 390,
             child: ListView(
               children: const [
-                ListTile(
-                  title: Text("Gardiennage 1"),
-                  subtitle: Text("Adresse 1"),
-                ),
-                ListTile(
-                  title: Text("Gardiennage 2"),
-                  subtitle: Text("Adresse 2"),
-                ),
-                ListTile(
-                  title: Text("Gardiennage 3"),
-                  subtitle: Text("Adresse 3"),
-                ),
+                AttributedGardenkeeping(),
+                AttributedGardenkeeping(),
+                AttributedGardenkeeping(),
               ],
             ),
           ),
@@ -54,12 +50,132 @@ class _UserPageState extends State<UserPage> {
             ),
             child: Column(
               children: [
-                ExpansionTile(
-                    title: const Text('Adresses'),
-                    children: const [Text("Adresse 1")]),
+                ExpansionTile(title: const Text('Adresses'), children: [
+                  SizedBox(height: 200, child: UserAdresses()),
+                ]),
                 ExpansionTile(
                     title: const Text('Informations personnelles'),
-                    children: const [Text("Paramètre 1")]),
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Nom'),
+                                      SizedBox(
+                                        width: 180,
+                                        height: 40,
+                                        child: TextFormField(
+                                          // The validator receives the text that the user has entered.
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter some text';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Prénom'),
+                                      SizedBox(
+                                        width: 180,
+                                        height: 40,
+                                        child: TextFormField(
+                                          // The validator receives the text that the user has entered.
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter some text';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Email'),
+                                      SizedBox(
+                                        width: 180,
+                                        height: 40,
+                                        child: TextFormField(
+                                          // The validator receives the text that the user has entered.
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter some text';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Téléphone'),
+                                      SizedBox(
+                                        width: 180,
+                                        height: 40,
+                                        child: TextFormField(
+                                          // The validator receives the text that the user has entered.
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter some text';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Validate returns true if the form is valid, or false otherwise.
+                                  if (_formKey.currentState!.validate()) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Processing Data')),
+                                    );
+                                  }
+                                },
+                                child: const Text(
+                                    'Sauvegarder les\nchangements',
+                                    textAlign: TextAlign.center),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
                 ExpansionTile(
                     title: const Text('Notifications'),
                     children: const [Text("Paramètre 1")]),
