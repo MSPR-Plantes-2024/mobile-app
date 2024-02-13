@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_app_arosaje/screens/home_page.dart';
+import 'package:mobile_app_arosaje/screens/request_creation.dart';
 import 'package:mobile_app_arosaje/screens/user_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  initializeDateFormatting('fr_FR').then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -11,7 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Arosa\'je', color: Colors.white, home: const BaseLayout());
+        builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child ?? const SizedBox.shrink()),
+        title: 'Arosa\'je',
+        color: Colors.white,
+        home: const BaseLayout());
   }
 }
 
@@ -24,7 +33,7 @@ class BaseLayout extends StatefulWidget {
 
 class _BaseLayoutState extends State<BaseLayout> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
+  final ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +47,17 @@ class _BaseLayoutState extends State<BaseLayout> {
                 navigatorKey.currentState!.pushNamed('/user');
               },
               icon: const Icon(Icons.account_circle_outlined)),
-          title: const Center(
-            child: SizedBox(
-              height: 65,
-              child: Image(
-                image: AssetImage("assets/images/logo.png"),
-                height: 61,
+          title: Center(
+            child: InkWell(
+              onTap: () {
+                navigatorKey.currentState!.pushNamed('/');
+              },
+              child: const SizedBox(
+                height: 65,
+                child: Image(
+                  image: AssetImage("assets/images/logo.png"),
+                  height: 61,
+                ),
               ),
             ),
           ),
@@ -65,7 +79,10 @@ class _BaseLayoutState extends State<BaseLayout> {
             return Visibility(
                 visible: value == '/' ? true : false,
                 child: FloatingActionButton(
-                    onPressed: () {}, child: const Icon(Icons.add)));
+                    onPressed: () {
+                      navigatorKey.currentState!.pushNamed('/request-creation');
+                    },
+                    child: const Icon(Icons.add)));
           }),
       bottomNavigationBar: Builder(builder: (context) {
         return Container(
@@ -75,7 +92,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 5,
                 blurRadius: 7,
-                offset: Offset(0, -3), // changes position of shadow
+                offset: const Offset(0, -3), // changes position of shadow
               ),
             ],
           ),
@@ -130,15 +147,22 @@ class _BaseLayoutState extends State<BaseLayout> {
         child: Navigator(
           key: navigatorKey,
           initialRoute: '/',
+          observers: [RouteObserver(_routeNameNotifier)],
           onGenerateRoute: (RouteSettings settings) {
             _routeNameNotifier.value = settings.name!;
             WidgetBuilder builder;
             switch (settings.name) {
               case '/':
-                builder = (BuildContext _) => const HomePage();
+                builder = (BuildContext _) => const HomePage(false);
+                break;
+              case '/my_publications':
+                builder = (BuildContext _) => const HomePage(true);
                 break;
               case '/user':
                 builder = (BuildContext _) => const UserPage();
+                break;
+              case '/request-creation':
+                builder = (BuildContext _) => const RequestCreation();
                 break;
               default:
                 throw Exception('Invalid route: ${settings.name}');
@@ -148,5 +172,17 @@ class _BaseLayoutState extends State<BaseLayout> {
         ),
       ),
     );
+  }
+}
+
+class RouteObserver extends NavigatorObserver {
+  final ValueNotifier<String> routeNameNotifier;
+
+  RouteObserver(this.routeNameNotifier);
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    routeNameNotifier.value = previousRoute?.settings.name ?? '/';
   }
 }
