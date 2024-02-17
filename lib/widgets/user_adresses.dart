@@ -8,26 +8,27 @@ class UserAdresses extends StatefulWidget {
 }
 
 class _UserAdressesState extends State<UserAdresses> {
+  List<String> adresses = [
+    "Adresse 1",
+    "Adresse 2",
+    "Adresse 3",
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: Text("Adresse 1"),
-          leading: Icon(Icons.home_outlined),
-          trailing: Icon(Icons.edit_outlined),
-        ),
-        ListTile(
-          title: Text("Adresse 2"),
-          leading: Icon(Icons.home_outlined),
-          trailing: Icon(Icons.edit_outlined),
-        ),
-        ListTile(
-          title: Text("Adresse 3"),
-          leading: Icon(Icons.home_outlined),
-          trailing: Icon(Icons.edit_outlined),
-        ),
-      ],
+    return ListView.builder(
+      itemCount: adresses.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          onTap: () {
+            Navigator.pushNamed(context, '/adress-managment', arguments: index);
+          },
+          title: Text("Gardiennage ${index + 1}"),
+          subtitle: Text(adresses[index]),
+          leading: const Icon(Icons.nature_outlined),
+          trailing: const Icon(Icons.edit_outlined),
+        );
+      },
     );
   }
 }

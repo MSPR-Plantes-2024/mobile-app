@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class RequestCreation extends StatefulWidget {
-  const RequestCreation({Key? key}) : super(key: key);
+class RequestCreationPage extends StatefulWidget {
+  const RequestCreationPage({Key? key}) : super(key: key);
 
   @override
-  _RequestCreationState createState() => _RequestCreationState();
+  _RequestCreationPageState createState() => _RequestCreationPageState();
 }
 
-class _RequestCreationState extends State<RequestCreation> {
+class _RequestCreationPageState extends State<RequestCreationPage> {
   Object? selectedValue = null;
   final _formKey = GlobalKey<FormState>();
   List<Map<String, dynamic>> flowerList = [

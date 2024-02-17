@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../widgets/publication.dart';
+import '../../widgets/publication.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(bool myPublications, {Key? key}) : super(key: key);

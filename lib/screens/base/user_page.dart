@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/widgets/attributed_gardenkeeping.dart';
 import 'package:mobile_app_arosaje/widgets/user_adresses.dart';
-
-import '../widgets/attributed_gardenkeeping.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);
@@ -29,13 +29,7 @@ class _UserPageState extends State<UserPage> {
           ),
           child: SizedBox(
             height: 390,
-            child: ListView(
-              children: const [
-                AttributedGardenkeeping(),
-                AttributedGardenkeeping(),
-                AttributedGardenkeeping(),
-              ],
-            ),
+            child: AttributedGardenkeeping(),
           ),
         ),
       ]),
@@ -179,6 +173,15 @@ class _UserPageState extends State<UserPage> {
                 ExpansionTile(
                     title: const Text('Notifications'),
                     children: const [Text("Paramètre 1")]),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      MyApp.logged = false;
+                    });
+                    RestartWidget.restartApp(context);
+                  },
+                  child: const Text('Me déconnecter'),
+                ),
               ],
             ),
           ),
