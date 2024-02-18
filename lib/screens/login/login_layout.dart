@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'account_creation_page.dart';
@@ -43,6 +45,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           key: loginNavigatorKey,
           onGenerateRoute: (RouteSettings settings) {
             WidgetBuilder builder;
+            log(settings.name!);
             switch (settings.name) {
               case 'login':
                 builder = (BuildContext _) => const LoginPage();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/Address.dart';
+
 class UserAdresses extends StatefulWidget {
   const UserAdresses({Key? key}) : super(key: key);
 
@@ -8,23 +10,20 @@ class UserAdresses extends StatefulWidget {
 }
 
 class _UserAdressesState extends State<UserAdresses> {
-  List<String> adresses = [
-    "Adresse 1",
-    "Adresse 2",
-    "Adresse 3",
-  ];
+  List<Address> addresses = Address.getAddresses();
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: adresses.length,
+      itemCount: addresses.length,
       itemBuilder: (context, index) {
         return ListTile(
           onTap: () {
             Navigator.pushNamed(context, '/adress-managment', arguments: index);
           },
-          title: Text("Gardiennage ${index + 1}"),
-          subtitle: Text(adresses[index]),
+          title: Text("${addresses[index].postalAddress}"),
+          subtitle:
+              Text("${addresses[index].city} (${addresses[index].zipCode})"),
           leading: const Icon(Icons.nature_outlined),
           trailing: const Icon(Icons.edit_outlined),
         );

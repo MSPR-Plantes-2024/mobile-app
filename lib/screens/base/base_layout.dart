@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:mobile_app_arosaje/route-observer-body.dart';
+import 'package:mobile_app_arosaje/screens/base/adress_managment_page.dart';
+import 'package:mobile_app_arosaje/screens/base/home_page.dart';
 import 'package:mobile_app_arosaje/screens/base/request_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/user_page.dart';
-
-import '../../route-observer-body.dart';
-import 'adress_managment_page.dart';
-import 'home_page.dart';
 
 class BaseLayout extends StatefulWidget {
   const BaseLayout({super.key});
@@ -16,6 +17,7 @@ class BaseLayout extends StatefulWidget {
 class _BaseLayoutState extends State<BaseLayout> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
+  late int bottomNavigationBarIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,8 @@ class _BaseLayoutState extends State<BaseLayout> {
           valueListenable: _routeNameNotifier,
           builder: (context, value, child) {
             return Visibility(
-                visible: value == '/' ? true : false,
+                visible:
+                    value == '/' || value == '/my_publications' ? true : false,
                 child: FloatingActionButton(
                     onPressed: () {
                       navigatorKey.currentState!.pushNamed('/request-creation');
@@ -79,6 +82,20 @@ class _BaseLayoutState extends State<BaseLayout> {
             ],
           ),
           child: BottomNavigationBar(
+            currentIndex: bottomNavigationBarIndex,
+            onTap: (int index) {
+              if (index == 0) {
+                navigatorKey.currentState!.pushNamed('/');
+                setState(() {
+                  bottomNavigationBarIndex = index;
+                });
+              } else {
+                navigatorKey.currentState!.pushNamed('/my_publications');
+                setState(() {
+                  bottomNavigationBarIndex = index;
+                });
+              }
+            },
             showSelectedLabels: false,
             showUnselectedLabels: false,
             type: BottomNavigationBarType.fixed,
@@ -87,37 +104,29 @@ class _BaseLayoutState extends State<BaseLayout> {
               BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(left: 50),
-                    child: Container(
-                      child: Text("Publications", textAlign: TextAlign.center),
-                    ),
-                  ),
-                  label: ""),
-              BottomNavigationBarItem(
-                  icon: Ink(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 2.0),
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: InkWell(
-                            child: const Icon(Icons.search,
-                                size: 30.0, color: Colors.black)),
-                      ),
-                    ),
+                    child: Text("Publications",
+                        textAlign: TextAlign.center,
+                        style: (bottomNavigationBarIndex == 0)
+                            ? const TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold)
+                            : const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal)),
                   ),
                   label: ""),
               BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(right: 50),
-                    child: Container(
-                      child: Text(
-                        "Mes\nPublications",
+                    child: Text("Mes\nPublications",
                         textAlign: TextAlign.center,
-                      ),
-                    ),
+                        style: (bottomNavigationBarIndex == 1)
+                            ? const TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold)
+                            : const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal)),
                   ),
                   label: "")
             ],
@@ -133,12 +142,19 @@ class _BaseLayoutState extends State<BaseLayout> {
           onGenerateRoute: (RouteSettings settings) {
             _routeNameNotifier.value = settings.name!;
             WidgetBuilder builder;
+            log(settings.name!);
             switch (settings.name) {
               case '/':
-                builder = (BuildContext _) => const HomePage(false);
+                builder = (BuildContext _) => HomePage(
+                      key: ValueKey(settings.name),
+                      myPublications: false,
+                    );
                 break;
               case '/my_publications':
-                builder = (BuildContext _) => const HomePage(true);
+                builder = (BuildContext _) => HomePage(
+                      key: ValueKey(settings.name),
+                      myPublications: true,
+                    );
                 break;
               case '/user':
                 builder = (BuildContext _) => const UserPage();

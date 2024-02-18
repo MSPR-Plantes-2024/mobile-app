@@ -1,39 +1,38 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../widgets/publication.dart';
+import '../../models/Publication.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage(bool myPublications, {Key? key}) : super(key: key);
+  final bool myPublications;
+  const HomePage({super.key, required this.myPublications});
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Publication> publicationList = [
-    Publication(
-      image: "assets/images/01.jpg",
-      title: "Titre 1",
-    ),
-    Publication(
-      image: "assets/images/02.jpg",
-      title: "Titre 2",
-    ),
-    Publication(
-      image: "assets/images/03.jpg",
-      title: "Titre 3",
-    ),
-    Publication(
-      image: "assets/images/04.jpg",
-      title: "Titre 4",
-    ),
-    Publication(
-      image: "assets/images/05.jpg",
-      title: "Titre 5",
-    ),
-  ];
+  @override
+  Widget build(BuildContext context) {
+    if (widget.myPublications) {
+      return const MyPublications();
+    } else {
+      return const GlobalPublications();
+    }
+  }
+}
+
+class GlobalPublications extends StatefulWidget {
+  const GlobalPublications({super.key});
+
+  @override
+  State<GlobalPublications> createState() => _GlobalPublicationsState();
+}
+
+class _GlobalPublicationsState extends State<GlobalPublications> {
+  final List<Publication> publicationList = Publication.getPublications();
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +45,119 @@ class _HomePageState extends State<HomePage> {
       )),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: ListView(
+        child: ListView.builder(
+          itemCount: publicationList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Align(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                margin: const EdgeInsets.only(bottom: 10),
+                height: 270,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: const Color(0xFFE5E5E5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        publicationList[index]
+                            .plants[Random()
+                                .nextInt(publicationList[index].plants.length)]
+                            .picture!
+                            .url,
+                        width: MediaQuery.of(context).size.width * 1,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          "${publicationList[index].address.city} (${publicationList[index].address.zipCode})",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
           padding: const EdgeInsets.only(top: 15),
-          children: [
-            for (Widget publication in publicationList) publication,
-          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyPublications extends StatefulWidget {
+  const MyPublications({super.key});
+
+  @override
+  State<MyPublications> createState() => _MyPublicationsState();
+}
+
+class _MyPublicationsState extends State<MyPublications> {
+  final List<Publication> myPublicationList = Publication.getPublications();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage("assets/images/background.jpg"),
+        fit: BoxFit.cover,
+      )),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: ListView.builder(
+          itemCount: myPublicationList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Align(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                margin: const EdgeInsets.only(bottom: 10),
+                height: 270,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: const Color(0xFFE5E5E5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        myPublicationList[index]
+                            .plants[Random().nextInt(
+                                myPublicationList[index].plants.length)]
+                            .picture!
+                            .url,
+                        width: MediaQuery.of(context).size.width * 1,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          "${myPublicationList[index].address.city} (${myPublicationList[index].address.zipCode})",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          padding: const EdgeInsets.only(top: 15),
         ),
       ),
     );
