@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 
+import '../../models/User.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -36,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    MyApp.logged = true;
+                    MyApp.currentUser = User.getUser();
                   });
                   RestartWidget.restartApp(context);
                 },

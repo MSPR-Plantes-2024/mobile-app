@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_arosaje/widgets/date_time_picker.dart';
 
 class RequestCreationPage extends StatefulWidget {
   const RequestCreationPage({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
     {"title": "Adresse 3"},
   ];
 
+  late DateTime? pickedDateTime;
   TextEditingController dateTimeInput = TextEditingController();
   TextEditingController addFlowerInput = TextEditingController();
   TextEditingController addAdressInput = TextEditingController();
@@ -130,7 +132,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Plantes'),
+                              const Text('Plantes'),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -190,8 +192,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                                     TextButton(
                                                         onPressed: () {
                                                           if (addFlowerInput
-                                                                  .text.length >
-                                                              0) {
+                                                                  .text.isNotEmpty) {
                                                             setState(() {
                                                               flowerList.add({
                                                                 "title":
@@ -222,54 +223,23 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                             ],
                           ),
                         ),
-                        Text('Date et heure'),
+                        const Text('Date et heure'),
                         TextFormField(
                           controller: dateTimeInput,
                           //editing controller of this TextField
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               icon: Icon(
-                                  Icons.calendar_today), //icon of text field
-                              labelText: DateFormat('dd-MM-yyyy HH:mm').format(
-                                  DateTime.now().add(
-                                      Duration(hours: 1))) //label text of field
-                              ),
+                                  Icons.calendar_today)),
                           readOnly: true,
                           //set it true, so that user will not able to edit text
                           onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
-                              //DateTime.now() - not to allow to choose before today.
-                              lastDate: DateTime.now().add(Duration(days: 30)),
-                            );
-                            TimeOfDay? pickedTime = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.now().hour + 1 < 21 &&
-                                      TimeOfDay.now().hour + 1 > 8
-                                  ? TimeOfDay.now()
-                                      .replacing(hour: TimeOfDay.now().hour + 1)
-                                  : TimeOfDay(hour: 8, minute: 0),
-                            );
-
-                            if (pickedDate != null) {
-                              print(
-                                  pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                              String formattedDate =
-                                  DateFormat('dd-MM-yyyy').format(pickedDate);
-                              print(
-                                  formattedDate); //formatted date output using intl package =>  2021-03-16
+                            pickedDateTime = await DateTimePicker.getDateTime(context);
+                            if (pickedDateTime != null) {
                               setState(() {
                                 dateTimeInput.text =
-                                    formattedDate; //set output date to TextField value.
+                                    DateFormat('dd-MM-yyyy HH:mm').format(pickedDateTime!); //set output date to TextField value.
                               });
-                              if (pickedTime != null) {
-                                print(pickedTime);
-                                dateTimeInput.text =
-                                    "${dateTimeInput.text} ${pickedTime.format(context)}";
-                              }
-                            }
-                          },
+                            }                                                                              },
                         ),
                         Center(
                           child: Padding(

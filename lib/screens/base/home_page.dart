@@ -49,39 +49,53 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
           itemCount: publicationList.length,
           itemBuilder: (BuildContext context, int index) {
             return Align(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                margin: const EdgeInsets.only(bottom: 10),
-                height: 270,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xFFE5E5E5),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        publicationList[index]
-                            .plants[Random()
-                                .nextInt(publicationList[index].plants.length)]
-                            .picture!
-                            .url,
-                        width: MediaQuery.of(context).size.width * 1,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          "${publicationList[index].address.city} (${publicationList[index].address.zipCode})",
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/details-publication',
+                      arguments: {'publication' : publicationList[index]});
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  margin: const EdgeInsets.only(bottom: 10),
+                  height: 270,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: const Color(0xFFE5E5E5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3), // changes position of shadow
                       ),
                     ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          publicationList[index]
+                              .plants[Random()
+                                  .nextInt(publicationList[index].plants.length)]
+                              .picture!
+                              .url,
+                          width: MediaQuery.of(context).size.width * 1,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: Text(
+                            "${publicationList[index].address.city} (${publicationList[index].address.zipCode})",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -124,6 +138,14 @@ class _MyPublicationsState extends State<MyPublications> {
                 margin: const EdgeInsets.only(bottom: 10),
                 height: 270,
                 decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
                   borderRadius: BorderRadius.circular(20),
                   color: const Color(0xFFE5E5E5),
                 ),

@@ -1,6 +1,8 @@
+import 'User.dart';
+
 class Address {
   final int? id;
-  final int userId;
+  final User user;
   final String postalAddress;
   final String city;
   final String zipCode;
@@ -8,7 +10,7 @@ class Address {
 
   Address({
     this.id,
-    required this.userId,
+    required this.user,
     required this.postalAddress,
     required this.city,
     required this.zipCode,
@@ -18,15 +20,15 @@ class Address {
     return [
       Address(
         id: 1,
-        userId: 1,
+        user: User.getUser(),
         postalAddress: "Adresse 1",
         city: "City 1",
         zipCode: "ZipCode 1",
-        otherInformations: "Other informations 1",
+        otherInformations: "Other informations 1"
       ),
       Address(
         id: 2,
-        userId: 1,
+        user: User.getUser(),
         postalAddress: "Adresse 2",
         city: "City 2",
         zipCode: "ZipCode 2",
@@ -34,7 +36,7 @@ class Address {
       ),
       Address(
         id: 3,
-        userId: 3,
+        user: User.getUser(),
         postalAddress: "Adresse 3",
         city: "City 3",
         zipCode: "ZipCode 3",

@@ -44,7 +44,7 @@ class _UserPageState extends State<UserPage> {
             ),
             child: Column(
               children: [
-                ExpansionTile(title: const Text('Adresses'), children: [
+                const ExpansionTile(title: Text('Adresses'), children: [
                   SizedBox(height: 200, child: UserAdresses()),
                 ]),
                 ExpansionTile(
@@ -170,13 +170,13 @@ class _UserPageState extends State<UserPage> {
                         ),
                       )
                     ]),
-                ExpansionTile(
-                    title: const Text('Notifications'),
-                    children: const [Text("Paramètre 1")]),
+                const ExpansionTile(
+                    title: Text('Notifications'),
+                    children: [Text("Paramètre 1")]),
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      MyApp.logged = false;
+                      MyApp.currentUser = null;
                     });
                     RestartWidget.restartApp(context);
                   },

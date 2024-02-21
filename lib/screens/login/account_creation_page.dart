@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 
+import '../../models/User.dart';
+
 class AccountCreationPage extends StatefulWidget {
   const AccountCreationPage({Key? key}) : super(key: key);
 
@@ -74,7 +76,7 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      MyApp.logged = true;
+                      MyApp.currentUser = User.getUser();
                       RestartWidget.restartApp(context);
                     });
                   },

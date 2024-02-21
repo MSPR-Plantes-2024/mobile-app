@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/screens/base/base_layout.dart';
 import 'package:mobile_app_arosaje/screens/login/login_layout.dart';
 
+import 'models/User.dart';
+
 void main() {
-  runApp(RestartWidget(child: MyApp()));
+  runApp(const RestartWidget(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
-  static bool logged = false;
+  static User? currentUser;
 
   const MyApp({super.key});
 
@@ -24,13 +26,13 @@ class _MyAppState extends State<MyApp> {
           child: child ?? const SizedBox.shrink()),
       title: 'Arosa\'je',
       color: Colors.white,
-      home: MyApp.logged ? const BaseLayout() : const LoginLayout(),
+      home: MyApp.currentUser != null ?  const BaseLayout() : const LoginLayout(),
     );
   }
 }
 
 class RestartWidget extends StatefulWidget {
-  RestartWidget({required this.child});
+  const RestartWidget({super.key, required this.child});
 
   final Widget child;
 
