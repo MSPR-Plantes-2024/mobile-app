@@ -4,12 +4,12 @@ import 'User.dart';
 
 class Publication {
   final int? id;
-  final DateTime date;
+  DateTime date;
   final Address address;
   final User publisher;
-  final User? gardenkeeper;
-  final String? description;
-  final List<Plant> plants;
+  User? gardenkeeper;
+  String? description;
+  List<Plant> plants;
 
   Publication({
     this.id,

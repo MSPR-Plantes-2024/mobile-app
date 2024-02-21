@@ -7,6 +7,8 @@ import 'package:mobile_app_arosaje/screens/base/home_page.dart';
 import 'package:mobile_app_arosaje/screens/base/request_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/user_page.dart';
 
+import 'details_publication_page.dart';
+
 class BaseLayout extends StatefulWidget {
   const BaseLayout({super.key});
 
@@ -165,6 +167,8 @@ class _BaseLayoutState extends State<BaseLayout> {
               case '/adress-managment':
                 builder = (BuildContext _) => const AdressManagmentPage();
                 break;
+                case '/details-publication':
+                builder = (BuildContext _) => const DetailsPublicationPage();
               default:
                 throw Exception('Invalid route: ${settings.name}');
             }

@@ -25,4 +25,9 @@ class User {
         email: "michel.s@random.org",
         userType: UserType.USER);
   }
+
+  @override
+  String toString() {
+    return 'User{id: $id, firstName: $firstName, lastName: $lastName, email: $email, password: $password, userType: $userType}';
+  }
 }

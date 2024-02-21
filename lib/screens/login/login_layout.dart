@@ -6,7 +6,7 @@ import 'account_creation_page.dart';
 import 'login_page.dart';
 
 class LoginLayout extends StatefulWidget {
-  const LoginLayout({Key? key}) : super(key: key);
+  const LoginLayout({super.key});
 
   @override
   _LoginLayoutState createState() => _LoginLayoutState();
