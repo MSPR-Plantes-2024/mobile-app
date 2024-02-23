@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/services/api_service.dart';
 import 'package:mobile_app_arosaje/widgets/attributed_gardenkeeping.dart';
 import 'package:mobile_app_arosaje/widgets/user_adresses.dart';
 
+import '../../models/user.dart';
+
 class UserPage extends StatefulWidget {
-  const UserPage({Key? key}) : super(key: key);
+  const UserPage({super.key});
 
   @override
   _UserPageState createState() => _UserPageState();
@@ -12,6 +15,12 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController firstNameController =
+      TextEditingController(text: MyApp.currentUser!.firstName);
+  TextEditingController lastNameController =
+      TextEditingController(text: MyApp.currentUser!.lastName);
+  TextEditingController emailController =
+      TextEditingController(text: MyApp.currentUser!.email);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +53,14 @@ class _UserPageState extends State<UserPage> {
             ),
             child: Column(
               children: [
-                const ExpansionTile(title: Text('Adresses'), children: [
-                  SizedBox(height: 200, child: UserAdresses()),
+                ExpansionTile(title: Text('Adresses'), children: [
+                  const SizedBox(height: 130, child: UserAdresses()),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/address-creation');
+                    },
+                    child: const Text('Ajouter une adresse'),
+                  )
                 ]),
                 ExpansionTile(
                     title: const Text('Informations personnelles'),
@@ -68,11 +83,12 @@ class _UserPageState extends State<UserPage> {
                                         width: 180,
                                         height: 40,
                                         child: TextFormField(
+                                          controller: firstNameController,
                                           // The validator receives the text that the user has entered.
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
-                                              return 'Please enter some text';
+                                              return 'Veuillez entrer un nom';
                                             }
                                             return null;
                                           },
@@ -84,16 +100,17 @@ class _UserPageState extends State<UserPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Prénom'),
+                                      const Text('Prénom'),
                                       SizedBox(
                                         width: 180,
                                         height: 40,
                                         child: TextFormField(
+                                          controller: lastNameController,
                                           // The validator receives the text that the user has entered.
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
-                                              return 'Please enter some text';
+                                              return 'Veuillez entrer un prénom';
                                             }
                                             return null;
                                           },
@@ -103,50 +120,32 @@ class _UserPageState extends State<UserPage> {
                                   ),
                                 ]),
                             Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Email'),
-                                      SizedBox(
-                                        width: 180,
-                                        height: 40,
-                                        child: TextFormField(
-                                          // The validator receives the text that the user has entered.
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Please enter some text';
-                                            }
-                                            return null;
-                                          },
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text('Email'),
+                                        SizedBox(
+                                          width: 180,
+                                          height: 40,
+                                          child: TextFormField(
+                                            controller: emailController,
+                                            // The validator receives the text that the user has entered.
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Veuillez entrer un email';
+                                              }
+                                              return null;
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Téléphone'),
-                                      SizedBox(
-                                        width: 180,
-                                        height: 40,
-                                        child: TextFormField(
-                                          // The validator receives the text that the user has entered.
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Please enter some text';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ]),
                             Padding(
@@ -155,9 +154,17 @@ class _UserPageState extends State<UserPage> {
                                 onPressed: () {
                                   // Validate returns true if the form is valid, or false otherwise.
                                   if (_formKey.currentState!.validate()) {
+                                    ApiService.updateUser(User(
+                                        id: MyApp.currentUser!.id,
+                                        firstName: firstNameController.text,
+                                        lastName: lastNameController.text,
+                                        email: emailController.text,
+                                        password: MyApp.currentUser!.password,
+                                        userType: MyApp.currentUser!.userType));
+
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                          content: Text('Processing Data')),
+                                          content: Text('Changements sauvegardés !')),
                                     );
                                   }
                                 },

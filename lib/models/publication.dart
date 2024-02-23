@@ -1,6 +1,6 @@
-import 'Address.dart';
-import 'Plant.dart';
-import 'User.dart';
+import 'address.dart';
+import 'plant.dart';
+import 'user.dart';
 
 class Publication {
   final int? id;

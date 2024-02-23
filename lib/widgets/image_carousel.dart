@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_arosaje/models/Plant.dart';
+import 'package:mobile_app_arosaje/models/plant.dart';
 
 class ImageCarousel extends StatefulWidget {
   final List<Plant> plants;

@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../models/Publication.dart';
+import '../../models/publication.dart';
 
 class HomePage extends StatefulWidget {
   final bool myPublications;

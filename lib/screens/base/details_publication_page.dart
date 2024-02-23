@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../main.dart';
-import '../../models/Publication.dart';
-import '../../models/User.dart';
+import '../../models/publication.dart';
+import '../../models/user.dart';
 import '../../widgets/date_time_picker.dart';
 import '../../widgets/image_carousel.dart';
 

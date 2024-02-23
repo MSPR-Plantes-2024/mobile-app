@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/route-observer-body.dart';
-import 'package:mobile_app_arosaje/screens/base/adress_managment_page.dart';
+import 'package:mobile_app_arosaje/screens/base/address_creation_page.dart';
+import 'package:mobile_app_arosaje/screens/base/address_managment_page.dart';
 import 'package:mobile_app_arosaje/screens/base/home_page.dart';
 import 'package:mobile_app_arosaje/screens/base/request_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/user_page.dart';
@@ -164,11 +165,15 @@ class _BaseLayoutState extends State<BaseLayout> {
               case '/request-creation':
                 builder = (BuildContext _) => const RequestCreationPage();
                 break;
-              case '/adress-managment':
-                builder = (BuildContext _) => const AdressManagmentPage();
+              case '/address-managment':
+                builder = (BuildContext _) => const AddressManagmentPage();
                 break;
-                case '/details-publication':
+              case '/address-creation':
+                builder = (BuildContext _) => const AddressCreationPage();
+                break;
+              case '/details-publication':
                 builder = (BuildContext _) => const DetailsPublicationPage();
+                break;
               default:
                 throw Exception('Invalid route: ${settings.name}');
             }

@@ -1,4 +1,11 @@
-import 'User.dart';
+import 'dart:convert';
+
+import 'user.dart';
+
+List<Address> addressesFromJson(String str) => List<Address>.from(json.decode(str).map((x) => Address.fromJson(x)));
+
+String addressToJson(Address data) => json.encode(data.toJson());
+
 
 class Address {
   final int? id;
@@ -44,4 +51,21 @@ class Address {
       ),
     ];
   }
+  factory Address.fromJson(Map<String, dynamic> json) => Address(
+    id: json["id"],
+    user: User.fromJson(json["user"]),
+    postalAddress: json["postalAddress"],
+    city: json["city"],
+    zipCode: json["zipCode"],
+    otherInformations: json["otherInfo"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user": user.toJson(),
+    "postalAddress": postalAddress,
+    "city": city,
+    "zipCode": zipCode,
+    "otherInfo": otherInformations,
+  };
 }

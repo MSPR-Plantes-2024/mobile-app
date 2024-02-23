@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/screens/base/base_layout.dart';
 import 'package:mobile_app_arosaje/screens/login/login_layout.dart';
 
-import 'models/User.dart';
+import 'models/user.dart';
 
 void main() {
   runApp(const RestartWidget(child: MyApp()));
@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

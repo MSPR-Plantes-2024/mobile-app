@@ -1,5 +1,5 @@
-import 'Report.dart';
-import 'User.dart';
+import 'report.dart';
+import 'user.dart';
 
 class Comment {
   final int? id;

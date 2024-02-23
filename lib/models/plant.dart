@@ -1,6 +1,6 @@
-import 'Address.dart';
-import 'Picture.dart';
-import 'PlantCondition.dart';
+import 'address.dart';
+import 'picture.dart';
+import 'plant_condition.dart';
 
 class Plant {
   final int? id;

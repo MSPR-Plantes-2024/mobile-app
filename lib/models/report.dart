@@ -1,6 +1,6 @@
-import 'package:mobile_app_arosaje/models/Publication.dart';
+import 'package:mobile_app_arosaje/models/publication.dart';
 
-import 'Picture.dart';
+import 'picture.dart';
 
 class Report {
   final int? id;

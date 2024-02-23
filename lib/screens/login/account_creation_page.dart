@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/services/api_service.dart';
 
-import '../../models/User.dart';
+import '../../models/use_type.dart';
+import '../../models/user.dart';
 
 class AccountCreationPage extends StatefulWidget {
   const AccountCreationPage({Key? key}) : super(key: key);
@@ -11,7 +14,14 @@ class AccountCreationPage extends StatefulWidget {
 }
 
 class _AccountCreationPageState extends State<AccountCreationPage> {
-  List<bool> isSelected = [true, false];
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+
+  // List<bool> isSelected = [true, false];
 
   @override
   Widget build(BuildContext context) {
@@ -24,35 +34,34 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
             child: Form(
                 child: Column(
               children: [
-                Text("Créer un compte",
+                const Text("Créer un compte",
                     style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center),
                 TextFormField(
+                  controller: firstNameController,
                   decoration: const InputDecoration(
                     labelText: 'Prénom',
                   ),
                 ),
                 TextFormField(
+                  controller: lastNameController,
                   decoration: const InputDecoration(
                     labelText: 'Nom',
                   ),
                 ),
                 TextFormField(
+                  controller: emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                   ),
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Téléphone',
-                  ),
-                ),
-                TextFormField(
+                  controller: passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Mot de passe',
                   ),
                 ),
-                Container(
+                /*Container(
                   margin: const EdgeInsets.only(top: 15, bottom: 20),
                   child: ToggleButtons(
                       onPressed: (int index) {
@@ -72,13 +81,36 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                           child: Text('Professionnel'),
                         )
                       ]),
-                ),
+                ),*/
                 ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      MyApp.currentUser = User.getUser();
+                  onPressed: () async {
+                      UserType userType;
+                      userType = UserType.getUserType();
+                      /*if (isSelected[0]) {
+                        if (await ApiService().getUserType(0) != null) {
+                          userType = (await ApiService().getUserType(0))!;
+                        } else {
+                          userType = UserType.getUserType();
+                        }
+                      } else {
+                        if (await ApiService().getUserType(1) != null) {
+                          userType = (await ApiService().getUserType(1))!;
+                        } else {
+                          userType = UserType(id: 1, name: "Professionnel");
+                        }
+                      }*/
+                      User currentUser = User(
+                          firstName: firstNameController.text,
+                          lastName: lastNameController.text,
+                          email: emailController.text,
+                          password: passwordController.text,
+                          userType: userType);
+                      log(currentUser.toString());
+                      ApiService.createUser(currentUser);
+                      setState(() {
+                        MyApp.currentUser = currentUser;
+                      });
                       RestartWidget.restartApp(context);
-                    });
                   },
                   child: const Text('Créer un compte'),
                 ),
