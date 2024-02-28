@@ -28,8 +28,13 @@ class _ChatPageState extends State<ChatPage> {
         }
       });
     }
-    return ListView.builder(itemBuilder: (context, index) {
-      return MessageBubble();
-    });
+    return ListView.builder(
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        return MessageBubble(
+          message: messages[index]
+        );
+      },
+    );
   }
 }

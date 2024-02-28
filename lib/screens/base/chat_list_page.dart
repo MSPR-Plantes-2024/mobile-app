@@ -82,9 +82,7 @@ class _ChatListPageState extends State<ChatListPage> {
           itemCount: messages.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(messages[index].first.sender.firstName +
-                  ' ' +
-                  messages[index].first.sender.lastName),
+              title: Text('${messages[index].first.sender.firstName} ${messages[index].first.sender.lastName}'),
               subtitle: Text(messages[index].first.content),
               onTap: () {
                 Navigator.pushNamed(context, '/chat', arguments: {
