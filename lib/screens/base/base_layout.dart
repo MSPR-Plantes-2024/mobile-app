@@ -8,6 +8,8 @@ import 'package:mobile_app_arosaje/screens/base/home_page.dart';
 import 'package:mobile_app_arosaje/screens/base/request_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/user_page.dart';
 
+import 'chat_list_page.dart';
+import 'chat_page.dart';
 import 'create_report_page.dart';
 import 'details_publication_page.dart';
 
@@ -51,11 +53,14 @@ class _BaseLayoutState extends State<BaseLayout> {
               ),
             ),
           ),
-          actions: const [
+          actions: [
             Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Icon(
-                  Icons.chat_outlined,
+                padding: const EdgeInsets.all(15.0),
+                child: IconButton(
+                  onPressed: () {
+                    navigatorKey.currentState!.pushNamed('/chat-list');
+                  },
+                  icon: const Icon(Icons.chat_outlined),
                 ))
           ],
           backgroundColor: Colors.white,
@@ -176,6 +181,12 @@ class _BaseLayoutState extends State<BaseLayout> {
                 break;
               case '/details-publication':
                 builder = (BuildContext _) => const DetailsPublicationPage();
+                break;
+              case '/chat-list' :
+                builder = (BuildContext _) => const ChatListPage();
+                break;
+              case '/chat' :
+                builder = (BuildContext _) => const ChatPage();
                 break;
               case '/create-report':
                 builder = (BuildContext _) => const CreateReportPage();

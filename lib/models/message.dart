@@ -6,7 +6,6 @@ List<Message> messagesFromJson(String str) => List<Message>.from(json.decode(str
 
 String messageToJson(Message data) => json.encode(data.toJson());
 
-
 class Message {
   final int? id;
   final String content;

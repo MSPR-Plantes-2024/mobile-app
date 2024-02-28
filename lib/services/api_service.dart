@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import '../models/address.dart';
+import '../models/message.dart';
 import '../models/picture.dart';
 import '../models/plant.dart';
 import '../models/publication.dart';
@@ -419,6 +420,64 @@ class ApiService {
     return [];
   }
   //#endregion
+  //#region Message
+  static Future<List<Message>?> getMessageByUser(User user) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.messagesEndpoint}/user/${user.id}');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<Message> messages = messagesFromJson(response.body);
+        return messages;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+  static Future<void> createMessage(Message message) async {
+    try {
+      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.messagesEndpoint);
+      var response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: messageToJson(message));
+      if (response.statusCode == 200) {
+        log('Message created');
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  static Future<void> updateMessage(Message message) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.messagesEndpoint}/${message.id}');
+      var response = await http.put(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: messageToJson(message));
+      if (response.statusCode == 200) {
+        log('Message updated');
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  static Future<void> deleteMessage(Message message) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.messagesEndpoint}/${message.id}');
+      var response = await http.delete(url);
+      if (response.statusCode == 200) {
+        log('Message deleted');
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   //#region Report
   static Future<void> createReport(Report report) async {
@@ -436,7 +495,7 @@ class ApiService {
       log('Exception: $e\nStack trace: $s');
     }
   }
-
+  //#endregion
   static Future<void> updateReport(Report report) async {
     try {
       var url = Uri.parse(
