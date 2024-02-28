@@ -1,41 +1,43 @@
+import 'dart:convert';
+import 'dart:developer';
+
+List<Picture> picturesFromJson(String str) => List<Picture>.from(json.decode(str).map((x) => Picture.fromJson(x)));
+String pictureToJson(Picture data) => json.encode(data.toJson());
+
+
 class Picture {
   final int? id;
-  final String url;
-  final DateTime date;
+  final DateTime? date;
+  final List<int> data;
 
   Picture({
     this.id,
-    required this.url,
-    required this.date,
+    this.date,
+    required this.data,
   });
 
-  static List<Picture> getPictures() {
-    return [
-      Picture(
-        id: 1,
-        url: "assets/images/01.jpg",
-        date: DateTime.now(),
-      ),
-      Picture(
-        id: 2,
-        url: "assets/images/02.jpg",
-        date: DateTime.now(),
-      ),
-      Picture(
-        id: 3,
-        url: "assets/images/03.jpg",
-        date: DateTime.now(),
-      ),
-      Picture(
-        id: 4,
-        url: "assets/images/04.jpg",
-        date: DateTime.now(),
-      ),
-      Picture(
-        id: 5,
-        url: "assets/images/05.jpg",
-        date: DateTime.now(),
-      ),
-    ];
+  factory Picture.fromJson(Map<String, dynamic> json) {
+    log(Picture(
+      id: json['id'],
+      date: DateTime.parse(json['creationDate']),
+      data: json['data'],
+    ).toString());
+    return Picture(
+      id: json['id'],
+      date: DateTime.parse(json['creationDate']),
+      //decode from base64
+      data: json['data'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "data": data,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Picture{id: $id, date: $date, data: $data}';
   }
 }
