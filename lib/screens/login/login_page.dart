@@ -22,10 +22,6 @@ class _LoginPageState extends State<LoginPage> {
       return false;
     }
     List<User>? users = await ApiService.getUsers();
-    if (users == null) {
-      log("users is null");
-      return false;
-    }
     for (var key in users) {
       if (key.id == null) {
         log("key.id is null for $key");
@@ -33,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       User? user = await ApiService.getUser(key.id!);
-      log(user!.toString());
+      log(user.toString());
       if (user.email == email && user.password == password) {
         setState(() {
           MyApp.currentUser = user;

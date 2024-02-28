@@ -36,7 +36,7 @@ class _UserPageState extends State<UserPage> {
             border: BorderDirectional(
                 top: BorderSide(color: Colors.black, width: 1)),
           ),
-          child: SizedBox(
+          child: const SizedBox(
             height: 390,
             child: AttributedGardenkeeping(),
           ),
@@ -53,14 +53,8 @@ class _UserPageState extends State<UserPage> {
             ),
             child: Column(
               children: [
-                ExpansionTile(title: Text('Adresses'), children: [
-                  const SizedBox(height: 130, child: UserAdresses()),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/address-creation');
-                    },
-                    child: const Text('Ajouter une adresse'),
-                  )
+                const ExpansionTile(title: Text('Adresses'), children: [
+                  UserAdresses(),
                 ]),
                 ExpansionTile(
                     title: const Text('Informations personnelles'),
@@ -78,7 +72,7 @@ class _UserPageState extends State<UserPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Nom'),
+                                      const Text('Nom'),
                                       SizedBox(
                                         width: 180,
                                         height: 40,
