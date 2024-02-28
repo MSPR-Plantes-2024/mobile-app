@@ -1,52 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../models/address.dart';
 
 class UserAdresses extends StatefulWidget {
-  const UserAdresses({Key? key}) : super(key: key);
+  final Future<List<Address>>? futureAddresses;
+
+  const UserAdresses({super.key, this.futureAddresses});
 
   @override
   _UserAdressesState createState() => _UserAdressesState();
 }
 
 class _UserAdressesState extends State<UserAdresses> {
-  late Future<List<Address>?> addressesFuture;
+  Future<List<Address>>? _futureAddresses;
 
   @override
   void initState() {
     super.initState();
-    addressesFuture = ApiService.getAddresses();
+    _futureAddresses = ApiService.getAddressesByUser(MyApp.currentUser!);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: addressesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // or any other loading widget
-          } else if (snapshot.hasError) {
-            return const Text('Erreur lors du chargement des addresses.'); // or any other error widget
-          } else {
-            final List<Address> addresses = snapshot.data ?? [];
-            return ListView.builder(
-              itemCount: addresses.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/address-managment',
-                        arguments: {'address' : addresses[index]});
-                  },
-                  title: Text("${addresses[index].postalAddress}"),
-                  subtitle: Text(
-                      "${addresses[index].city} (${addresses[index].zipCode})"),
-                  leading: const Icon(Icons.nature_outlined),
-                  trailing: const Icon(Icons.edit_outlined),
+    return Column(
+      children: [
+        FutureBuilder<List<Address>>(
+            future: _futureAddresses,
+            builder: (context, AsyncSnapshot<List<Address>> snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: 130,
+                  child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        List<Address> addresses = snapshot.data!;
+                        return ListTile(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/address-managment',
+                                arguments: {'address': addresses[index]});
+                          },
+                          title: Text(addresses[index].postalAddress),
+                          subtitle: Text(
+                              "${addresses[index].city} (${addresses[index].zipCode})"),
+                          leading: const Icon(Icons.nature_outlined),
+                          trailing: const Icon(Icons.edit_outlined),
+                        );
+                      }),
                 );
-              },
-            );
-          }
-        });
+              } else if (snapshot.hasError) {
+                return const Text('Erreur lors du chargement des addresses.');
+              }
+              return const SizedBox(
+                  height: 50, width: 50, child: CircularProgressIndicator());
+            }),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/address-creation').then((value) {
+              setState(() {});
+            });
+          },
+          child: const Text('Ajouter une adresse'),
+        )
+      ],
+    );
   }
 }

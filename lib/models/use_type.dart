@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 UserType userTypeFromJson(String str) => UserType.fromJson(json.decode(str));
-
 String userTypeToJson(UserType data) => json.encode(data.toJson());
 
 
@@ -25,10 +24,12 @@ class UserType {
     return name;
   }
 
-  factory UserType.fromJson(Map<String, dynamic> json) => UserType(
+  factory UserType.fromJson(Map<String, dynamic> json) {
+    return UserType(
     id: json["id"],
     name: json["name"],
   );
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,

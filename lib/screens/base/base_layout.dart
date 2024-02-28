@@ -10,9 +10,11 @@ import 'package:mobile_app_arosaje/screens/base/user_page.dart';
 
 import 'chat_list_page.dart';
 import 'chat_page.dart';
+import 'create_report_page.dart';
 import 'details_publication_page.dart';
 
 class BaseLayout extends StatefulWidget {
+  //implement a previousRoute variable to store the previous route
   const BaseLayout({super.key});
 
   @override
@@ -20,6 +22,7 @@ class BaseLayout extends StatefulWidget {
 }
 
 class _BaseLayoutState extends State<BaseLayout> {
+  late String previousRoute;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
   late int bottomNavigationBarIndex = 0;
@@ -142,7 +145,7 @@ class _BaseLayoutState extends State<BaseLayout> {
         );
       }),
       body: NavigatorPopHandler(
-        onPop: () => navigatorKey.currentState!.pop(),
+        onPop: () { navigatorKey.currentState!.pop(); },
         child: Navigator(
           key: navigatorKey,
           initialRoute: '/',
@@ -182,8 +185,11 @@ class _BaseLayoutState extends State<BaseLayout> {
               case '/chat-list' :
                 builder = (BuildContext _) => const ChatListPage();
                 break;
-                case '/chat' :
+              case '/chat' :
                 builder = (BuildContext _) => const ChatPage();
+                break;
+              case '/create-report':
+                builder = (BuildContext _) => const CreateReportPage();
                 break;
               default:
                 throw Exception('Invalid route: ${settings.name}');

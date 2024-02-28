@@ -7,7 +7,7 @@ import '../../models/use_type.dart';
 import '../../models/user.dart';
 
 class AccountCreationPage extends StatefulWidget {
-  const AccountCreationPage({Key? key}) : super(key: key);
+  const AccountCreationPage({super.key});
 
   @override
   _AccountCreationPageState createState() => _AccountCreationPageState();

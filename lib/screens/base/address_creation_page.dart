@@ -16,7 +16,7 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
   TextEditingController postalAddressController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController zipCodeController = TextEditingController();
-  TextEditingController otherInformationController = TextEditingController();
+  TextEditingController otherInformationsController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                       ),
                     ),
                     TextFormField(
-                      controller: otherInformationController,
+                      controller: otherInformationsController,
                       decoration: const InputDecoration(
                         labelText: 'Informations complémentaires',
                       ),
@@ -87,7 +87,7 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,
                                   zipCode: zipCodeController.text,
-                                  otherInformations: otherInformationController.text == "" ? null : otherInformationController.text));
+                                  otherInformations: otherInformationsController.text));
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Adresse créée !')),
                               );

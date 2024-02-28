@@ -21,19 +21,23 @@ class Message {
     required this.receiver,
   });
 
-  factory Message.fromJson(Map<String, dynamic> json) => Message(
-    id: json["id"],
-    content: json["content"],
-    date: DateTime.parse(json["date"]),
-    sender: User.fromJson(json["sender"]),
-    receiver: User.fromJson(json["receiver"]),
-  );
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(
+      id: json['id'],
+      content: json['content'],
+      date: DateTime.parse(json['date']),
+      sender: User.fromJson(json['sender']),
+      receiver: User.fromJson(json['receiver']),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "content": content,
-    "date": date.toIso8601String(),
-    "sender": sender.toJson(),
-    "receiver": receiver.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "content": content,
+      "date": date.toIso8601String(),
+      "sender": sender.toJson(),
+      "receiver": receiver.toJson(),
+    };
+  }
 }

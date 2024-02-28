@@ -1,15 +1,31 @@
+import 'dart:convert';
+
+PlantCondition plantConditionFromJson(String str) => PlantCondition.fromJson(json.decode(str));
+String plantConditionToJson(PlantCondition data) => json.encode(data.toJson());
+
 class PlantCondition {
-  final String value;
-  const PlantCondition._(this.value);
+  final int? id;
+  final String name;
 
-  static const PlantCondition HEALTHY = PlantCondition._("HEALTHY");
-  static const PlantCondition DAMAGED = PlantCondition._("DAMAGED");
-  static const PlantCondition DEAD = PlantCondition._("DEAD");
-
-  static List<PlantCondition> get values => [HEALTHY, DAMAGED, DEAD];
+  PlantCondition({
+    this.id,
+    required this.name,
+  });
 
   @override
   String toString() {
-    return value;
+    return name;
   }
+
+  factory PlantCondition.fromJson(Map<String, dynamic> json) {
+    return PlantCondition(
+    id: json["id"],
+    name: json["name"],
+  );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+  };
 }
