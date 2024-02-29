@@ -6,7 +6,10 @@ import '../../models/user.dart';
 import '../../services/api_service.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final Message message;
+
+  final String originRoute;
+  const ChatPage({super.key, required this.message, required this.originRoute});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -31,9 +34,7 @@ class _ChatPageState extends State<ChatPage> {
     return ListView.builder(
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        return MessageBubble(
-          message: messages[index]
-        );
+        return MessageBubble(message: messages[index]);
       },
     );
   }

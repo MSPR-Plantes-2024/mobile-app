@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
+import 'package:mobile_app_arosaje/models/to_pass_map.dart';
 
 import '../main.dart';
 import '../services/api_service.dart';
@@ -31,16 +33,17 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                    title: Text("Gardiennage à ${snapshot.data![index].address.city}"),
+                    title: Text(
+                        "Gardiennage à ${snapshot.data![index].address.city}"),
                     subtitle: Text(snapshot.data![index].date.toString()),
                     leading: const Icon(Icons.nature_outlined),
                     trailing: Row(
                       children: [
                         IconButton(
                             onPressed: () {
-                              Navigator.pushNamed(
-                                  context, '/create-report',
-                                  arguments: snapshot.data![index]);
+                              context.push('/create-report',
+                                  extra: ToPassMap(
+                                      {'publication': snapshot.data![index]}));
                             },
                             icon: const Icon(Icons.note_add_outlined)),
                         IconButton(
@@ -55,17 +58,18 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
                                       actions: [
                                         TextButton(
                                             onPressed: () {
-                                              Navigator.pop(context);
+                                              context.pop;
                                             },
                                             child: const Text("Annuler")),
                                         TextButton(
                                             onPressed: () {
                                               setState(() {
-                                                snapshot.data![index].gardenkeeper = null;
+                                                snapshot.data![index]
+                                                    .gardenkeeper = null;
                                                 ApiService.updatePublication(
                                                     snapshot.data![index]);
                                               });
-                                              Navigator.pop(context);
+                                              context.pop;
                                             },
                                             child: const Text("Supprimer")),
                                       ],
@@ -81,7 +85,8 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
             return Text("${snapshot.error}");
           }
           // By default, show a loading spinner.
-          return const SizedBox(height:50, width:50, child: CircularProgressIndicator());
+          return const SizedBox(
+              height: 50, width: 50, child: CircularProgressIndicator());
         });
   }
 }
