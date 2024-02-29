@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
@@ -11,7 +12,10 @@ import '../../widgets/date_time_picker.dart';
 import '../../widgets/image_carousel.dart';
 
 class DetailsPublicationPage extends StatefulWidget {
-  const DetailsPublicationPage({super.key});
+  final String originRoute;
+  final Publication publication;
+  const DetailsPublicationPage(
+      {super.key, required this.originRoute, required this.publication});
 
   @override
   _DetailsPublicationPageState createState() => _DetailsPublicationPageState();
@@ -20,23 +24,21 @@ class DetailsPublicationPage extends StatefulWidget {
 class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    final Publication publication = arguments['publication'];
     final Widget toShow;
     TextEditingController dateTimeInput = TextEditingController(
-        text: DateFormat('dd-MM-yyyy HH:mm').format(publication.date));
+        text: DateFormat('dd-MM-yyyy HH:mm').format(widget.publication.date));
     DateTime? pickedDateTime;
     TextEditingController descriptionInput =
-        TextEditingController(text: publication.description ?? "");
+        TextEditingController(text: widget.publication.description ?? "");
 
-    if (publication.publisher.id == MyApp.currentUser?.id) {
+    if (widget.publication.publisher.id == MyApp.currentUser?.id) {
       toShow = Scrollbar(
         child: Container(
           margin: const EdgeInsets.only(left: 10, right: 10),
           child: ListView(
               padding: const EdgeInsets.only(top: 10),
               children: <Widget>[
-                ImageCarousel(plants: publication.plants),
+                ImageCarousel(plants: widget.publication.plants),
                 SizedBox(
                   width: 380,
                   child: Column(
@@ -51,25 +53,27 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "${publication.address.city} (${publication.address.zipCode})",
+                                  "${widget.publication.address.city} (${widget.publication.address.zipCode})",
                                   style: const TextStyle(fontSize: 20)),
-                              if (publication.publisher.id ==
+                              if (widget.publication.publisher.id ==
                                       MyApp.currentUser!.id ||
-                                  (publication.gardenkeeper != null &&
-                                      publication.gardenkeeper?.id ==
+                                  (widget.publication.gardenkeeper != null &&
+                                      widget.publication.gardenkeeper?.id ==
                                           MyApp.currentUser!.id))
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(publication.address.postalAddress,
+                                      Text(
+                                          widget.publication.address
+                                              .postalAddress,
                                           style: const TextStyle(fontSize: 20)),
-                                      if (publication
-                                              .address.otherInformations !=
+                                      if (widget.publication.address
+                                              .otherInformations !=
                                           null)
                                         Text(
-                                            publication
-                                                .address.otherInformations!,
+                                            widget.publication.address
+                                                .otherInformations!,
                                             style:
                                                 const TextStyle(fontSize: 20))
                                     ])
@@ -95,7 +99,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                       await DateTimePicker.getDateTime(context);
                                   if (pickedDateTime != null) {
                                     setState(() {
-                                      publication.date = pickedDateTime!;
+                                      widget.publication.date = pickedDateTime!;
                                     });
                                   }
                                 },
@@ -119,10 +123,11 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           margin: const EdgeInsets.only(top: 5, bottom: 5),
                           child: Scrollbar(
                             child: ListView.builder(
-                                itemCount: publication.plants.length,
+                                itemCount: widget.publication.plants.length,
                                 itemBuilder: (context, index) {
                                   return ExpansionTile(
-                                    title: Text(publication.plants[index].name),
+                                    title: Text(
+                                        widget.publication.plants[index].name),
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(5),
@@ -130,12 +135,13 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                           children: [
                                             SizedBox(
                                                 height: 100,
-                                                child: Image.memory(publication
+                                                child: Image.memory(widget
+                                                    .publication
                                                     .plants[index]
                                                     .picture!
                                                     .data as Uint8List)),
                                             Text(
-                                                "Description : ${publication.plants[index].description}"),
+                                                "Description : ${widget.publication.plants[index].description}"),
                                           ],
                                         ),
                                       ),
@@ -162,7 +168,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  Navigator.pop(context);
+                                  context.go(widget.originRoute);
                                 });
                               },
                               child: const Text('Enregistrer les modifications',
@@ -171,7 +177,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  Navigator.pop(context);
+                                  context.go(widget.originRoute);
                                 });
                               },
                               child: const Text('Supprimer',
@@ -193,7 +199,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
           child: ListView(children: <Widget>[
             Container(
                 margin: const EdgeInsets.only(top: 10),
-                child: ImageCarousel(plants: publication.plants)),
+                child: ImageCarousel(plants: widget.publication.plants)),
             SizedBox(
               width: 380,
               child: Column(
@@ -204,14 +210,14 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                       Container(
                           margin: const EdgeInsets.only(right: 5),
                           child: const Icon(Icons.location_on)),
-                      if (publication.gardenkeeper == null ||
-                          publication.gardenkeeper != MyApp.currentUser)
+                      if (widget.publication.gardenkeeper == null ||
+                          widget.publication.gardenkeeper != MyApp.currentUser)
                         Text(
-                            "${publication.address.city} (${publication.address.zipCode})",
+                            "${widget.publication.address.city} (${widget.publication.address.zipCode})",
                             style: const TextStyle(fontSize: 20))
                       else
                         Text(
-                            "${publication.address.city} (${publication.address.zipCode})\n${publication.address.postalAddress}\n${publication.address.otherInformations}",
+                            "${widget.publication.address.city} (${widget.publication.address.zipCode})\n${widget.publication.address.postalAddress}\n${widget.publication.address.otherInformations}",
                             style: const TextStyle(fontSize: 20)),
                     ],
                   ),
@@ -223,7 +229,8 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             margin: const EdgeInsets.only(right: 5),
                             child: const Icon(Icons.calendar_today)),
                         Text(
-                            DateFormat('dd-MM-yyyy HH:mm').format(publication.date),
+                            DateFormat('dd-MM-yyyy HH:mm')
+                                .format(widget.publication.date),
                             style: const TextStyle(fontSize: 20)),
                       ],
                     ),
@@ -237,21 +244,23 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                   SizedBox(
                     height: 200,
                     child: Container(
-                      decoration:
-                          BoxDecoration(border: Border.all(color: Colors.black)),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black)),
                       margin: const EdgeInsets.only(top: 5, bottom: 10),
                       child: Scrollbar(
                         child: ListView.builder(
-                            itemCount: publication.plants.length,
+                            itemCount: widget.publication.plants.length,
                             itemBuilder: (context, index) {
                               Uint8List? pictureData;
-                              if (publication.plants[index].picture != null) {
-                                pictureData = publication
-                                    .plants[index].picture!.data as Uint8List;
+                              if (widget.publication.plants[index].picture !=
+                                  null) {
+                                pictureData = widget.publication.plants[index]
+                                    .picture!.data as Uint8List;
                               }
 
                               return ExpansionTile(
-                                title: Text(publication.plants[index].name),
+                                title:
+                                    Text(widget.publication.plants[index].name),
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(5),
@@ -265,7 +274,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                                     child: Text(
                                                         "Aucune image trouvée pour cette plante"))),
                                         Text(
-                                            "Description : ${publication.plants[index].description}"),
+                                            "Description : ${widget.publication.plants[index].description}"),
                                       ],
                                     ),
                                   ),
@@ -278,39 +287,39 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                 ],
               ),
             ),
-            if (publication.gardenkeeper != null && publication.gardenkeeper == MyApp.currentUser)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            publication.gardenkeeper = null;
-                            ApiService.updatePublication(publication);
-                          });
-                        },
-                        child: const Text('Me désangager',
-                            textAlign: TextAlign.center)),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                          });
-                        },
-                        child: const Text('Publier un rapport',
-                            textAlign: TextAlign.center))
-                  ],
-                )
+            if (widget.publication.gardenkeeper != null &&
+                widget.publication.gardenkeeper == MyApp.currentUser)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          widget.publication.gardenkeeper = null;
+                          ApiService.updatePublication(widget.publication);
+                        });
+                      },
+                      child: const Text('Me désangager',
+                          textAlign: TextAlign.center)),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {});
+                      },
+                      child: const Text('Publier un rapport',
+                          textAlign: TextAlign.center))
+                ],
+              )
             else
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    publication.gardenkeeper = MyApp.currentUser;
-                    log(publication.gardenkeeper!.toString());
-                    ApiService.updatePublication(publication);
+                    widget.publication.gardenkeeper = MyApp.currentUser;
+                    log(widget.publication.gardenkeeper!.toString());
+                    ApiService.updatePublication(widget.publication);
                   });
                 },
-                child:
-                    const Text('Je suis volontaire', textAlign: TextAlign.center),
+                child: const Text('Je suis volontaire',
+                    textAlign: TextAlign.center),
               ),
           ]),
         ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CreateReportPage extends StatefulWidget {
-  const CreateReportPage({Key? key}) : super(key: key);
+  final String originRoute;
+  const CreateReportPage(
+      {super.key, required this.originRoute, required publication});
 
   @override
   _CreateReportPageState createState() => _CreateReportPageState();

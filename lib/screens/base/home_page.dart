@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/models/to_pass_map.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../models/publication.dart';
@@ -60,19 +62,27 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
                       Uint8List? pictureData;
                       if (snapshot.hasData &&
                           snapshot.data![index].plants.isNotEmpty &&
-                          snapshot.data![index].plants[Random().nextInt(snapshot.data![index].plants.length)].picture != null) {
-                        pictureData =
-                        snapshot.data![index].plants[Random().nextInt(snapshot
-                            .data![index].plants.length)].picture!
+                          snapshot
+                                  .data![index]
+                                  .plants[Random().nextInt(
+                                      snapshot.data![index].plants.length)]
+                                  .picture !=
+                              null) {
+                        pictureData = snapshot
+                            .data![index]
+                            .plants[Random()
+                                .nextInt(snapshot.data![index].plants.length)]
+                            .picture!
                             .data as Uint8List;
                       }
-                        return Align(
+                      return Align(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/details-publication',
-                                arguments: {
+                            context.push('/details-publication',
+                                extra: ToPassMap({
+                                  'originRoute': '/',
                                   'publication': snapshot.data![index]
-                                });
+                                }));
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.8,
@@ -98,23 +108,25 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
                                 children: [
                                   pictureData != null
                                       ? Image.memory(
-                                    pictureData,
-                                    width:
-                                    MediaQuery.of(context).size.width * 1,
-                                    height: 200,
-                                    fit: BoxFit.cover,
-                                  )
+                                          pictureData,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              1,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        )
                                       : const SizedBox(
-                                    height: 200,
-                                    child: Center(
-                                      child: Text(
-                                        "Aucune image trouvée pour cette publication",
-                                        style: TextStyle(
-                                          fontSize: 20,
+                                          height: 200,
+                                          child: Center(
+                                            child: Text(
+                                              "Aucune image trouvée pour cette publication",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
                                   Container(
                                     margin: const EdgeInsets.only(top: 10),
                                     child: Text(
@@ -177,8 +189,18 @@ class _MyPublicationsState extends State<MyPublications> {
                       Uint8List? pictureData;
                       if (snapshot.hasData &&
                           snapshot.data![index].plants.isNotEmpty &&
-                          snapshot.data![index].plants[Random().nextInt(snapshot.data![index].plants.length)].picture != null) {
-                        pictureData = snapshot.data![index].plants[Random().nextInt(snapshot.data![index].plants.length)].picture!.data as Uint8List;
+                          snapshot
+                                  .data![index]
+                                  .plants[Random().nextInt(
+                                      snapshot.data![index].plants.length)]
+                                  .picture !=
+                              null) {
+                        pictureData = snapshot
+                            .data![index]
+                            .plants[Random()
+                                .nextInt(snapshot.data![index].plants.length)]
+                            .picture!
+                            .data as Uint8List;
                       }
                       return Align(
                         child: Container(
@@ -204,23 +226,24 @@ class _MyPublicationsState extends State<MyPublications> {
                               children: [
                                 pictureData != null
                                     ? Image.memory(
-                                  pictureData,
-                                  width:
-                                  MediaQuery.of(context).size.width * 1,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                )
+                                        pictureData,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                      )
                                     : const SizedBox(
-                                  height: 200,
-                                  child: Center(
-                                    child: Text(
-                                      "Aucune image trouvée pour cette publication",
-                                      style: TextStyle(
-                                        fontSize: 20,
+                                        height: 200,
+                                        child: Center(
+                                          child: Text(
+                                            "Aucune image trouvée pour cette publication",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                                 Container(
                                   margin: const EdgeInsets.only(top: 10),
                                   child: Text(

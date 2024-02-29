@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:mobile_app_arosaje/route-observer-body.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile_app_arosaje/models/to_pass_map.dart';
 import 'package:mobile_app_arosaje/screens/base/address_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/address_managment_page.dart';
 import 'package:mobile_app_arosaje/screens/base/home_page.dart';
@@ -23,12 +22,86 @@ class BaseLayout extends StatefulWidget {
 
 class _BaseLayoutState extends State<BaseLayout> {
   late String previousRoute;
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> baseLayoutKey = GlobalKey<NavigatorState>();
   final ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
   late int bottomNavigationBarIndex = 0;
+  late GoRouter _routerDelegate;
+
+  initializeGoRouter() {
+    _routerDelegate = GoRouter(
+      navigatorKey: baseLayoutKey,
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => HomePage(
+            key: ValueKey(state.name),
+            myPublications: false,
+          ),
+        ),
+        GoRoute(
+          path: '/my_publications',
+          builder: (context, state) => HomePage(
+            key: ValueKey(state.name),
+            myPublications: true,
+          ),
+        ),
+        GoRoute(
+          path: '/user',
+          builder: (context, state) => UserPage(),
+        ),
+        GoRoute(
+          path: '/request-creation',
+          builder: (context, state) => const RequestCreationPage(),
+        ),
+        GoRoute(
+            path: '/address-managment',
+            builder: (context, state) {
+              ToPassMap map = state.extra as ToPassMap;
+              return AddressManagmentPage(originRoute: map.map['originRoute']);
+            }),
+        GoRoute(
+            path: '/address-creation',
+            builder: (context, state) {
+              ToPassMap map = state.extra as ToPassMap;
+              return AddressCreationPage(originRoute: map.map['originRoute']);
+            }),
+        GoRoute(
+            path: '/details-publication',
+            builder: (context, state) {
+              ToPassMap map = state.extra as ToPassMap;
+              return DetailsPublicationPage(
+                originRoute: map.map['originRoute'],
+                publication: map.map['publication'],
+              );
+            }),
+        GoRoute(
+          path: '/chat-list',
+          builder: (context, state) => const ChatListPage(),
+        ),
+        GoRoute(
+            path: '/chat',
+            builder: (context, state) {
+              ToPassMap map = state.extra as ToPassMap;
+              return ChatPage(
+                  message: map.map['message'],
+                  originRoute: map.map['originRoute']);
+            }),
+        GoRoute(
+            path: '/create-report',
+            builder: (context, state) {
+              ToPassMap map = state.extra as ToPassMap;
+              return CreateReportPage(
+                  originRoute: map.map['originRoute'],
+                  publication: map.map['publication']);
+            }),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    initializeGoRouter();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -36,13 +109,13 @@ class _BaseLayoutState extends State<BaseLayout> {
           automaticallyImplyLeading: false,
           leading: IconButton(
               onPressed: () {
-                navigatorKey.currentState!.pushNamed('/user');
+                context.go('/user');
               },
               icon: const Icon(Icons.account_circle_outlined)),
           title: Center(
             child: InkWell(
               onTap: () {
-                navigatorKey.currentState!.pushNamed('/');
+                context.go('/');
               },
               child: const SizedBox(
                 height: 65,
@@ -58,7 +131,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                 padding: const EdgeInsets.all(15.0),
                 child: IconButton(
                   onPressed: () {
-                    navigatorKey.currentState!.pushNamed('/chat-list');
+                    context.push("/chat-list");
                   },
                   icon: const Icon(Icons.chat_outlined),
                 ))
@@ -76,7 +149,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                     value == '/' || value == '/my_publications' ? true : false,
                 child: FloatingActionButton(
                     onPressed: () {
-                      navigatorKey.currentState!.pushNamed('/request-creation');
+                      context.push('/request-creation');
                     },
                     child: const Icon(Icons.add)));
           }),
@@ -96,12 +169,12 @@ class _BaseLayoutState extends State<BaseLayout> {
             currentIndex: bottomNavigationBarIndex,
             onTap: (int index) {
               if (index == 0) {
-                navigatorKey.currentState!.pushNamed('/');
+                context.go('/');
                 setState(() {
                   bottomNavigationBarIndex = index;
                 });
               } else {
-                navigatorKey.currentState!.pushNamed('/my_publications');
+                context.push('/my_publications');
                 setState(() {
                   bottomNavigationBarIndex = index;
                 });
@@ -144,59 +217,8 @@ class _BaseLayoutState extends State<BaseLayout> {
           ),
         );
       }),
-      body: NavigatorPopHandler(
-        onPop: () { navigatorKey.currentState!.pop(); },
-        child: Navigator(
-          key: navigatorKey,
-          initialRoute: '/',
-          observers: [RouteObserverBody(_routeNameNotifier)],
-          onGenerateRoute: (RouteSettings settings) {
-            _routeNameNotifier.value = settings.name!;
-            WidgetBuilder builder;
-            log(settings.name!);
-            switch (settings.name) {
-              case '/':
-                builder = (BuildContext _) => HomePage(
-                      key: ValueKey(settings.name),
-                      myPublications: false,
-                    );
-                break;
-              case '/my_publications':
-                builder = (BuildContext _) => HomePage(
-                      key: ValueKey(settings.name),
-                      myPublications: true,
-                    );
-                break;
-              case '/user':
-                builder = (BuildContext _) => const UserPage();
-                break;
-              case '/request-creation':
-                builder = (BuildContext _) => const RequestCreationPage();
-                break;
-              case '/address-managment':
-                builder = (BuildContext _) => const AddressManagmentPage();
-                break;
-              case '/address-creation':
-                builder = (BuildContext _) => const AddressCreationPage();
-                break;
-              case '/details-publication':
-                builder = (BuildContext _) => const DetailsPublicationPage();
-                break;
-              case '/chat-list' :
-                builder = (BuildContext _) => const ChatListPage();
-                break;
-              case '/chat' :
-                builder = (BuildContext _) => const ChatPage();
-                break;
-              case '/create-report':
-                builder = (BuildContext _) => const CreateReportPage();
-                break;
-              default:
-                throw Exception('Invalid route: ${settings.name}');
-            }
-            return MaterialPageRoute(builder: builder, settings: settings);
-          },
-        ),
+      body: MaterialApp.router(
+        routerConfig: _routerDelegate,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/models/message.dart';
 
@@ -82,10 +83,11 @@ class _ChatListPageState extends State<ChatListPage> {
           itemCount: messages.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text('${messages[index].first.sender.firstName} ${messages[index].first.sender.lastName}'),
+              title: Text(
+                  '${messages[index].first.sender.firstName} ${messages[index].first.sender.lastName}'),
               subtitle: Text(messages[index].first.content),
               onTap: () {
-                Navigator.pushNamed(context, '/chat', arguments: {
+                context.go('/chat', extra: {
                   'reciever':
                       messages[index].first.sender.id == MyApp.currentUser!.id
                           ? messages[index].first.receiver
