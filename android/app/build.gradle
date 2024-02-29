@@ -41,7 +41,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.arosaje.mobile_app_arosaje"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
@@ -49,11 +48,25 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        compileSdkVersion 34
+    }
+
+    signingConfigs {
+        release {
+            keyAlias 'arosaje'
+            keyPassword 'arosaje2024flutter'
+            storeFile file("C:/Users/jbapt/Documents/projets/mspr2024/mobileapp/keystore_arosaje.jks")
+            storePassword 'arosaje2024flutter'
+        }
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
+            signingConfig signingConfigs.release
+
+            minifyEnabled true
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
