@@ -20,20 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> isAbleToLogin(String? email, String? password) async {
     if (email == null || password == null) {
       return false;
-    }
-    List<User>? users = await ApiService.getUsers();
-    for (var key in users) {
-      if (key.id == null) {
-        log("key.id is null for $key");
-        continue;
-      }
-
-      User? user = await ApiService.getUser(key.id!);
-      log(user.toString());
-      if (user.email == email && user.password == password) {
-        setState(() {
-          MyApp.currentUser = user;
-        });
+    } else {
+      User? user = await ApiService.login(email.trim(), password.trim());
+      if (user != null) {
         return true;
       }
     }
@@ -73,8 +62,8 @@ class _LoginPageState extends State<LoginPage> {
                         emailController.text, passwordController.text)) {
                       RestartWidget.restartApp(context);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Email ou mot de passe incorrect')));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Email ou mot de passe incorrect')));
                     }
                   },
                   child: const Text('Connexion')),
