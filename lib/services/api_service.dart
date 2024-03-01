@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mobile_app_arosaje/main.dart';
+
 import '../models/address.dart';
 import '../models/message.dart';
 import '../models/picture.dart';
@@ -13,21 +16,26 @@ import '../models/user.dart';
 import 'constants.dart';
 
 class ApiService {
-  //#region User
-  static Future<List<User>> getUsers() async {
+  //#region Auth
+  static Future<User?> login(String email, String password) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
-      var response = await http.get(url);
+      var url = Uri.parse('${ApiConstants.baseUrl}/auth/authenticate');
+      var response = await http.post(url,
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: json.encode({'email': email, 'password': password}));
       if (response.statusCode == 200) {
-        List<User> users = usersFromJson(response.body);
-        return users;
+        ApiConstants.jdkToken =
+            JwtDecoder.decode(jsonDecode(response.body)['access_token']);
+        MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
-    return [];
+    return null;
   }
 
+  //#endregion
+  //#region User
   static Future<void> createUser(User user) async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
@@ -419,6 +427,7 @@ class ApiService {
     }
     return [];
   }
+
   //#endregion
   //#region Message
   static Future<List<Message>?> getMessageByUser(User user) async {
@@ -435,6 +444,7 @@ class ApiService {
     }
     return null;
   }
+
   static Future<void> createMessage(Message message) async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.messagesEndpoint);
@@ -450,6 +460,7 @@ class ApiService {
       log(e.toString());
     }
   }
+
   static Future<void> updateMessage(Message message) async {
     try {
       var url = Uri.parse(
@@ -466,6 +477,7 @@ class ApiService {
       log(e.toString());
     }
   }
+
   static Future<void> deleteMessage(Message message) async {
     try {
       var url = Uri.parse(
@@ -495,6 +507,7 @@ class ApiService {
       log('Exception: $e\nStack trace: $s');
     }
   }
+
   //#endregion
   static Future<void> updateReport(Report report) async {
     try {

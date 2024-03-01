@@ -153,12 +153,12 @@ class _UserPageState extends State<UserPage> {
                                         firstName: firstNameController.text,
                                         lastName: lastNameController.text,
                                         email: emailController.text,
-                                        password: MyApp.currentUser!.password,
                                         userType: MyApp.currentUser!.userType));
 
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                          content: Text('Changements sauvegardés !')),
+                                          content: Text(
+                                              'Changements sauvegardés !')),
                                     );
                                   }
                                 },
