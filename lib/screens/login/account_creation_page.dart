@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
@@ -13,12 +14,10 @@ class AccountCreationPage extends StatefulWidget {
 }
 
 class _AccountCreationPageState extends State<AccountCreationPage> {
-
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
 
   // List<bool> isSelected = [true, false];
 
@@ -83,18 +82,15 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                 ),*/
                 ElevatedButton(
                   onPressed: () async {
-                      User currentUser = User(
-                          firstName: firstNameController.text,
-                          lastName: lastNameController.text,
-                          email: emailController.text,
-                          password: passwordController.text,
-                          userType: "USER");
-                      log(currentUser.toString());
-                      ApiService.createUser(currentUser);
-                      setState(() {
-                        MyApp.currentUser = currentUser;
-                      });
-                      RestartWidget.restartApp(context);
+                    User currentUser = User(
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
+                        email: emailController.text,
+                        password: passwordController.text,
+                        userType: "USER");
+                    await ApiService.logon(currentUser);
+                    log("Account created");
+                    RestartWidget.restartApp(context);
                   },
                   child: const Text('Créer un compte'),
                 ),

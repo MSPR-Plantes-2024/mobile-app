@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
       return false;
     } else {
       await ApiService.login(email.trim(), password.trim());
-      log(MyApp.currentUser.toString());
       if (MyApp.currentUser != null) {
         return true;
       }
@@ -56,7 +55,6 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(top: 20),
               child: ElevatedButton(
                   onPressed: () async {
-
                     if (await isAbleToLogin(
                         emailController.text, passwordController.text)) {
                       log("User connected");
