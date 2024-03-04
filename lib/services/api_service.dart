@@ -11,13 +11,12 @@ import '../models/picture.dart';
 import '../models/plant.dart';
 import '../models/publication.dart';
 import '../models/report.dart';
-import '../models/use_type.dart';
 import '../models/user.dart';
 import 'constants.dart';
 
 class ApiService {
   //#region Auth
-  static Future<User?> login(String email, String password) async {
+  static Future<void> login(String email, String password) async {
     try {
       var url = Uri.parse('${ApiConstants.baseUrl}/auth/authenticate');
       var response = await http.post(url,
@@ -31,10 +30,24 @@ class ApiService {
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
-    return null;
   }
-
+  static Future<void> logon(User user) async {
+    try {
+      var url = Uri.parse('${ApiConstants.baseUrl}/auth/register');
+      var response = await http.post(url,
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: userToJson(user));
+      if (response.statusCode == 200) {
+        ApiConstants.jdkToken =
+            JwtDecoder.decode(jsonDecode(response.body)['access_token']);
+        MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
+      }
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
+    }
+  }
   //#endregion
+
   //#region User
   static Future<void> createUser(User user) async {
     try {
@@ -42,6 +55,7 @@ class ApiService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: userToJson(user));
       if (response.statusCode == 200) {
@@ -59,6 +73,7 @@ class ApiService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: userToJson(user));
       if (response.statusCode == 200) {
@@ -73,7 +88,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.usersEndpoint}/${user.id}');
-      var response = await http.delete(url);
+      var response = await http.delete(url,
+          headers: <String, String>{
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         log('User deleted');
       }
@@ -86,7 +103,9 @@ class ApiService {
     try {
       var url =
           Uri.parse('${ApiConstants.baseUrl}${ApiConstants.usersEndpoint}/$id');
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         User user = User.fromJson(json.decode(response.body));
         return user;
@@ -98,29 +117,15 @@ class ApiService {
   }
 
   //#endregion
-  //#region UserType
-  static Future<UserType> getUserType(int id) async {
-    try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.userTypesEndpoint}/$id');
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        UserType userType = UserType.fromJson(json.decode(response.body));
-        return userType;
-      }
-    } catch (e, s) {
-      log('Exception: $e\nStack trace: $s');
-    }
-    throw Exception('Failed to load user type');
-  }
-  //#endregion
 
   //#region Address
   static Future<Address> getAddressById(int id) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/$id');
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         Address address = Address.fromJson(json.decode(response.body));
         return address;
@@ -135,7 +140,9 @@ class ApiService {
     try {
       var url =
           Uri.parse(ApiConstants.baseUrl + ApiConstants.addressesEndpoint);
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
         return addresses;
@@ -150,7 +157,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/user/${user.id}');
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
         return addresses;
@@ -168,6 +177,7 @@ class ApiService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: addressToJson(address));
       if (response.statusCode == 200) {
@@ -185,6 +195,7 @@ class ApiService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: addressToJson(address));
       if (response.statusCode == 200) {
@@ -199,7 +210,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/${address.id}');
-      var response = await http.delete(url);
+      var response = await http.delete(url,
+          headers: <String, String>{
+          'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         log('Address deleted');
       }
@@ -216,6 +229,7 @@ class ApiService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: pictureToJson(picture));
       if (response.statusCode == 200) {
@@ -229,7 +243,9 @@ class ApiService {
   static Future<List<Picture>> getPictures() async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.picturesEndpoint);
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+          'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         List<Picture> pictures = picturesFromJson(response.body);
         return pictures;
@@ -244,7 +260,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.picturesEndpoint}/$id');
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         Picture picture = Picture.fromJson(json.decode(response.body));
         return picture;
@@ -263,6 +281,7 @@ class ApiService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: plantToJson(plant));
       if (response.statusCode == 200) {
@@ -280,6 +299,7 @@ class ApiService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: plantToJson(plant));
       if (response.statusCode == 200) {
@@ -294,7 +314,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/${plant.id}');
-      var response = await http.delete(url);
+      var response = await http.delete(url,
+          headers: <String, String>{
+          'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         log('Plant deleted');
       }
@@ -307,7 +329,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/$id');
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+          'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         Plant plant = Plant.fromJson(json.decode(response.body));
         return plant;
@@ -322,7 +346,9 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/address/${address.id}');
-      var response = await http.get(url);
+      var response = await http.get(url,
+          headers: <String, String>{
+          'Authorization': 'Bearer ${ApiConstants.jdkToken}'});
       if (response.statusCode == 200) {
         List<Plant> plants = plantsFromJson(response.body);
         return plants;
@@ -342,6 +368,7 @@ class ApiService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: publicationToJson(publication));
       if (response.statusCode == 200) {
@@ -359,6 +386,7 @@ class ApiService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: publicationToJson(publication));
       if (response.statusCode == 200) {

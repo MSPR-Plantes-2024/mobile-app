@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
-import '../../models/use_type.dart';
 import '../../models/user.dart';
 
 class AccountCreationPage extends StatefulWidget {
@@ -84,27 +83,12 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                 ),*/
                 ElevatedButton(
                   onPressed: () async {
-                      UserType userType;
-                      userType = UserType.getUserType();
-                      /*if (isSelected[0]) {
-                        if (await ApiService().getUserType(0) != null) {
-                          userType = (await ApiService().getUserType(0))!;
-                        } else {
-                          userType = UserType.getUserType();
-                        }
-                      } else {
-                        if (await ApiService().getUserType(1) != null) {
-                          userType = (await ApiService().getUserType(1))!;
-                        } else {
-                          userType = UserType(id: 1, name: "Professionnel");
-                        }
-                      }*/
                       User currentUser = User(
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           email: emailController.text,
                           password: passwordController.text,
-                          userType: userType);
+                          userType: "USER");
                       log(currentUser.toString());
                       ApiService.createUser(currentUser);
                       setState(() {

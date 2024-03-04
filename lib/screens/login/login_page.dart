@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
-import '../../models/user.dart';
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -21,8 +19,9 @@ class _LoginPageState extends State<LoginPage> {
     if (email == null || password == null) {
       return false;
     } else {
-      User? user = await ApiService.login(email.trim(), password.trim());
-      if (user != null) {
+      await ApiService.login(email.trim(), password.trim());
+      log(MyApp.currentUser.toString());
+      if (MyApp.currentUser != null) {
         return true;
       }
     }
@@ -57,9 +56,10 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(top: 20),
               child: ElevatedButton(
                   onPressed: () async {
-                    log("${emailController.text} ${passwordController.text}");
+
                     if (await isAbleToLogin(
                         emailController.text, passwordController.text)) {
+                      log("User connected");
                       RestartWidget.restartApp(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

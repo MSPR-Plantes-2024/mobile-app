@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-import 'package:mobile_app_arosaje/models/use_type.dart';
-
 List<User> usersFromJson(String str) =>
     List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
 String userToJson(User data) => json.encode(data.toJson());
@@ -12,7 +9,7 @@ class User {
   final String lastName;
   final String? email;
   final String? password;
-  final UserType? userType;
+  final String? userType;
 
   User({
     this.id,
@@ -34,6 +31,7 @@ class User {
       lastName: json["lastName"],
       email: json["email"],
       password: json["password"],
+      userType: json["userType"],
     );
   }
   Map<String, dynamic> toJson() => {
@@ -42,6 +40,6 @@ class User {
         "lastName": lastName,
         "email": email,
         "password": password,
-        "userType": userType?.toJson(),
+        "userType": userType,
       };
 }
