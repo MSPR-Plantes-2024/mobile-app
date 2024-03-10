@@ -59,27 +59,6 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                     labelText: 'Mot de passe',
                   ),
                 ),
-                /*Container(
-                  margin: const EdgeInsets.only(top: 15, bottom: 20),
-                  child: ToggleButtons(
-                      onPressed: (int index) {
-                        setState(() {
-                          isSelected = [false, false];
-                          isSelected[index] = true;
-                        });
-                      },
-                      isSelected: isSelected,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Particulier'),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Professionnel'),
-                        )
-                      ]),
-                ),*/
                 ElevatedButton(
                   onPressed: () async {
                     User currentUser = User(

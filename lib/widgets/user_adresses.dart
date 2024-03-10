@@ -4,7 +4,6 @@ import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../models/address.dart';
-import '../models/to_pass_map.dart';
 
 class UserAdresses extends StatefulWidget {
   final Future<List<Address>>? futureAddresses;
@@ -41,7 +40,8 @@ class _UserAdressesState extends State<UserAdresses> {
                         return ListTile(
                           onTap: () {
                             context.go('/address-managment',
-                                extra: addresses[index]);
+                                extra: Map<String, dynamic>.from(
+                                    {'address': addresses[index]}));
                           },
                           title: Text(addresses[index].postalAddress),
                           subtitle: Text(
@@ -60,7 +60,7 @@ class _UserAdressesState extends State<UserAdresses> {
         ElevatedButton(
           onPressed: () {
             context.go('/address-creation',
-                extra: ToPassMap({'originRoute': '/user'}));
+                extra: Map<String, dynamic>.from(({'originRoute': '/user'})));
           },
           child: const Text('Ajouter une adresse'),
         )

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, 'account-creation');
+                context.go('account-creation');
               },
               child: const Text('Créer un compte'),
             ),

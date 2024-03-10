@@ -6,8 +6,8 @@ import '../../models/address.dart';
 import '../../services/api_service.dart';
 
 class AddressManagmentPage extends StatefulWidget {
-  final String originRoute;
-  const AddressManagmentPage({super.key, required this.originRoute});
+  final Map<String, dynamic> map;
+  const AddressManagmentPage({super.key, required this.map});
 
   @override
   _AddressManagmentPageState createState() => _AddressManagmentPageState();
@@ -106,7 +106,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                 const SnackBar(
                                     content: Text('Adresse modifiée !')),
                               );
-                              context.go(widget.originRoute);
+                              context.go(widget.map['originRoute']);
                             }
                           },
                           child: const Text("Modifier l'addresse")),

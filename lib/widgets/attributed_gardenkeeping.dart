@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
-import 'package:mobile_app_arosaje/models/to_pass_map.dart';
 
 import '../main.dart';
 import '../services/api_service.dart';
@@ -42,8 +41,9 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
                         IconButton(
                             onPressed: () {
                               context.push('/create-report',
-                                  extra: ToPassMap(
-                                      {'publication': snapshot.data![index]}));
+                                  extra: Map<String, dynamic>.from(({
+                                    'publication': snapshot.data![index]
+                                  })));
                             },
                             icon: const Icon(Icons.note_add_outlined)),
                         IconButton(

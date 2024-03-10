@@ -6,8 +6,8 @@ import '../../main.dart';
 import '../../models/address.dart';
 
 class AddressCreationPage extends StatefulWidget {
-  final String originRoute;
-  const AddressCreationPage({super.key, required this.originRoute});
+  final Map<String, dynamic> map;
+  const AddressCreationPage({super.key, required this.map});
 
   @override
   _AddressCreationPageState createState() => _AddressCreationPageState();
@@ -95,7 +95,7 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                                 const SnackBar(
                                     content: Text('Adresse créée !')),
                               );
-                              context.go(widget.originRoute);
+                              context.go(widget.map['originRoute']);
                             }
                           },
                           child: const Text("Créer l'adresse")),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
-import 'package:mobile_app_arosaje/models/to_pass_map.dart';
 import 'package:mobile_app_arosaje/widgets/date_time_picker.dart';
 
 import '../../main.dart';
@@ -94,7 +93,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                             IconButton(
                                 onPressed: () {
                                   context.go('/address-creation',
-                                      extra: ToPassMap({
+                                      extra: Map<String, dynamic>.from({
                                         'originRoute': '/request-creation'
                                       }));
                                 },

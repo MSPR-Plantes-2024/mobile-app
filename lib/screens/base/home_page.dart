@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
-import 'package:mobile_app_arosaje/models/to_pass_map.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../models/publication.dart';
@@ -13,7 +12,6 @@ import '../../models/publication.dart';
 class HomePage extends StatefulWidget {
   final bool myPublications;
   const HomePage({super.key, required this.myPublications});
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -79,7 +77,7 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
                         child: GestureDetector(
                           onTap: () {
                             context.push('/details-publication',
-                                extra: ToPassMap({
+                                extra: Map<String, dynamic>.from({
                                   'originRoute': '/',
                                   'publication': snapshot.data![index]
                                 }));

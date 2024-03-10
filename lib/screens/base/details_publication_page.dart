@@ -7,15 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../main.dart';
-import '../../models/publication.dart';
 import '../../widgets/date_time_picker.dart';
 import '../../widgets/image_carousel.dart';
 
 class DetailsPublicationPage extends StatefulWidget {
-  final String originRoute;
-  final Publication publication;
-  const DetailsPublicationPage(
-      {super.key, required this.originRoute, required this.publication});
+  final Map<String, dynamic> map;
+  const DetailsPublicationPage({super.key, required this.map});
 
   @override
   _DetailsPublicationPageState createState() => _DetailsPublicationPageState();
@@ -26,19 +23,20 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
   Widget build(BuildContext context) {
     final Widget toShow;
     TextEditingController dateTimeInput = TextEditingController(
-        text: DateFormat('dd-MM-yyyy HH:mm').format(widget.publication.date));
+        text: DateFormat('dd-MM-yyyy HH:mm')
+            .format(widget.map['publication'].date));
     DateTime? pickedDateTime;
-    TextEditingController descriptionInput =
-        TextEditingController(text: widget.publication.description ?? "");
+    TextEditingController descriptionInput = TextEditingController(
+        text: widget.map['publication'].description ?? "");
 
-    if (widget.publication.publisher.id == MyApp.currentUser?.id) {
+    if (widget.map['publication'].publisher.id == MyApp.currentUser?.id) {
       toShow = Scrollbar(
         child: Container(
           margin: const EdgeInsets.only(left: 10, right: 10),
           child: ListView(
               padding: const EdgeInsets.only(top: 10),
               children: <Widget>[
-                ImageCarousel(plants: widget.publication.plants),
+                ImageCarousel(plants: widget.map['publication'].plants),
                 SizedBox(
                   width: 380,
                   child: Column(
@@ -53,26 +51,28 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "${widget.publication.address.city} (${widget.publication.address.zipCode})",
+                                  "${widget.map['publication'].address.city} (${widget.map['publication'].address.zipCode})",
                                   style: const TextStyle(fontSize: 20)),
-                              if (widget.publication.publisher.id ==
+                              if (widget.map['publication'].publisher.id ==
                                       MyApp.currentUser!.id ||
-                                  (widget.publication.gardenkeeper != null &&
-                                      widget.publication.gardenkeeper?.id ==
+                                  (widget.map['publication'].gardenkeeper !=
+                                          null &&
+                                      widget.map['publication'].gardenkeeper
+                                              ?.id ==
                                           MyApp.currentUser!.id))
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          widget.publication.address
+                                          widget.map['publication'].address
                                               .postalAddress,
                                           style: const TextStyle(fontSize: 20)),
-                                      if (widget.publication.address
+                                      if (widget.map['publication'].address
                                               .otherInformations !=
                                           null)
                                         Text(
-                                            widget.publication.address
+                                            widget.map['publication'].address
                                                 .otherInformations!,
                                             style:
                                                 const TextStyle(fontSize: 20))
@@ -99,7 +99,8 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                       await DateTimePicker.getDateTime(context);
                                   if (pickedDateTime != null) {
                                     setState(() {
-                                      widget.publication.date = pickedDateTime!;
+                                      widget.map['publication'].date =
+                                          pickedDateTime!;
                                     });
                                   }
                                 },
@@ -123,11 +124,12 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           margin: const EdgeInsets.only(top: 5, bottom: 5),
                           child: Scrollbar(
                             child: ListView.builder(
-                                itemCount: widget.publication.plants.length,
+                                itemCount:
+                                    widget.map['publication'].plants.length,
                                 itemBuilder: (context, index) {
                                   return ExpansionTile(
-                                    title: Text(
-                                        widget.publication.plants[index].name),
+                                    title: Text(widget
+                                        .map['publication'].plants[index].name),
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(5),
@@ -136,12 +138,12 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                             SizedBox(
                                                 height: 100,
                                                 child: Image.memory(widget
-                                                    .publication
+                                                    .map['publication']
                                                     .plants[index]
                                                     .picture!
                                                     .data as Uint8List)),
                                             Text(
-                                                "Description : ${widget.publication.plants[index].description}"),
+                                                "Description : ${widget.map['publication'].plants[index].description}"),
                                           ],
                                         ),
                                       ),
@@ -168,7 +170,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  context.go(widget.originRoute);
+                                  context.go(widget.map['originRoute']);
                                 });
                               },
                               child: const Text('Enregistrer les modifications',
@@ -177,7 +179,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  context.go(widget.originRoute);
+                                  context.go(widget.map['originRoute']);
                                 });
                               },
                               child: const Text('Supprimer',
@@ -199,7 +201,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
           child: ListView(children: <Widget>[
             Container(
                 margin: const EdgeInsets.only(top: 10),
-                child: ImageCarousel(plants: widget.publication.plants)),
+                child: ImageCarousel(plants: widget.map['publication'].plants)),
             SizedBox(
               width: 380,
               child: Column(
@@ -210,14 +212,15 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                       Container(
                           margin: const EdgeInsets.only(right: 5),
                           child: const Icon(Icons.location_on)),
-                      if (widget.publication.gardenkeeper == null ||
-                          widget.publication.gardenkeeper != MyApp.currentUser)
+                      if (widget.map['publication'].gardenkeeper == null ||
+                          widget.map['publication'].gardenkeeper !=
+                              MyApp.currentUser)
                         Text(
-                            "${widget.publication.address.city} (${widget.publication.address.zipCode})",
+                            "${widget.map['publication'].address.city} (${widget.map['publication'].address.zipCode})",
                             style: const TextStyle(fontSize: 20))
                       else
                         Text(
-                            "${widget.publication.address.city} (${widget.publication.address.zipCode})\n${widget.publication.address.postalAddress}\n${widget.publication.address.otherInformations}",
+                            "${widget.map['publication'].address.city} (${widget.map['publication'].address.zipCode})\n${widget.map['publication'].address.postalAddress}\n${widget.map['publication'].address.otherInformations}",
                             style: const TextStyle(fontSize: 20)),
                     ],
                   ),
@@ -230,7 +233,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             child: const Icon(Icons.calendar_today)),
                         Text(
                             DateFormat('dd-MM-yyyy HH:mm')
-                                .format(widget.publication.date),
+                                .format(widget.map['publication'].date),
                             style: const TextStyle(fontSize: 20)),
                       ],
                     ),
@@ -249,18 +252,19 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                       margin: const EdgeInsets.only(top: 5, bottom: 10),
                       child: Scrollbar(
                         child: ListView.builder(
-                            itemCount: widget.publication.plants.length,
+                            itemCount: widget.map['publication'].plants.length,
                             itemBuilder: (context, index) {
                               Uint8List? pictureData;
-                              if (widget.publication.plants[index].picture !=
+                              if (widget.map['publication'].plants[index]
+                                      .picture !=
                                   null) {
-                                pictureData = widget.publication.plants[index]
-                                    .picture!.data as Uint8List;
+                                pictureData = widget.map['publication']
+                                    .plants[index].picture!.data as Uint8List;
                               }
 
                               return ExpansionTile(
-                                title:
-                                    Text(widget.publication.plants[index].name),
+                                title: Text(widget
+                                    .map['publication'].plants[index].name),
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(5),
@@ -274,7 +278,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                                     child: Text(
                                                         "Aucune image trouvée pour cette plante"))),
                                         Text(
-                                            "Description : ${widget.publication.plants[index].description}"),
+                                            "Description : ${widget.map['publication'].plants[index].description}"),
                                       ],
                                     ),
                                   ),
@@ -287,16 +291,17 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                 ],
               ),
             ),
-            if (widget.publication.gardenkeeper != null &&
-                widget.publication.gardenkeeper == MyApp.currentUser)
+            if (widget.map['publication'].gardenkeeper != null &&
+                widget.map['publication'].gardenkeeper == MyApp.currentUser)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          widget.publication.gardenkeeper = null;
-                          ApiService.updatePublication(widget.publication);
+                          widget.map['publication'].gardenkeeper = null;
+                          ApiService.updatePublication(
+                              widget.map['publication']);
                         });
                       },
                       child: const Text('Me désangager',
@@ -313,9 +318,9 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    widget.publication.gardenkeeper = MyApp.currentUser;
-                    log(widget.publication.gardenkeeper!.toString());
-                    ApiService.updatePublication(widget.publication);
+                    widget.map['publication'].gardenkeeper = MyApp.currentUser;
+                    log(widget.map['publication'].gardenkeeper!.toString());
+                    ApiService.updatePublication(widget.map['publication']);
                   });
                 },
                 child: const Text('Je suis volontaire',

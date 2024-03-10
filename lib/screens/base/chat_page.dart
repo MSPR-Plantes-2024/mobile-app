@@ -6,10 +6,8 @@ import '../../models/user.dart';
 import '../../services/api_service.dart';
 
 class ChatPage extends StatefulWidget {
-  final Message message;
-
-  final String originRoute;
-  const ChatPage({super.key, required this.message, required this.originRoute});
+  final Map<String, dynamic> map;
+  const ChatPage({super.key, required this.map});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -20,6 +18,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO : get messages from the database and from the extra
     final arguments = ModalRoute.of(context)?.settings.arguments as Map;
     final User reciever = arguments['reciever'];
     if (arguments['messages'] != null) {
