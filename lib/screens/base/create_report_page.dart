@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CreateReportPage extends StatefulWidget {
-  const CreateReportPage({Key? key}) : super(key: key);
+  final Map<String, dynamic> map;
+
+  const CreateReportPage({super.key, required this.map});
 
   @override
   _CreateReportPageState createState() => _CreateReportPageState();

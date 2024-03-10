@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../main.dart';
 import '../../models/address.dart';
 import '../../services/api_service.dart';
 
 class AddressManagmentPage extends StatefulWidget {
-  const AddressManagmentPage({Key? key}) : super(key: key);
+  final Map<String, dynamic> map;
+  const AddressManagmentPage({super.key, required this.map});
 
   @override
   _AddressManagmentPageState createState() => _AddressManagmentPageState();
 }
 
 class _AddressManagmentPageState extends State<AddressManagmentPage> {
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -20,11 +21,14 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
     final arguments = ModalRoute.of(context)?.settings.arguments as Map;
     final Address address = arguments['address'];
 
-    TextEditingController postalAddressController = TextEditingController(text: address.postalAddress);
-    TextEditingController cityController = TextEditingController(text: address.city);
-    TextEditingController zipCodeController = TextEditingController(text: address.zipCode);
-    TextEditingController otherInformationController = TextEditingController(text: address.otherInformations ?? "");
-
+    TextEditingController postalAddressController =
+        TextEditingController(text: address.postalAddress);
+    TextEditingController cityController =
+        TextEditingController(text: address.city);
+    TextEditingController zipCodeController =
+        TextEditingController(text: address.zipCode);
+    TextEditingController otherInformationController =
+        TextEditingController(text: address.otherInformations ?? "");
 
     return ListView(
       children: [
@@ -94,11 +98,15 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,
                                   zipCode: zipCodeController.text,
-                                  otherInformations: otherInformationController.text == "" ? null : otherInformationController.text));
+                                  otherInformations:
+                                      otherInformationController.text == ""
+                                          ? null
+                                          : otherInformationController.text));
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Adresse modifiée !')),
+                                const SnackBar(
+                                    content: Text('Adresse modifiée !')),
                               );
-                              Navigator.pop(context);
+                              context.go(widget.map['originRoute']);
                             }
                           },
                           child: const Text("Modifier l'addresse")),

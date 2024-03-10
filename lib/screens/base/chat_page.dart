@@ -6,7 +6,8 @@ import '../../models/user.dart';
 import '../../services/api_service.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final Map<String, dynamic> map;
+  const ChatPage({super.key, required this.map});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -17,6 +18,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO : get messages from the database and from the extra
     final arguments = ModalRoute.of(context)?.settings.arguments as Map;
     final User reciever = arguments['reciever'];
     if (arguments['messages'] != null) {
@@ -31,9 +33,7 @@ class _ChatPageState extends State<ChatPage> {
     return ListView.builder(
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        return MessageBubble(
-          message: messages[index]
-        );
+        return MessageBubble(message: messages[index]);
       },
     );
   }

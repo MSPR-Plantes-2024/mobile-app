@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/widgets/date_time_picker.dart';
@@ -91,8 +92,10 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                     })),
                             IconButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/address-creation');
+                                  context.go('/address-creation',
+                                      extra: Map<String, dynamic>.from({
+                                        'originRoute': '/request-creation'
+                                      }));
                                 },
                                 icon: const Icon(Icons.add)),
                           ],
@@ -153,11 +156,8 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                     padding: const EdgeInsets.only(top: 5),
                                     child: IconButton(
                                         onPressed: () {
-                                          Navigator.pushNamed(
-                                              context, '/address-managment',
-                                              arguments: {
-                                                'address': selectedValue
-                                              });
+                                          context.go('/address-managment',
+                                              extra: selectedValue);
                                         },
                                         icon: const Icon(Icons.add)),
                                   )
@@ -203,17 +203,17 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                               onPressed: () {
                                 // Validate returns true if the form is valid, or false otherwise.
                                 if (_formKey.currentState!.validate()) {
-                                  List<Plant> selectedPlants = plantSelections.entries
+                                  List<Plant> selectedPlants = plantSelections
+                                      .entries
                                       .where((entry) => entry.value)
                                       .map((entry) => entry.key)
                                       .toList();
                                   ApiService.createPublication(Publication(
-                                    date: pickedDateTime!,
-                                    address: selectedValue!,
-                                    publisher: MyApp.currentUser!,
-                                    description: descriptionImput.text,
-                                    plants: selectedPlants
-                                  ));
+                                      date: pickedDateTime!,
+                                      address: selectedValue!,
+                                      publisher: MyApp.currentUser!,
+                                      description: descriptionImput.text,
+                                      plants: selectedPlants));
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text('Publication créée !')),

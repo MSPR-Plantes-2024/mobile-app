@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
@@ -38,8 +39,9 @@ class _UserAdressesState extends State<UserAdresses> {
                         List<Address> addresses = snapshot.data!;
                         return ListTile(
                           onTap: () {
-                            Navigator.pushNamed(context, '/address-managment',
-                                arguments: {'address': addresses[index]});
+                            context.go('/address-managment',
+                                extra: Map<String, dynamic>.from(
+                                    {'address': addresses[index]}));
                           },
                           title: Text(addresses[index].postalAddress),
                           subtitle: Text(
@@ -57,9 +59,8 @@ class _UserAdressesState extends State<UserAdresses> {
             }),
         ElevatedButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/address-creation').then((value) {
-              setState(() {});
-            });
+            context.go('/address-creation',
+                extra: Map<String, dynamic>.from(({'originRoute': '/user'})));
           },
           child: const Text('Ajouter une adresse'),
         )

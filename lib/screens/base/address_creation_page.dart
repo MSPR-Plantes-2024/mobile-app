@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../main.dart';
 import '../../models/address.dart';
 
 class AddressCreationPage extends StatefulWidget {
-  const AddressCreationPage({Key? key}) : super(key: key);
+  final Map<String, dynamic> map;
+  const AddressCreationPage({super.key, required this.map});
 
   @override
   _AddressCreationPageState createState() => _AddressCreationPageState();
@@ -87,11 +89,13 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,
                                   zipCode: zipCodeController.text,
-                                  otherInformations: otherInformationsController.text));
+                                  otherInformations:
+                                      otherInformationsController.text));
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Adresse créée !')),
+                                const SnackBar(
+                                    content: Text('Adresse créée !')),
                               );
-                              Navigator.pop(context);
+                              context.go(widget.map['originRoute']);
                             }
                           },
                           child: const Text("Créer l'adresse")),
