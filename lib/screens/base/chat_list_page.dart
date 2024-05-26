@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/models/message.dart';
 
-import '../../models/user.dart';
 import '../../services/api_service.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -14,90 +13,75 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  late Future<List<Message>?> messagesFuture;
+  late List<Message> messagesToSort;
 
-  List<List<Message>> messages = [];
-  bool noMessages = false;
-
-  Future<bool> checkIfMessagesFutureIsEmpty(
-      Future<List<Message>?> messagesFuture) async {
-    List<Message>? messages = await messagesFuture;
-    return messages == null || messages.isEmpty;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    messagesFuture = ApiService.getMessageByUser(MyApp.currentUser!);
-    checkIfMessagesFutureIsEmpty(messagesFuture).then((isEmpty) {
-      if (isEmpty) {
-        noMessages = true;
-      } else {
-        List<Message> messagesFromCurrentUser = [];
-        List<Message> messagesToCurrentUser = [];
-        messagesFuture.then((value) {
-          messagesFromCurrentUser = value!
-              .where((message) => message.sender == MyApp.currentUser)
-              .toList();
-          messagesToCurrentUser = value
-              .where((message) => message.receiver == MyApp.currentUser)
-              .toList();
-        });
-        Set<User> uniqueReceivers =
-            messagesFromCurrentUser.map((e) => e.receiver).toSet();
-        Set<User> uniqueSendersWithoutCurrentUser =
-            messagesToCurrentUser.map((e) => e.sender).toSet();
-        for (var receiver in uniqueReceivers) {
-          messages.add(
-            messagesFromCurrentUser
-                .where((element) => element.receiver == receiver)
-                .toList(),
-          );
+  Future<List<List<Message>>> prepareMessages() async {
+    List<List<Message>> messages = [];
+    messagesToSort = await ApiService.getMessageByUser(MyApp.currentUser!);
+    if (messagesToSort.isNotEmpty) {
+      var messagesToSortCopy = List<Message>.from(messagesToSort);
+      for (Message message in messagesToSortCopy) {
+        if (message.sender.id == MyApp.currentUser!.id) {
+          messages.add([message]);
+          messagesToSort.remove(message);
         }
-        for (var sender in uniqueSendersWithoutCurrentUser) {
-          messages.add(
-            messagesToCurrentUser
-                .where((element) => element.sender == sender)
-                .toList(),
-          );
-        }
-        for (var chat in messages) {
-          if (chat.length > 1) {
-            chat.sort((a, b) => b.date.compareTo(a.date));
-          }
-        }
-        messages.sort((a, b) => b.first.date.compareTo(a.first.date));
       }
-    });
+      for (Message message in messagesToSort) {
+        List<List<Message>> messagesCopy = List<List<Message>>.from(messages);
+        for (List<Message> messageList in messagesCopy) {
+          if (messageList.first.receiver.id == message.sender.id) {
+            messageList.add(message);
+            break;
+          }
+          messages.add([message]);
+        }
+      }
+      for (List<Message> message in messages) {
+        message.sort((a, b) => a.date.compareTo(b.date));
+      }
+      messages.sort((a, b) => a.last.date.compareTo(b.last.date));
+      return messages;
+    }
+    ;
+    return [];
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget toShow;
-    if (noMessages) {
-      toShow = const Center(
-        child: Text('Aucun message pour le moment.'),
-      );
-    } else {
-      toShow = ListView.builder(
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                  '${messages[index].first.sender.firstName} ${messages[index].first.sender.lastName}'),
-              subtitle: Text(messages[index].first.content),
-              onTap: () {
-                context.go('/chat', extra: {
-                  'reciever':
-                      messages[index].first.sender.id == MyApp.currentUser!.id
-                          ? messages[index].first.receiver
-                          : messages[index].first.sender,
-                  'messages': messages[index],
-                });
-              },
-            );
-          });
-    }
-    return toShow;
+    return FutureBuilder<List<List<Message>>>(
+      future: prepareMessages(),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<List<Message>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          List<List<Message>> messages = snapshot.data!;
+          return messages.isEmpty
+              ? const Center(
+                  child: Text('Aucun message pour le moment.'),
+                )
+              : ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                          '${messages[index].first.sender.firstName} ${messages[index].first.sender.lastName}'),
+                      subtitle: Text('${messages[index].last.sender.id == MyApp.currentUser!.id ? 'Vous' : messages[index].last.sender.firstName} : ${messages[index].last.text}'),
+                      onTap: () {
+                        context.go('/chat', extra: {
+                          'reciever': messages[index].first.sender.id ==
+                                  MyApp.currentUser!.id
+                              ? messages[index].first.receiver
+                              : messages[index].first.sender,
+                          'messages': messages[index],
+                        });
+                      },
+                    );
+                  });
+        }
+      },
+    );
   }
 }

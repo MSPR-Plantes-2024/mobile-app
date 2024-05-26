@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/screens/base/address_creation_page.dart';
@@ -30,7 +32,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  //
   late GoRouter _router;
 
   initializeGoRouter() {
@@ -99,10 +100,11 @@ class _MyAppState extends State<MyApp> {
                       map: state.extra as Map<String, dynamic>);
                 }),
           ],
-          builder: (context, state, child) => MyApp.currentUser != null
-              ? BaseLayout(child: child)
-              : LoginLayout(child: child),
-        ),
+          builder: (context, state, child) {
+            log(GoRouterState.of(context).fullPath!);
+            return MyApp.currentUser != null ? BaseLayout(child: child) : LoginLayout(child: child);
+          }
+          ),
       ],
     );
   }

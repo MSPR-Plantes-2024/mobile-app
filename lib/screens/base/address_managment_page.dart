@@ -18,8 +18,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    final Address address = arguments['address'];
+    final Address address = widget.map['address'];
 
     TextEditingController postalAddressController =
         TextEditingController(text: address.postalAddress);

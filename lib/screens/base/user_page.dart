@@ -152,7 +152,6 @@ class _UserPageState extends State<UserPage> {
                                         id: MyApp.currentUser!.id,
                                         firstName: firstNameController.text,
                                         lastName: lastNameController.text,
-                                        email: emailController.text,
                                         userType: MyApp.currentUser!.userType));
 
                                     ScaffoldMessenger.of(context).showSnackBar(

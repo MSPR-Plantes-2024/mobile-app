@@ -41,7 +41,8 @@ class _UserAdressesState extends State<UserAdresses> {
                           onTap: () {
                             context.go('/address-managment',
                                 extra: Map<String, dynamic>.from(
-                                    {'address': addresses[index]}));
+                                    {'address': addresses[index],
+                                    'originRoute': '/user'}));
                           },
                           title: Text(addresses[index].postalAddress),
                           subtitle: Text(

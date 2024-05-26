@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
               onPressed: () {
-                context.go('account-creation');
+                context.push('/account-creation');
               },
               child: const Text('Créer un compte'),
             ),

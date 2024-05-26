@@ -8,14 +8,14 @@ String messageToJson(Message data) => json.encode(data.toJson());
 
 class Message {
   final int? id;
-  final String content;
+  final String text;
   final DateTime date;
   final User sender;
   final User receiver;
 
   Message({
     this.id,
-    required this.content,
+    required this.text,
     required this.date,
     required this.sender,
     required this.receiver,
@@ -24,8 +24,8 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       id: json['id'],
-      content: json['content'],
-      date: DateTime.parse(json['date']),
+      text: json['text'],
+      date: DateTime.parse(json['publishingDate']),
       sender: User.fromJson(json['sender']),
       receiver: User.fromJson(json['receiver']),
     );
@@ -34,10 +34,15 @@ class Message {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "content": content,
-      "date": date.toIso8601String(),
+      "text": text,
+      "publishingDate": date.toIso8601String(),
       "sender": sender.toJson(),
       "receiver": receiver.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return 'Message{id: $id, text: $text, date: $date, sender: $sender, receiver: $receiver}';
   }
 }

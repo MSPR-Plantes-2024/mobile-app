@@ -7,7 +7,7 @@ class User {
   final int? id;
   final String firstName;
   final String lastName;
-  final String? email;
+  String? email;
   final String? password;
   final String? userType;
 

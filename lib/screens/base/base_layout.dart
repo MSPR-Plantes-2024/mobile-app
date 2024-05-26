@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,12 +12,12 @@ class BaseLayout extends StatefulWidget {
 }
 
 class _BaseLayoutState extends State<BaseLayout> {
-  late String previousRoute;
-  final ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
+  late ValueNotifier<String> _routeNameNotifier = ValueNotifier<String>('/');
   late int bottomNavigationBarIndex = 0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {;
+    _routeNameNotifier.value = GoRouterState.of(context).fullPath ?? '/';
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70),

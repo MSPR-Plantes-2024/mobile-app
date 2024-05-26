@@ -24,6 +24,7 @@ class ApiService {
       if (response.statusCode == 200) {
         ApiConstants.jdkToken = jsonDecode(response.body)['access_token'];
         MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
+        MyApp.currentUser!.email = email;
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
@@ -57,7 +58,9 @@ class ApiService {
             'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: userToJson(user));
+      log(response.statusCode.toString());
       if (response.statusCode == 200) {
+        MyApp.currentUser = user;
         log('User updated');
       }
     } catch (e, s) {
@@ -445,8 +448,9 @@ class ApiService {
   }
 
   //#endregion
+
   //#region Message
-  static Future<List<Message>?> getMessageByUser(User user) async {
+  static Future<List<Message>> getMessageByUser(User user) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.messagesEndpoint}/user/${user.id}');
@@ -454,13 +458,13 @@ class ApiService {
         'Authorization': 'Bearer ${ApiConstants.jdkToken}'
       });
       if (response.statusCode == 200) {
-        List<Message> messages = messagesFromJson(response.body);
+        List<Message> messages = messagesFromJson( response.body);
         return messages;
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
     }
-    return null;
+    return [];
   }
 
   static Future<void> createMessage(Message message) async {
@@ -475,8 +479,8 @@ class ApiService {
       if (response.statusCode == 200) {
         log('Message created');
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
     }
   }
 
@@ -493,8 +497,8 @@ class ApiService {
       if (response.statusCode == 200) {
         log('Message updated');
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
     }
   }
 
@@ -508,8 +512,8 @@ class ApiService {
       if (response.statusCode == 200) {
         log('Message deleted');
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
     }
   }
 

@@ -17,7 +17,7 @@ class RequestCreationPage extends StatefulWidget {
 }
 
 class _RequestCreationPageState extends State<RequestCreationPage> {
-  Address? selectedValue;
+  Address? selectedAddress;
   final _formKey = GlobalKey<FormState>();
   Map<Plant, bool> plantSelections = {};
 
@@ -35,9 +35,11 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
 
   @override
   Widget build(BuildContext context) {
+
     Future<List<Address>> addresses =
         ApiService.getAddressesByUser(MyApp.currentUser!);
-    Future<List<Plant>> plants = ApiService.getPlantsByAddress(selectedValue!);
+    Future<List<Plant>> plants = ApiService.getPlantsByAddress(selectedAddress!);
+
 
     return ListView(
       children: [
@@ -68,7 +70,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                           validator: (value) => value == null
                                               ? "Sélectionnez une adresse."
                                               : null,
-                                          value: selectedValue,
+                                          value: selectedAddress,
                                           items: snapshot.data!
                                               .map((Address address) {
                                             return DropdownMenuItem(
@@ -79,7 +81,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                           }).toList(),
                                           onChanged: (Address? newValue) {
                                             setState(() {
-                                              selectedValue = newValue!;
+                                              selectedAddress = newValue!;
                                             });
                                           },
                                         );
@@ -157,7 +159,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                     child: IconButton(
                                         onPressed: () {
                                           context.go('/address-managment',
-                                              extra: selectedValue);
+                                              extra: selectedAddress);
                                         },
                                         icon: const Icon(Icons.add)),
                                   )
@@ -210,7 +212,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       .toList();
                                   ApiService.createPublication(Publication(
                                       date: pickedDateTime!,
-                                      address: selectedValue!,
+                                      address: selectedAddress!,
                                       publisher: MyApp.currentUser!,
                                       description: descriptionImput.text,
                                       plants: selectedPlants));
