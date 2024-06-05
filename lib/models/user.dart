@@ -17,7 +17,7 @@ class User {
     required this.lastName,
     this.email,
     this.password,
-    this.userType,
+    required this.userType,
   });
   @override
   String toString() {

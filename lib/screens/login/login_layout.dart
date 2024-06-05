@@ -35,6 +35,6 @@ class _LoginLayoutState extends State<LoginLayout> {
             shadowColor: Colors.black,
           ),
         ),
-        body: widget.child);
+        body: SingleChildScrollView(child: widget.child));
   }
 }

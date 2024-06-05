@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/models/plant_condition.dart';
 
 import '../models/address.dart';
 import '../models/message.dart';
@@ -163,7 +164,7 @@ class ApiService {
             'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: addressToJson(address));
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         log('Address created');
       }
     } catch (e, s) {
@@ -343,6 +344,24 @@ class ApiService {
   }
   //#endregion
 
+  //#region PlantCondition
+  static Future<List<PlantCondition>> getPlantConditions() async {
+    try {
+      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.plantConditionsEndpoint);
+      var response = await http.get(url, headers: <String, String>{
+        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+      });
+      if (response.statusCode == 200) {
+        List<PlantCondition> plantConditions = plantConditionsFromJson(response.body);
+        return plantConditions;
+      }
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
+    }
+    return [];
+  }
+  //#endregion
+
   //#region Publication
   static Future<void> createPublication(Publication publication) async {
     try {
@@ -469,6 +488,7 @@ class ApiService {
 
   static Future<void> createMessage(Message message) async {
     try {
+      print(messageToJson(message));
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.messagesEndpoint);
       var response = await http.post(url,
           headers: <String, String>{
@@ -476,7 +496,7 @@ class ApiService {
             'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: messageToJson(message));
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         log('Message created');
       }
     } catch (e, s) {

@@ -1,6 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/widgets/message_bubble.dart';
 
 import '../../models/message.dart';
@@ -20,22 +20,74 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    final User reciever = arguments['reciever'];
+    TextEditingController newMessageController = TextEditingController();
+
+    final User contact = widget.map['contact'];
+    if (widget.map['messages'] != null) {
+      messages = widget.map['messages'];
+    }
 
     return FutureBuilder<List<Message>>(
-      future: ApiService.getMessageByUser(reciever),
+      future: ApiService.getMessageByUser(contact),
       builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return ListView.builder(
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              return MessageBubble(message: messages[index]);
-            },
+          return Column(
+            children: [
+              Flexible(
+                fit: FlexFit.loose,
+                child: ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return MessageBubble(message: messages[index]);
+                  },
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: BorderDirectional(
+                    top: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
+                margin: const EdgeInsets.only(
+                    left: 8.0, right: 8.0, bottom: 8.0
+                ),
+                child: TextFormField(
+                  controller: newMessageController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Veuillez entrer un message';
+                    }
+                    return null;
+                  },
+
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.only(left: 10.0),
+                    suffix: IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () async {
+                          await ApiService.createMessage(
+                              Message(
+                                  text: newMessageController.text,
+                                  date: DateTime.now(),
+                                  sender: MyApp.currentUser!,
+                                  receiver: contact));
+                          messages.add((Message(
+                              text: newMessageController.text,
+                              date: DateTime.now(),
+                              sender: MyApp.currentUser!,
+                              receiver: contact)));
+                          newMessageController.clear();
+                          setState(() {});
+                        }),
+                    hintText: 'Nouveau message...',
+                  ),
+                ),
+              ),
+            ],
           );
         }
       },

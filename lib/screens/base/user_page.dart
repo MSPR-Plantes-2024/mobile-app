@@ -53,7 +53,7 @@ class _UserPageState extends State<UserPage> {
             ),
             child: Column(
               children: [
-                const ExpansionTile(title: Text('Adresses'), children: [
+                const ExpansionTile(title: Text('Adresses et plantes'), children: [
                   UserAdresses(),
                 ]),
                 ExpansionTile(

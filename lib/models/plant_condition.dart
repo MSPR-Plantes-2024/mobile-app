@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+List<PlantCondition> plantConditionsFromJson(String str) => List<PlantCondition>.from(json.decode(str).map((x) => PlantCondition.fromJson(x)));
 PlantCondition plantConditionFromJson(String str) => PlantCondition.fromJson(json.decode(str));
 String plantConditionToJson(PlantCondition data) => json.encode(data.toJson());
 

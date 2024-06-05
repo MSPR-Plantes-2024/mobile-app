@@ -7,7 +7,7 @@ class ApiConstants {
   static const String commentsEndpoint = '/comments';
   static const String messagesEndpoint = '/messages';
   static const String picturesEndpoint = '/pictures';
-  static const String plantConditionsEndpoint = '/plantConditions';
+  static const String plantConditionsEndpoint = '/plantsConditions';
   static const String plantsEndpoint = '/plants';
   static const String reportsEndpoint = '/reports';
   static const String userTypesEndpoint = '/user_types';

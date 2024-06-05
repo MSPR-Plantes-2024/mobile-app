@@ -17,30 +17,35 @@ class RequestCreationPage extends StatefulWidget {
 }
 
 class _RequestCreationPageState extends State<RequestCreationPage> {
+  List<Address> addresses = [];
+  List<Plant> plants = [];
   Address? selectedAddress;
-  final _formKey = GlobalKey<FormState>();
+  ValueNotifier<Address?> selectedAddressNotifier =
+      ValueNotifier<Address?>(null);
   Map<Plant, bool> plantSelections = {};
 
+  final _formKey = GlobalKey<FormState>();
   late DateTime? pickedDateTime;
-  TextEditingController dateTimeInput = TextEditingController();
+  TextEditingController dateTimeInput = TextEditingController(text: "");
   TextEditingController addPlantInput = TextEditingController();
   TextEditingController addAddressInput = TextEditingController();
   TextEditingController descriptionImput = TextEditingController();
 
   @override
   void initState() {
-    dateTimeInput.text = "";
     super.initState();
+    ApiService.getAddressesByUser(MyApp.currentUser!).then((value) {
+      if (value.isNotEmpty) {
+        setState(() {
+          addresses = value;
+          selectedAddress = addresses.first;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    Future<List<Address>> addresses =
-        ApiService.getAddressesByUser(MyApp.currentUser!);
-    Future<List<Plant>> plants = ApiService.getPlantsByAddress(selectedAddress!);
-
-
     return ListView(
       children: [
         Center(
@@ -61,37 +66,29 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                           children: [
                             SizedBox(
                                 width: 250,
-                                child: FutureBuilder<List<Address>>(
-                                    future: addresses,
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<List<Address>> snapshot) {
-                                      if (snapshot.hasData) {
-                                        return DropdownButtonFormField(
-                                          validator: (value) => value == null
-                                              ? "Sélectionnez une adresse."
-                                              : null,
-                                          value: selectedAddress,
-                                          items: snapshot.data!
-                                              .map((Address address) {
-                                            return DropdownMenuItem(
-                                              value: address,
-                                              child: Text(
-                                                  "${address.city} (${address.zipCode})"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (Address? newValue) {
-                                            setState(() {
-                                              selectedAddress = newValue!;
-                                            });
-                                          },
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return Text("${snapshot.error}");
-                                      }
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    })),
+                                child: selectedAddress != null
+                                    ? DropdownButtonFormField(
+                                        validator: (value) => value == null
+                                            ? "Sélectionnez une adresse."
+                                            : null,
+                                        value: selectedAddress,
+                                        items: addresses.map((Address address) {
+                                          return DropdownMenuItem<Address>(
+                                            value: address,
+                                            child: Text(
+                                                "${address.city} (${address.zipCode})"),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Address? newValue) {
+                                          setState(() {
+                                            selectedAddress = newValue;
+                                            selectedAddressNotifier.value =
+                                                newValue;
+                                          });
+                                        },
+                                      )
+                                    : const Text(
+                                        "Veuillez ajouter une adresse.")),
                             IconButton(
                                 onPressed: () {
                                   context.go('/address-creation',
@@ -102,72 +99,112 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                 icon: const Icon(Icons.add)),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Plantes'),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(1),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.black, width: 1)),
-                                    height: 200,
-                                    width: 250,
-                                    child: Scrollbar(
-                                      child: FutureBuilder<List<Plant>>(
-                                          future: plants,
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<List<Plant>>
-                                                  snapshot) {
-                                            if (snapshot.hasData) {
-                                              return ListView.builder(
-                                                  itemCount:
-                                                      snapshot.data!.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    Plant plant =
-                                                        snapshot.data![index];
-                                                    return CheckboxListTile(
-                                                        title: Text(plant.name),
-                                                        value: plantSelections[
-                                                            plant],
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          setState(() {
+                        selectedAddress != null
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Plantes'),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(1),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black,
+                                                  width: 1)),
+                                          height: 200,
+                                          width: 250,
+                                          child: Scrollbar(
+                                            child: ValueListenableBuilder(
+                                                valueListenable:
+                                                    selectedAddressNotifier,
+                                                builder: (BuildContext context,
+                                                    Address? value,
+                                                    Widget? child) {
+                                                  return FutureBuilder<
+                                                          List<Plant>>(
+                                                      future: ApiService
+                                                          .getPlantsByAddress(
+                                                              selectedAddress!),
+                                                      builder: (BuildContext
+                                                              context,
+                                                          AsyncSnapshot<
+                                                                  List<Plant>>
+                                                              snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          plants =
+                                                              snapshot.data!;
+                                                          for (Plant plant
+                                                              in plants) {
                                                             plantSelections[
-                                                                plant] = value!;
-                                                          });
-                                                        });
-                                                  });
-                                            } else if (snapshot.hasError) {
-                                              return Text("${snapshot.error}");
-                                            }
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          }),
+                                                                plant] = false;
+                                                          }
+                                                          return ListView
+                                                              .builder(
+                                                                  itemCount:
+                                                                      snapshot
+                                                                          .data!
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    Plant
+                                                                        plant =
+                                                                        snapshot
+                                                                            .data![index];
+                                                                    return CheckboxListTile(
+                                                                        title: Text(plant
+                                                                            .name),
+                                                                        value: plantSelections[
+                                                                            plant],
+                                                                        onChanged:
+                                                                            (bool?
+                                                                                value) {
+                                                                          setState(
+                                                                              () {
+                                                                            plantSelections[plant] =
+                                                                                value!;
+                                                                          });
+                                                                        });
+                                                                  });
+                                                        } else if (snapshot
+                                                            .hasError) {
+                                                          return Text(
+                                                              "${snapshot.error}");
+                                                        }
+                                                        return const Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
+                                                      });
+                                                }),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 5),
+                                          child: IconButton(
+                                              onPressed: () {
+                                                context.go('/address-managment',
+                                                    extra: {
+                                                      'originRoute':
+                                                          '/request-creation',
+                                                      'address': selectedAddress
+                                                    });
+                                              },
+                                              icon: const Icon(Icons.add)),
+                                        )
+                                      ],
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5),
-                                    child: IconButton(
-                                        onPressed: () {
-                                          context.go('/address-managment',
-                                              extra: selectedAddress);
-                                        },
-                                        icon: const Icon(Icons.add)),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
                         const Text('Date et heure'),
                         TextFormField(
                           controller: dateTimeInput,

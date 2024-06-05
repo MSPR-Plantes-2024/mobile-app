@@ -23,7 +23,7 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
         Center(
           child: Container(
@@ -59,19 +59,22 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                     labelText: 'Mot de passe',
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    User currentUser = User(
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        email: emailController.text,
-                        password: passwordController.text,
-                        userType: "USER");
-                    await ApiService.logon(currentUser);
-                    log("Account created");
-                    RestartWidget.restartApp(context);
-                  },
-                  child: const Text('Créer un compte'),
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      User currentUser = User(
+                          firstName: firstNameController.text,
+                          lastName: lastNameController.text,
+                          email: emailController.text,
+                          password: passwordController.text,
+                          userType: "USER");
+                      await ApiService.logon(currentUser);
+                      log("Account created");
+                      RestartWidget.restartApp(context);
+                    },
+                    child: const Text('Créer un compte'),
+                  ),
                 ),
               ],
             )),

@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
             ),
             GoRoute(
               path: '/request-creation',
-              builder: (context, state) => const RequestCreationPage(),
+              builder: (context, state) => RequestCreationPage(),
             ),
             GoRoute(
                 path: '/address-managment',
