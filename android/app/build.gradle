@@ -55,7 +55,7 @@ android {
         release {
             keyAlias 'arosaje'
             keyPassword 'arosaje2024flutter'
-            storeFile file("C:/Users/jbapt/Documents/projets/mspr2024/mobileapp/keystore_arosaje.jks")
+            storeFile file("${project.rootDir}/keystore_arosaje.jks")
             storePassword 'arosaje2024flutter'
         }
     }
