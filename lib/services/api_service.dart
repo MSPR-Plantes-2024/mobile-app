@@ -16,7 +16,7 @@ import 'constants.dart';
 
 class ApiService {
   //#region Auth
-  static Future<void> login(String email, String password) async {
+  static Future<bool> login(String email, String password) async {
     try {
       var url = Uri.parse('${ApiConstants.baseUrl}/auth/authenticate');
       var response = await http.post(url,
@@ -26,25 +26,31 @@ class ApiService {
         ApiConstants.jdkToken = jsonDecode(response.body)['access_token'];
         MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
         MyApp.currentUser!.email = email;
+        return true;
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
+    return false;
   }
 
-  static Future<void> logon(User user) async {
+  static Future<bool> logon(User user) async {
     try {
       var url = Uri.parse('${ApiConstants.baseUrl}/auth/register');
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json; charset=UTF-8'},
           body: userToJson(user));
+      print(response.statusCode.toString() + ' ' + response.body);
       if (response.statusCode == 200) {
         ApiConstants.jdkToken = jsonDecode(response.body)['access_token'];
         MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
+        MyApp.currentUser!.email = user.email;
+        return true;
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
+    return false;
   }
   //#endregion
 
@@ -207,7 +213,7 @@ class ApiService {
   //#endregion
 
   //#region Picture
-  static Future<void> createPicture(Picture picture) async {
+  static Future<Picture?> createPicture(Picture picture) async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.picturesEndpoint);
       var response = await http.post(url,
@@ -218,10 +224,12 @@ class ApiService {
           body: pictureToJson(picture));
       if (response.statusCode == 200) {
         log('Picture created');
+        return Picture.fromJson(json.decode(response.body));
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
+    return null;
   }
 
   static Future<List<Picture>> getPictures() async {
@@ -262,6 +270,7 @@ class ApiService {
   static Future<void> createPlant(Plant plant) async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.plantsEndpoint);
+      print(plantToJson(plant));
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',

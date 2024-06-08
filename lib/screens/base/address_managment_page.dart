@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_arosaje/models/plant_condition.dart';
+import 'package:mobile_app_arosaje/widgets/picture_form_field.dart';
 
 import '../../main.dart';
 import '../../models/address.dart';
+import '../../models/picture.dart';
 import '../../models/plant.dart';
 import '../../services/api_service.dart';
 
@@ -23,20 +24,6 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
   final _plantFormKey = GlobalKey<FormState>();
 
   File? _picture;
-
-  final _picker = ImagePicker();
-  // Implementing the image picker
-  Future<bool> _openImagePicker(ImageSource source) async {
-    final XFile? pickedImage = await _picker.pickImage(source: source);
-    if (pickedImage != null) {
-      setState(() {
-        _picture = File(pickedImage.path);
-      });
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +170,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                                       controller:
                                                           plantNameController,
                                                       validator: (value) {
+                                                        print(value);
                                                         if (value!.isEmpty) {
                                                           return 'Veuillez entrer un nom';
                                                         }
@@ -206,7 +194,6 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                                                 snapshot) {
                                                           if (snapshot
                                                               .hasData) {
-                                                            print (snapshot.data!);
                                                             selectedPlantCondition =
                                                                 snapshot.data!
                                                                     .first;
@@ -255,40 +242,25 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                                             'Description',
                                                       ),
                                                     ),
-                                                    FormField(validator:
-                                                        (value) {
+                                                    FormField(
+                                                        validator: (value) {
                                                       if (_picture == null) {
                                                         return 'Veuillez ajouter une photo';
                                                       }
                                                       return null;
                                                     }, builder:
                                                         (FormFieldState state) {
-                                                      return Row(
-                                                        children: [
-                                                          IconButton(
-                                                            icon: const Icon(Icons
-                                                                .add_a_photo_outlined),
-                                                            onPressed: () {
-                                                              _openImagePicker(
-                                                                  ImageSource
-                                                                      .camera);
-                                                            },
-                                                          ),
-                                                          IconButton(
-                                                            icon: const Icon(Icons
-                                                                .folder_outlined),
-                                                            onPressed: () {
-                                                              _openImagePicker(
-                                                                  ImageSource
-                                                                      .gallery);
-                                                            },
-                                                          ),
-                                                          Icon(_picture == null
-                                                              ? Icons.close
-                                                              : Icons.check),
-                                                        ],
+                                                      return PictureFormField(
+                                                        picture: _picture,
+                                                        onPictureChanged:
+                                                            (File? newPicture) {
+                                                          setState(() {
+                                                            _picture =
+                                                                newPicture;
+                                                          });
+                                                        },
                                                       );
-                                                    })
+                                                    }),
                                                   ],
                                                 ),
                                               ),
@@ -300,25 +272,23 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                                     child:
                                                         const Text('Annuler')),
                                                 TextButton(
-                                                    onPressed: () {
-                                                      if (_plantFormKey
-                                                          .currentState!
-                                                          .validate()) {
-                                                        setState(() {
-                                                          ApiService.createPlant(Plant(
-                                                              address: address,
-                                                              user: MyApp
-                                                                  .currentUser!,
-                                                              name:
-                                                                  plantNameController
-                                                                      .text,
-                                                              description:
-                                                                  plantDescriptionController
-                                                                      .text,
-                                                              plantCondition:
-                                                                  selectedPlantCondition!,
-                                                              picture: null));
-                                                        });
+                                                    onPressed: () async {
+                                                      if (_plantFormKey.currentState!.validate()) {
+                                                        Picture? picture = await ApiService.createPicture(Picture(
+                                                          date: DateTime.now(),
+                                                          data: _picture!.readAsBytesSync(),
+                                                        ));
+                                                        print(picture!.id);
+                                                        await ApiService.createPlant(Plant(
+                                                          address: address,
+                                                          user: MyApp.currentUser!,
+                                                          name: plantNameController.text,
+                                                          description: plantDescriptionController.text,
+                                                          plantCondition: selectedPlantCondition!,
+                                                          picture: await ApiService.createPicture(picture
+                                                        )));
+                                                        setState(() {});
+                                                        context.pop();
                                                       }
                                                     },
                                                     child:

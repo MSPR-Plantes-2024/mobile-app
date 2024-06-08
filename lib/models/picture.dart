@@ -20,7 +20,7 @@ class Picture {
     log(Picture(
       id: json['id'],
       date: DateTime.parse(json['creationDate']),
-      data: json['data'],
+      data: base64Decode(json['data'])
     ).toString());
     return Picture(
       id: json['id'],

@@ -16,18 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<bool> isAbleToLogin(String? email, String? password) async {
-    if (email == null || password == null) {
-      return false;
-    } else {
-      await ApiService.login(email.trim(), password.trim());
-      if (MyApp.currentUser != null) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -56,13 +44,17 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(top: 20),
               child: ElevatedButton(
                   onPressed: () async {
-                    if (await isAbleToLogin(
-                        emailController.text, passwordController.text)) {
-                      log("User connected");
-                      RestartWidget.restartApp(context);
+                    if (emailController.text != "" && passwordController.text != "") {
+                      if (await ApiService.login(emailController.text.trim(), passwordController.text.trim())) {
+                        log("User connected");
+                        RestartWidget.restartApp(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Email ou mot de passe incorrect')));
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Email ou mot de passe incorrect')));
+                          content: Text('Veuillez entrer un email et un mot de passe')));
                     }
                   },
                   child: const Text('Connexion')),

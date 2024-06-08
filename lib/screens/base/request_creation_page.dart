@@ -19,7 +19,6 @@ class RequestCreationPage extends StatefulWidget {
 class _RequestCreationPageState extends State<RequestCreationPage> {
   List<Address> addresses = [];
   List<Plant> plants = [];
-  Address? selectedAddress;
   ValueNotifier<Address?> selectedAddressNotifier =
       ValueNotifier<Address?>(null);
   Map<Plant, bool> plantSelections = {};
@@ -38,7 +37,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
       if (value.isNotEmpty) {
         setState(() {
           addresses = value;
-          selectedAddress = addresses.first;
+          selectedAddressNotifier.value = addresses.first;
         });
       }
     });
@@ -66,12 +65,12 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                           children: [
                             SizedBox(
                                 width: 250,
-                                child: selectedAddress != null
+                                child: selectedAddressNotifier.value != null
                                     ? DropdownButtonFormField(
                                         validator: (value) => value == null
                                             ? "Sélectionnez une adresse."
                                             : null,
-                                        value: selectedAddress,
+                                        value: selectedAddressNotifier.value,
                                         items: addresses.map((Address address) {
                                           return DropdownMenuItem<Address>(
                                             value: address,
@@ -81,7 +80,6 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                         }).toList(),
                                         onChanged: (Address? newValue) {
                                           setState(() {
-                                            selectedAddress = newValue;
                                             selectedAddressNotifier.value =
                                                 newValue;
                                           });
@@ -99,7 +97,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                 icon: const Icon(Icons.add)),
                           ],
                         ),
-                        selectedAddress != null
+                        selectedAddressNotifier.value != null
                             ? Padding(
                                 padding:
                                     const EdgeInsets.only(top: 10, bottom: 10),
@@ -130,7 +128,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                                           List<Plant>>(
                                                       future: ApiService
                                                           .getPlantsByAddress(
-                                                              selectedAddress!),
+                                                          selectedAddressNotifier.value!),
                                                       builder: (BuildContext
                                                               context,
                                                           AsyncSnapshot<
@@ -194,7 +192,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                                     extra: {
                                                       'originRoute':
                                                           '/request-creation',
-                                                      'address': selectedAddress
+                                                      'address': selectedAddressNotifier.value
                                                     });
                                               },
                                               icon: const Icon(Icons.add)),
@@ -249,7 +247,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       .toList();
                                   ApiService.createPublication(Publication(
                                       date: pickedDateTime!,
-                                      address: selectedAddress!,
+                                      address: selectedAddressNotifier.value!,
                                       publisher: MyApp.currentUser!,
                                       description: descriptionImput.text,
                                       plants: selectedPlants));

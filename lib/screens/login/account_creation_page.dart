@@ -19,8 +19,6 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // List<bool> isSelected = [true, false];
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -69,9 +67,13 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                           email: emailController.text,
                           password: passwordController.text,
                           userType: "USER");
-                      await ApiService.logon(currentUser);
-                      log("Account created");
-                      RestartWidget.restartApp(context);
+                      if (await ApiService.logon(currentUser)) {
+                        log("Account created");
+                        RestartWidget.restartApp(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Erreur de création d\'utilisateur')));
+                      }
                     },
                     child: const Text('Créer un compte'),
                   ),
