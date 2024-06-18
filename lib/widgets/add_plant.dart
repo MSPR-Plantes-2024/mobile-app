@@ -102,7 +102,7 @@ class _AddPlantState extends State<AddPlant> {
       actions: [
         TextButton(
             onPressed: () {
-              context.pop();
+              Navigator.of(context).pop();
             },
             child: const Text('Annuler')),
         TextButton(
@@ -121,7 +121,7 @@ class _AddPlantState extends State<AddPlant> {
                     picture: await ApiService.createPicture(picture!)));
                 if (mounted) {
                   setState(() {
-                    context.pop();
+                    Navigator.of(context).pop();
                   });
                 }
               }

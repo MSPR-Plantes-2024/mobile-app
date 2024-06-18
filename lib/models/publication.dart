@@ -13,10 +13,11 @@ String publicationToJson(Publication data) => json.encode(data.toJson());
 
 
 class Publication {
-  final int? id;
+  int? id;
+  DateTime? creationDate;
   DateTime date;
-  final Address address;
-  final User publisher;
+  Address address;
+  User publisher;
   User? gardenkeeper;
   String? description;
   List<Plant> plants;
@@ -24,6 +25,7 @@ class Publication {
 
   Publication({
     this.id,
+    this.creationDate,
     required this.date,
     required this.address,
     required this.publisher,
@@ -36,7 +38,8 @@ class Publication {
   factory Publication.fromJson(Map<String, dynamic> json) {
     return Publication(
       id: json['id'],
-      date: DateTime.parse(json['creationDate']),
+      creationDate: json['creationDate'] != null ? DateTime.parse(json['creationDate']),
+      date: DateTime.parse(json['date']),
       address: Address.fromJson(json['address']),
       publisher: User.fromJson(json['publisher']),
       gardenkeeper: json['gardenKeeper'] != null ? User.fromJson(json['gardenKeeper']) : null,
@@ -50,6 +53,7 @@ class Publication {
     return {
       "id": id,
       "creationDate": date.toIso8601String(),
+      "date": date.toIso8601String(),
       "address": address.toJson(),
       "publisher": publisher.toJson(),
       "gardenKeeper": gardenkeeper?.toJson(),
@@ -61,6 +65,6 @@ class Publication {
 
   @override
   String toString() {
-    return 'Publication{id: $id, creationDate: $date, address: $address, publisher: $publisher, gardenKeeper: $gardenkeeper, description: $description, plants: $plants, reports: $reports}';
+    return 'Publication{id: $id, date: $date, address: $address, publisher: $publisher, gardenkeeper: $gardenkeeper, description: $description, plants: $plants, reports: $reports}';
   }
 }

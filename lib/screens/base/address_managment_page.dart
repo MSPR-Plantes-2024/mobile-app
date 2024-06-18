@@ -185,6 +185,42 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                           },
                           child: const Text("Modifier l'addresse")),
                     ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Supprimer l\'adresse'),
+                                    content: const Text(
+                                        'Êtes-vous sûr(e) de vouloir supprimer cette adresse ?'
+                                            '\nCette action est irréversible et cela supprimera également'
+                                            ' les plantes liées à cette adresse.'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Annuler')),
+                                      TextButton(
+                                          onPressed: () {
+                                            ApiService.deleteAddress(address);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'Adresse supprimée')));
+                                            context.go(widget.map['originRoute']);
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Confirmer'))
+                                    ],
+                                  );
+                                });
+                          },
+                          child: const Text("Supprimer l'addresse")
+                    ))
                   ],
                 ),
               )

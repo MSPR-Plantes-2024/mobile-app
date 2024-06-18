@@ -21,17 +21,31 @@ class RequestCreationPage extends StatefulWidget {
 
 class _RequestCreationPageState extends State<RequestCreationPage> {
   List<Address> addresses = [];
-  List<Plant> plants = [];
   ValueNotifier<Address?> selectedAddressNotifier =
       ValueNotifier<Address?>(null);
   Map<Plant, bool> plantSelections = {};
-
   final _formKey = GlobalKey<FormState>();
   late DateTime? pickedDateTime;
   TextEditingController dateTimeInput = TextEditingController(text: "");
   TextEditingController addPlantInput = TextEditingController();
   TextEditingController addAddressInput = TextEditingController();
   TextEditingController descriptionImput = TextEditingController();
+
+  Future<void> setPlantList(Address address) async {
+    List<Plant> plants = await ApiService.getPlantsByAddress(address);
+    if (plants.isNotEmpty) {
+      setState(() {
+        plantSelections = {};
+        for (var plant in plants) {
+          plantSelections[plant] = false;
+        }
+      });
+    } else {
+      setState(() {
+        plantSelections = {};
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -41,8 +55,13 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
         setState(() {
           addresses = value;
           selectedAddressNotifier.value = addresses.first;
+          setPlantList(addresses.first);
         });
       }
+    });
+
+    selectedAddressNotifier.addListener(() {
+      setPlantList(selectedAddressNotifier.value!);
     });
   }
 
@@ -121,70 +140,46 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                           height: 200,
                                           width: 250,
                                           child: Scrollbar(
-                                            child: ValueListenableBuilder(
-                                                valueListenable:
-                                                    selectedAddressNotifier,
-                                                builder: (BuildContext context,
-                                                    Address? value,
-                                                    Widget? child) {
-                                                  return FutureBuilder<
-                                                          List<Plant>>(
-                                                      future: ApiService
-                                                          .getPlantsByAddress(
-                                                          selectedAddressNotifier.value!),
-                                                      builder: (BuildContext
-                                                              context,
-                                                          AsyncSnapshot<
-                                                                  List<Plant>>
-                                                              snapshot) {
-                                                        if (snapshot.hasData) {
-                                                          plants =
-                                                              snapshot.data!;
-                                                          for (Plant plant
-                                                              in plants) {
-                                                            plantSelections[
-                                                                plant] = false;
-                                                          }
-                                                          return ListView
-                                                              .builder(
-                                                                  itemCount:
-                                                                      snapshot
-                                                                          .data!
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    Plant
-                                                                        plant =
-                                                                        snapshot
-                                                                            .data![index];
-                                                                    return CheckboxListTile(
-                                                                        title: Text(plant
-                                                                            .name),
-                                                                        value: plantSelections[
-                                                                            plant],
-                                                                        onChanged:
-                                                                            (bool?
-                                                                                value) {
-                                                                          log('$value ${plantSelections[plant]}');
-                                                                          setState(
-                                                                                  () {
-                                                                            plantSelections[plant] = !plantSelections[plant]!;
-                                                                          });
-                                                                        });
-                                                                  });
-                                                        } else if (snapshot
-                                                            .hasError) {
-                                                          return Text(
-                                                              "${snapshot.error}");
-                                                        }
-                                                        return const Center(
-                                                          child:
-                                                              CircularProgressIndicator(),
-                                                        );
-                                                      });
-                                                }),
-                                          ),
+                                              child: ValueListenableBuilder(
+                                            valueListenable:
+                                                selectedAddressNotifier,
+                                            builder: (BuildContext context,
+                                                Address? address,
+                                                Widget? child) {
+                                              return ListView.builder(
+                                                  itemCount: plantSelections
+                                                      .entries.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return CheckboxListTile(
+                                                        title: Text(
+                                                            plantSelections
+                                                                .entries
+                                                                .elementAt(
+                                                                    index)
+                                                                .key
+                                                                .name),
+                                                        value: plantSelections
+                                                            .entries
+                                                            .elementAt(index)
+                                                            .value,
+                                                        onChanged: (newValue) {
+                                                          setState(() {
+                                                            plantSelections.update(
+                                                                plantSelections
+                                                                    .entries
+                                                                    .elementAt(
+                                                                        index)
+                                                                    .key,
+                                                                (value) =>
+                                                                    newValue!,
+                                                                ifAbsent: () =>
+                                                                    newValue!);
+                                                          });
+                                                        });
+                                                  });
+                                            },
+                                          )),
                                         ),
                                         Padding(
                                           padding:
@@ -193,8 +188,12 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                               onPressed: () {
                                                 showDialog(
                                                     context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AddPlant(address: selectedAddressNotifier.value!);
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AddPlant(
+                                                          address:
+                                                              selectedAddressNotifier
+                                                                  .value!);
                                                     });
                                               },
                                               icon: const Icon(Icons.add)),
@@ -239,7 +238,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 // Validate returns true if the form is valid, or false otherwise.
                                 if (_formKey.currentState!.validate()) {
                                   List<Plant> selectedPlants = plantSelections
@@ -247,7 +246,13 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       .where((entry) => entry.value)
                                       .map((entry) => entry.key)
                                       .toList();
-                                  ApiService.createPublication(Publication(
+                                  log(Publication(
+                                      date: pickedDateTime!,
+                                      address: selectedAddressNotifier.value!,
+                                      publisher: MyApp.currentUser!,
+                                      description: descriptionImput.text,
+                                      plants: selectedPlants).toString());
+                                  await ApiService.createPublication(Publication(
                                       date: pickedDateTime!,
                                       address: selectedAddressNotifier.value!,
                                       publisher: MyApp.currentUser!,
@@ -257,6 +262,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                     const SnackBar(
                                         content: Text('Publication créée !')),
                                   );
+                                  context.go('/my_publications');
                                 }
                               },
                               child: const Text('Publier',
