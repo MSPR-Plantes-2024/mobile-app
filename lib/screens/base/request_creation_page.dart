@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +10,7 @@ import '../../main.dart';
 import '../../models/address.dart';
 import '../../models/plant.dart';
 import '../../services/api_service.dart';
+import '../../widgets/add_plant.dart';
 
 class RequestCreationPage extends StatefulWidget {
   const RequestCreationPage({super.key});
@@ -163,10 +166,10 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                                                         onChanged:
                                                                             (bool?
                                                                                 value) {
+                                                                          log('$value ${plantSelections[plant]}');
                                                                           setState(
-                                                                              () {
-                                                                            plantSelections[plant] =
-                                                                                value!;
+                                                                                  () {
+                                                                            plantSelections[plant] = !plantSelections[plant]!;
                                                                           });
                                                                         });
                                                                   });
@@ -188,11 +191,10 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                               const EdgeInsets.only(top: 5),
                                           child: IconButton(
                                               onPressed: () {
-                                                context.go('/address-managment',
-                                                    extra: {
-                                                      'originRoute':
-                                                          '/request-creation',
-                                                      'address': selectedAddressNotifier.value
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AddPlant(address: selectedAddressNotifier.value!);
                                                     });
                                               },
                                               icon: const Icon(Icons.add)),

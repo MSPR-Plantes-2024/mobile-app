@@ -40,7 +40,6 @@ class ApiService {
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json; charset=UTF-8'},
           body: userToJson(user));
-      print(response.statusCode.toString() + ' ' + response.body);
       if (response.statusCode == 200) {
         ApiConstants.jdkToken = jsonDecode(response.body)['access_token'];
         MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
@@ -222,6 +221,8 @@ class ApiService {
             'Authorization': 'Bearer ${ApiConstants.jdkToken}'
           },
           body: pictureToJson(picture));
+      log('${response.statusCode}');
+      log(response.body);
       if (response.statusCode == 200) {
         log('Picture created');
         return Picture.fromJson(json.decode(response.body));
@@ -270,7 +271,6 @@ class ApiService {
   static Future<void> createPlant(Plant plant) async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.plantsEndpoint);
-      print(plantToJson(plant));
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -497,7 +497,6 @@ class ApiService {
 
   static Future<void> createMessage(Message message) async {
     try {
-      print(messageToJson(message));
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.messagesEndpoint);
       var response = await http.post(url,
           headers: <String, String>{

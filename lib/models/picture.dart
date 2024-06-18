@@ -17,21 +17,18 @@ class Picture {
   });
 
   factory Picture.fromJson(Map<String, dynamic> json) {
-    log(Picture(
-      id: json['id'],
-      date: DateTime.parse(json['creationDate']),
-      data: base64Decode(json['data'])
-    ).toString());
     return Picture(
       id: json['id'],
       date: DateTime.parse(json['creationDate']),
       //decode from base64
-      data: json['data'],
+      data: base64Decode(json['data']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
+      "creationDate": date?.toIso8601String(),
       "data": data,
     };
   }

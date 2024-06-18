@@ -13,11 +13,6 @@ class PlantCondition {
     required this.name,
   });
 
-  @override
-  String toString() {
-    return name;
-  }
-
   factory PlantCondition.fromJson(Map<String, dynamic> json) {
     return PlantCondition(
     id: json["id"],
@@ -29,4 +24,9 @@ class PlantCondition {
     "id": id,
     "name": name,
   };
+
+  @override
+  String toString() {
+    return 'PlantCondition{id: $id, name: $name}';
+  }
 }

@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/plant_condition.dart';
-import 'package:mobile_app_arosaje/widgets/picture_form_field.dart';
+import 'package:mobile_app_arosaje/widgets/add_plant.dart';
 
 import '../../main.dart';
 import '../../models/address.dart';
-import '../../models/picture.dart';
 import '../../models/plant.dart';
 import '../../services/api_service.dart';
 
@@ -21,9 +20,6 @@ class AddressManagmentPage extends StatefulWidget {
 
 class _AddressManagmentPageState extends State<AddressManagmentPage> {
   final _addressFormKey = GlobalKey<FormState>();
-  final _plantFormKey = GlobalKey<FormState>();
-
-  File? _picture;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +33,6 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
         TextEditingController(text: address.zipCode);
     TextEditingController otherInformationController =
         TextEditingController(text: address.otherInformations ?? "");
-    TextEditingController plantNameController = TextEditingController();
-    TextEditingController plantDescriptionController = TextEditingController();
 
     return ListView(
       children: [
@@ -157,144 +151,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            PlantCondition?
-                                                selectedPlantCondition;
-                                            return AlertDialog(
-                                              title: const Text(
-                                                  'Ajouter une plante'),
-                                              content: Form(
-                                                key: _plantFormKey,
-                                                child: Column(
-                                                  children: [
-                                                    TextFormField(
-                                                      controller:
-                                                          plantNameController,
-                                                      validator: (value) {
-                                                        print(value);
-                                                        if (value!.isEmpty) {
-                                                          return 'Veuillez entrer un nom';
-                                                        }
-                                                        return null;
-                                                      },
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: 'Nom',
-                                                      ),
-                                                    ),
-                                                    FutureBuilder<
-                                                            List<
-                                                                PlantCondition>>(
-                                                        future: ApiService
-                                                            .getPlantConditions(),
-                                                        builder: (BuildContext
-                                                                context,
-                                                            AsyncSnapshot<
-                                                                    List<
-                                                                        PlantCondition>>
-                                                                snapshot) {
-                                                          if (snapshot
-                                                              .hasData) {
-                                                            selectedPlantCondition =
-                                                                snapshot.data!
-                                                                    .first;
-                                                            return DropdownButtonFormField<
-                                                                    PlantCondition>(
-                                                                items: snapshot.data!.map<
-                                                                    DropdownMenuItem<
-                                                                        PlantCondition>>((PlantCondition
-                                                                    plantCondition) {
-                                                                  return DropdownMenuItem(
-                                                                      value:
-                                                                          plantCondition,
-                                                                      child: Text(
-                                                                          plantCondition
-                                                                              .name));
-                                                                }).toList(),
-                                                                value:
-                                                                    selectedPlantCondition,
-                                                                onChanged:
-                                                                    (PlantCondition?
-                                                                        value) {
-                                                                  selectedPlantCondition =
-                                                                      value;
-                                                                },
-                                                                decoration:
-                                                                    const InputDecoration(
-                                                                  labelText:
-                                                                      'Condition',
-                                                                ));
-                                                          } else if (snapshot
-                                                              .hasError) {
-                                                            return Text(
-                                                                "${snapshot.error}");
-                                                          }
-                                                          return const Center(
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          );
-                                                        }),
-                                                    TextFormField(
-                                                      controller:
-                                                          plantDescriptionController,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText:
-                                                            'Description',
-                                                      ),
-                                                    ),
-                                                    FormField(
-                                                        validator: (value) {
-                                                      if (_picture == null) {
-                                                        return 'Veuillez ajouter une photo';
-                                                      }
-                                                      return null;
-                                                    }, builder:
-                                                        (FormFieldState state) {
-                                                      return PictureFormField(
-                                                        picture: _picture,
-                                                        onPictureChanged:
-                                                            (File? newPicture) {
-                                                          setState(() {
-                                                            _picture =
-                                                                newPicture;
-                                                          });
-                                                        },
-                                                      );
-                                                    }),
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      context.pop();
-                                                    },
-                                                    child:
-                                                        const Text('Annuler')),
-                                                TextButton(
-                                                    onPressed: () async {
-                                                      if (_plantFormKey.currentState!.validate()) {
-                                                        Picture? picture = await ApiService.createPicture(Picture(
-                                                          date: DateTime.now(),
-                                                          data: _picture!.readAsBytesSync(),
-                                                        ));
-                                                        print(picture!.id);
-                                                        await ApiService.createPlant(Plant(
-                                                          address: address,
-                                                          user: MyApp.currentUser!,
-                                                          name: plantNameController.text,
-                                                          description: plantDescriptionController.text,
-                                                          plantCondition: selectedPlantCondition!,
-                                                          picture: await ApiService.createPicture(picture
-                                                        )));
-                                                        setState(() {});
-                                                        context.pop();
-                                                      }
-                                                    },
-                                                    child:
-                                                        const Text('Ajouter'))
-                                              ],
-                                            );
+                                            return AddPlant(address: address);
                                           });
                                     },
                                     icon: const Icon(Icons.add)),
