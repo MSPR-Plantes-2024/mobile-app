@@ -39,72 +39,73 @@ class _MyAppState extends State<MyApp> {
       initialLocation: '/',
       routes: [
         ShellRoute(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => MyApp.currentUser != null
-                  ? HomePage(
-                      key: ValueKey(state.name),
-                      myPublications: false,
-                    )
-                  : const LoginPage(),
-            ),
-            GoRoute(
-              path: '/account-creation',
-              builder: (context, state) => const AccountCreationPage(),
-            ),
-            GoRoute(
-              path: '/my_publications',
-              builder: (context, state) => HomePage(
-                key: ValueKey(state.name),
-                myPublications: true,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => MyApp.currentUser != null
+                    ? HomePage(
+                        key: ValueKey(state.name),
+                        myPublications: false,
+                      )
+                    : const LoginPage(),
               ),
-            ),
-            GoRoute(
-              path: '/user',
-              builder: (context, state) => const UserPage(),
-            ),
-            GoRoute(
-              path: '/request-creation',
-              builder: (context, state) => RequestCreationPage(),
-            ),
-            GoRoute(
-                path: '/address-managment',
-                builder: (context, state) {
-                  return AddressManagmentPage(
-                      map: state.extra as Map<String, dynamic>);
-                }),
-            GoRoute(
-                path: '/address-creation',
-                builder: (context, state) => AddressCreationPage(
-                    map: state.extra as Map<String, dynamic>)),
-            GoRoute(
-                path: '/details-publication',
-                builder: (context, state) {
-                  return DetailsPublicationPage(
-                      map: state.extra as Map<String, dynamic>);
-                }),
-            GoRoute(
-              path: '/chat-list',
-              builder: (context, state) => const ChatListPage(),
-            ),
-            GoRoute(
-                path: '/chat',
-                builder: (context, state) {
-                  return ChatPage(map: state.extra as Map<String, dynamic>);
-                }),
-            GoRoute(
-                path: '/create-report',
-                builder: (context, state) {
-                  return CreateReportPage(
-                      map: state.extra as Map<String, dynamic>);
-                }),
-          ],
-          builder: (context, state, child) {
-            log(GoRouterState.of(context).fullPath!);
-            return MyApp.currentUser != null ? BaseLayout(child: child) : LoginLayout(child: child);
-          }
-          ),
+              GoRoute(
+                path: '/account-creation',
+                builder: (context, state) => const AccountCreationPage(),
+              ),
+              GoRoute(
+                path: '/my_publications',
+                builder: (context, state) => HomePage(
+                  key: ValueKey(state.name),
+                  myPublications: true,
+                ),
+              ),
+              GoRoute(
+                path: '/user',
+                builder: (context, state) => const UserPage(),
+              ),
+              GoRoute(
+                path: '/request-creation',
+                builder: (context, state) => RequestCreationPage(),
+              ),
+              GoRoute(
+                  path: '/address-managment',
+                  builder: (context, state) {
+                    return AddressManagmentPage(
+                        map: state.extra as Map<String, dynamic>);
+                  }),
+              GoRoute(
+                  path: '/address-creation',
+                  builder: (context, state) => AddressCreationPage(
+                      map: state.extra as Map<String, dynamic>)),
+              GoRoute(
+                  path: '/details-publication',
+                  builder: (context, state) {
+                    return DetailsPublicationPage(
+                        map: state.extra as Map<String, dynamic>);
+                  }),
+              GoRoute(
+                path: '/chat-list',
+                builder: (context, state) => const ChatListPage(),
+              ),
+              GoRoute(
+                  path: '/chat',
+                  builder: (context, state) {
+                    return ChatPage(map: state.extra as Map<String, dynamic>);
+                  }),
+              GoRoute(
+                  path: '/create-report',
+                  builder: (context, state) {
+                    return CreateReportPage(
+                        map: state.extra as Map<String, dynamic>);
+                  }),
+            ],
+            builder: (context, state, child) {
+              log(GoRouterState.of(context).fullPath!);
+              return MyApp.currentUser != null
+                  ? BaseLayout(child: child)
+                  : LoginLayout(child: child);
+            }),
       ],
     );
   }
@@ -118,6 +119,12 @@ class _MyAppState extends State<MyApp> {
           child: child ?? const SizedBox.shrink()),
       title: 'Arosa\'je',
       color: Colors.white,
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.lightGreen,
+            brightness: Brightness.light,
+          )),
       routerConfig: _router,
     );
   }

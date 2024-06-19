@@ -34,7 +34,7 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
                 return ListTile(
                     title: Text(
                         "Gardiennage à ${snapshot.data![index].address.city}"),
-                    subtitle: Text(snapshot.data![index].date.toString()),
+                    subtitle: Text(snapshot.data![index].dateTimeBegin.toString()),
                     leading: const Icon(Icons.nature_outlined),
                     trailing: Row(
                       children: [

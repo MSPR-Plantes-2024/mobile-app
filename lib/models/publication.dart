@@ -15,7 +15,8 @@ String publicationToJson(Publication data) => json.encode(data.toJson());
 class Publication {
   int? id;
   DateTime? creationDate;
-  DateTime date;
+  DateTime dateTimeBegin;
+  DateTime dateTimeEnd;
   Address address;
   User publisher;
   User? gardenkeeper;
@@ -26,7 +27,8 @@ class Publication {
   Publication({
     this.id,
     this.creationDate,
-    required this.date,
+    required this.dateTimeBegin,
+    required this.dateTimeEnd,
     required this.address,
     required this.publisher,
     this.gardenkeeper,
@@ -38,8 +40,9 @@ class Publication {
   factory Publication.fromJson(Map<String, dynamic> json) {
     return Publication(
       id: json['id'],
-      creationDate: json['creationDate'] != null ? DateTime.parse(json['creationDate']),
-      date: DateTime.parse(json['date']),
+      creationDate: json['creationDate'] != null ? DateTime.parse(json['creationDate']) : null,
+      dateTimeBegin: DateTime.parse(json['beginDate']),
+      dateTimeEnd: DateTime.parse(json['endDate']),
       address: Address.fromJson(json['address']),
       publisher: User.fromJson(json['publisher']),
       gardenkeeper: json['gardenKeeper'] != null ? User.fromJson(json['gardenKeeper']) : null,
@@ -52,8 +55,8 @@ class Publication {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "creationDate": date.toIso8601String(),
-      "date": date.toIso8601String(),
+      "beginDate": dateTimeBegin.toIso8601String(),
+      "endDate": dateTimeEnd.toIso8601String(),
       "address": address.toJson(),
       "publisher": publisher.toJson(),
       "gardenKeeper": gardenkeeper?.toJson(),
@@ -65,6 +68,6 @@ class Publication {
 
   @override
   String toString() {
-    return 'Publication{id: $id, date: $date, address: $address, publisher: $publisher, gardenkeeper: $gardenkeeper, description: $description, plants: $plants, reports: $reports}';
+    return 'Publication{id: $id, creationDate: $creationDate, dateTimeBegin: $dateTimeBegin, dateTimeEnd: $dateTimeEnd, address: $address, publisher: $publisher, gardenkeeper: $gardenkeeper, description: $description, plants: $plants, reports: $reports}';
   }
 }

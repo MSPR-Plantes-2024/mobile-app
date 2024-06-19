@@ -22,10 +22,10 @@ class _LoginLayoutState extends State<LoginLayout> {
             title: const Center(
               child: InkWell(
                 child: SizedBox(
-                  height: 65,
+                  height: 60,
                   child: Image(
                     image: AssetImage("assets/images/logo.png"),
-                    height: 61,
+                    height: 65,
                   ),
                 ),
               ),

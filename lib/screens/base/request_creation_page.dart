@@ -25,8 +25,10 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
       ValueNotifier<Address?>(null);
   Map<Plant, bool> plantSelections = {};
   final _formKey = GlobalKey<FormState>();
-  late DateTime? pickedDateTime;
-  TextEditingController dateTimeInput = TextEditingController(text: "");
+  late DateTime? pickedDateTimeBegin;
+  late DateTime? pickedDateTimeEnd;
+  TextEditingController dateTimeBeginInput = TextEditingController(text: "");
+  TextEditingController dateTimeEndInput = TextEditingController(text: "");
   TextEditingController addPlantInput = TextEditingController();
   TextEditingController addAddressInput = TextEditingController();
   TextEditingController descriptionImput = TextEditingController();
@@ -204,22 +206,42 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                 ),
                               )
                             : const SizedBox(),
-                        const Text('Date et heure'),
+                        const Text('Date et heure de début'),
                         TextFormField(
-                          controller: dateTimeInput,
+                          controller: dateTimeBeginInput,
                           //editing controller of this TextField
                           decoration: const InputDecoration(
                               icon: Icon(Icons.calendar_today)),
                           readOnly: true,
                           //set it true, so that user will not able to edit text
                           onTap: () async {
-                            pickedDateTime =
+                            pickedDateTimeBegin =
                                 await DateTimePicker.getDateTime(context);
-                            if (pickedDateTime != null) {
+                            if (pickedDateTimeBegin != null) {
                               setState(() {
-                                dateTimeInput.text =
+                                dateTimeBeginInput.text =
                                     DateFormat('dd-MM-yyyy HH:mm').format(
-                                        pickedDateTime!); //set output date to TextField value.
+                                        pickedDateTimeBegin!); //set output date to TextField value.
+                              });
+                            }
+                          },
+                        ),
+                        const Text('Date et heure de fin'),
+                        TextFormField(
+                          controller: dateTimeEndInput,
+                          //editing controller of this TextField
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.calendar_today)),
+                          readOnly: true,
+                          //set it true, so that user will not able to edit text
+                          onTap: () async {
+                            pickedDateTimeEnd =
+                            await DateTimePicker.getDateTime(context);
+                            if (pickedDateTimeEnd != null) {
+                              setState(() {
+                                dateTimeBeginInput.text =
+                                    DateFormat('dd-MM-yyyy HH:mm').format(
+                                        pickedDateTimeEnd!); //set output date to TextField value.
                               });
                             }
                           },
@@ -246,14 +268,9 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       .where((entry) => entry.value)
                                       .map((entry) => entry.key)
                                       .toList();
-                                  log(Publication(
-                                      date: pickedDateTime!,
-                                      address: selectedAddressNotifier.value!,
-                                      publisher: MyApp.currentUser!,
-                                      description: descriptionImput.text,
-                                      plants: selectedPlants).toString());
                                   await ApiService.createPublication(Publication(
-                                      date: pickedDateTime!,
+                                      dateTimeBegin: pickedDateTimeBegin!,
+                                      dateTimeEnd: pickedDateTimeEnd!,
                                       address: selectedAddressNotifier.value!,
                                       publisher: MyApp.currentUser!,
                                       description: descriptionImput.text,
