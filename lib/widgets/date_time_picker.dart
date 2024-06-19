@@ -5,7 +5,6 @@ class DateTimePicker {
   static Future<DateTime?> getDateTime(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      locale: const Locale('fr', 'FR'),
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       //DateTime.now() - not to allow to choose before today.

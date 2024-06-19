@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -35,8 +36,6 @@ class GlobalPublications extends StatefulWidget {
 }
 
 class _GlobalPublicationsState extends State<GlobalPublications> {
-  final Future<List<Publication>> publicationList =
-      ApiService.getPublications();
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +49,11 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
       child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: FutureBuilder<List<Publication>>(
-              future: publicationList,
+              future: ApiService.getPublications(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Publication>> snapshot) {
                 if (snapshot.hasData) {
+                  dev.log(snapshot.data!.toString());
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -163,8 +163,7 @@ class MyPublications extends StatefulWidget {
 }
 
 class _MyPublicationsState extends State<MyPublications> {
-  final Future<List<Publication>> myPublicationList =
-      ApiService.getPublicationsByUser(MyApp.currentUser!);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -177,10 +176,11 @@ class _MyPublicationsState extends State<MyPublications> {
       child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: FutureBuilder<List<Publication>>(
-              future: myPublicationList,
+              future: ApiService.getPublicationsByUser(MyApp.currentUser!),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Publication>> snapshot) {
                 if (snapshot.hasData) {
+                  dev.log(snapshot.data!.toString());
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {

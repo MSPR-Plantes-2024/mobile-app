@@ -6,7 +6,7 @@ import 'address.dart';
 import 'picture.dart';
 import 'plant_condition.dart';
 
-List<Plant> plantsFromJson(String str) => List<Plant>.from(json.decode(str).map((x) => Plant.fromJson(x)));
+List<Plant> plantsFromJson(String str) => List<Plant>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Plant.fromJson(x)));
 String plantToJson(Plant data) => json.encode(data.toJson());
 
 

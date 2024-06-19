@@ -6,7 +6,7 @@ import 'address.dart';
 import 'plant.dart';
 import 'user.dart';
 
-List<Publication> publicationsFromJson(String str) => List<Publication>.from(json.decode(str).map((x) {
+List<Publication> publicationsFromJson(String str) => List<Publication>.from(json.decode(utf8.decode(str.codeUnits)).map((x) {
   return Publication.fromJson(x);
 }));
 String publicationToJson(Publication data) => json.encode(data.toJson());
@@ -41,8 +41,8 @@ class Publication {
     return Publication(
       id: json['id'],
       creationDate: json['creationDate'] != null ? DateTime.parse(json['creationDate']) : null,
-      dateTimeBegin: DateTime.parse(json['beginDate']),
-      dateTimeEnd: DateTime.parse(json['endDate']),
+      dateTimeBegin: DateTime.parse(json['startingDate']),
+      dateTimeEnd: DateTime.parse(json['endingDate']),
       address: Address.fromJson(json['address']),
       publisher: User.fromJson(json['publisher']),
       gardenkeeper: json['gardenKeeper'] != null ? User.fromJson(json['gardenKeeper']) : null,
@@ -55,8 +55,8 @@ class Publication {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "beginDate": dateTimeBegin.toIso8601String(),
-      "endDate": dateTimeEnd.toIso8601String(),
+      "startingDate": dateTimeBegin.toIso8601String(),
+      "endingDate": dateTimeEnd.toIso8601String(),
       "address": address.toJson(),
       "publisher": publisher.toJson(),
       "gardenKeeper": gardenkeeper?.toJson(),

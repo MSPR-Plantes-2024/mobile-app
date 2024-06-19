@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'report.dart';
 import 'user.dart';
 
-List<Comment> commentsFromJson(String str) => List<Comment>.from(json.decode(str).map((x) => Comment.fromJson(x)));
+List<Comment> commentsFromJson(String str) => List<Comment>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Comment.fromJson(x)));
 
 String commentToJson(Comment data) => json.encode(data.toJson());
 

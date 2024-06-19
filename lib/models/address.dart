@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'user.dart';
 
-List<Address> addressesFromJson(String str) => List<Address>.from(json.decode(str).map((x) => Address.fromJson(x)));
+List<Address> addressesFromJson(String str) => List<Address>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Address.fromJson(x)));
 
 String addressToJson(Address data) => json.encode(data.toJson());
 

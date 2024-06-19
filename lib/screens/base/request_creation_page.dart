@@ -239,7 +239,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                             await DateTimePicker.getDateTime(context);
                             if (pickedDateTimeEnd != null) {
                               setState(() {
-                                dateTimeBeginInput.text =
+                                dateTimeEndInput.text =
                                     DateFormat('dd-MM-yyyy HH:mm').format(
                                         pickedDateTimeEnd!); //set output date to TextField value.
                               });

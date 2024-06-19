@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 
-List<Picture> picturesFromJson(String str) => List<Picture>.from(json.decode(str).map((x) => Picture.fromJson(x)));
+List<Picture> picturesFromJson(String str) => List<Picture>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Picture.fromJson(x)));
 String pictureToJson(Picture data) => json.encode(data.toJson());
 
 

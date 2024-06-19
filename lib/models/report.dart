@@ -4,7 +4,7 @@ import 'package:mobile_app_arosaje/models/publication.dart';
 
 import 'picture.dart';
 
-List<Report> reportsFromJson(String str) => List<Report>.from(json.decode(str).map((x) => Report.fromJson(x)));
+List<Report> reportsFromJson(String str) => List<Report>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Report.fromJson(x)));
 String reportToJson(Report data) => json.encode(data.toJson());
 
 
