@@ -108,21 +108,18 @@ class _AddPlantState extends State<AddPlant> {
         TextButton(
             onPressed: () async {
               if (_plantFormKey.currentState!.validate()) {
-                Picture? picture = await ApiService.createPicture(Picture(
-                  date: DateTime.now(),
-                  data: _picture!.readAsBytesSync(),
-                ));
                 await ApiService.createPlant(Plant(
                     address: widget.address,
                     user: MyApp.currentUser!,
                     name: plantNameController.text,
                     description: plantDescriptionController.text,
                     plantCondition: selectedPlantCondition!,
-                    picture: await ApiService.createPicture(picture!)));
+                    picture: await ApiService.createPicture(Picture(
+                      date: DateTime.now(),
+                      data: _picture!.readAsBytesSync(),
+                    ))));
                 if (mounted) {
-                  setState(() {
-                    Navigator.of(context).pop();
-                  });
+                  Navigator.of(context).pop();
                 }
               }
             },

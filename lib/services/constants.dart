@@ -1,5 +1,7 @@
+import '../secrets.dart';
+
 class ApiConstants {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/v1';
+  static const String baseUrl = 'http://$ipAddress:8080/api/v1';
   static late String jdkToken;
   static const String usersEndpoint = '/users';
   static const String publicationsEndpoint = '/publications';

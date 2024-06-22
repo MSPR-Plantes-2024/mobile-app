@@ -23,8 +23,8 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Publication publication = widget.map['publication' ];
-
+    final Publication publication = widget.map['publication'];
+    log(publication.toString());
     final Widget toShow;
     TextEditingController dateTimeBeginInput = TextEditingController(
         text: DateFormat('dd-MM-yyyy HH:mm')
@@ -35,7 +35,6 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
     DateTime? pickedDateTime;
     TextEditingController descriptionInput = TextEditingController(
         text: publication.description ?? "");
-
     if (publication.publisher.id == MyApp.currentUser?.id) {
       toShow = Scrollbar(
         child: Container(
@@ -197,8 +196,13 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                await ApiService.updatePublication(publication);
                                 setState(() {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Annonce modifiée')),
+                                  );
                                   context.go(widget.map['originRoute']);
                                 });
                               },
@@ -206,8 +210,13 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                   textAlign: TextAlign.center),
                             ),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                await ApiService.deletePublication(publication);
                                 setState(() {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Annonce supprimée')),
+                                  );
                                   context.go(widget.map['originRoute']);
                                 });
                               },
@@ -335,11 +344,15 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        publication.gardenkeeper = null;
+                        await ApiService.updatePublication(
+                            publication);
                         setState(() {
-                          publication.gardenkeeper = null;
-                          ApiService.updatePublication(
-                              publication);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Désengagement pris en compte')),
+                          );
                         });
                       },
                       child: const Text('Me désangager',
@@ -354,11 +367,14 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
               )
             else
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  publication.gardenkeeper = MyApp.currentUser;
+                  await ApiService.updatePublication(publication);
                   setState(() {
-                    publication.gardenkeeper = MyApp.currentUser;
-                    log(publication.gardenkeeper!.toString());
-                    ApiService.updatePublication(publication);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Engagement pris en compte')),
+                    );
                   });
                 },
                 child: const Text('Je suis volontaire',

@@ -26,18 +26,13 @@ class _BaseLayoutState extends State<BaseLayout> {
                   context.push('/user');
                 },
                 icon: const Icon(Icons.account_circle_outlined)),
-            title: Center(
-              child: InkWell(
-                onTap: () {
-                  context.go('/');
-                },
-                child: const SizedBox(
+            title: const Center(
+              child: SizedBox(
                   height: 60,
                   child: Image(
                     image: AssetImage("assets/images/logo.png"),
                     height: 65,
                   ),
-                ),
               ),
             ),
             actions: [
@@ -89,7 +84,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                     bottomNavigationBarIndex = index;
                   });
                 } else {
-                  context.push('/my_publications');
+                  context.go('/my_publications');
                   setState(() {
                     bottomNavigationBarIndex = index;
                   });
