@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app_arosaje/models/report.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 import 'package:mobile_app_arosaje/services/api_picture_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
@@ -11,7 +10,6 @@ import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import '../../models/plant.dart';
 import '../../models/plant_condition.dart';
 import '../../models/publication.dart';
-import '../../services/api_service.dart';
 import '../../widgets/date_time_picker.dart';
 import '../../widgets/picture_form_field.dart';
 

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_auth_service.dart';
-import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../models/user.dart';
 

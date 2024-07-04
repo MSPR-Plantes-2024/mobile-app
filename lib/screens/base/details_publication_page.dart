@@ -1,11 +1,9 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/services/api_publication_service.dart';
-import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../main.dart';
 import '../../models/publication.dart';

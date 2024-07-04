@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +10,6 @@ import 'package:mobile_app_arosaje/widgets/date_time_picker.dart';
 import '../../main.dart';
 import '../../models/address.dart';
 import '../../models/plant.dart';
-import '../../services/api_service.dart';
 import '../../widgets/add_plant.dart';
 
 class RequestCreationPage extends StatefulWidget {

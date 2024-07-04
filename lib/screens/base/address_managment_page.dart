@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_app_arosaje/models/plant_condition.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import 'package:mobile_app_arosaje/widgets/add_plant.dart';
@@ -10,7 +7,6 @@ import 'package:mobile_app_arosaje/widgets/add_plant.dart';
 import '../../main.dart';
 import '../../models/address.dart';
 import '../../models/plant.dart';
-import '../../services/api_service.dart';
 
 class AddressManagmentPage extends StatefulWidget {
   final Map<String, dynamic> map;

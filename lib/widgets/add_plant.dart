@@ -1,8 +1,6 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
 import 'package:mobile_app_arosaje/services/api_picture_service.dart';
@@ -13,7 +11,6 @@ import 'package:mobile_app_arosaje/widgets/picture_form_field.dart';
 import '../main.dart';
 import '../models/address.dart';
 import '../models/plant_condition.dart';
-import '../services/api_service.dart';
 
 class AddPlant extends StatefulWidget {
   final Address address;

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_auth_service.dart';
-import 'package:mobile_app_arosaje/services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

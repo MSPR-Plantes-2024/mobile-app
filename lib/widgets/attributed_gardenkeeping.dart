@@ -4,7 +4,6 @@ import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 
 import '../main.dart';
-import '../services/api_service.dart';
 
 class AttributedGardenkeeping extends StatefulWidget {
   const AttributedGardenkeeping({super.key});

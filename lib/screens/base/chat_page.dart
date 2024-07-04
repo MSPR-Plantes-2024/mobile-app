@@ -6,7 +6,6 @@ import 'package:mobile_app_arosaje/widgets/message_bubble.dart';
 
 import '../../models/message.dart';
 import '../../models/user.dart';
-import '../../services/api_service.dart';
 
 class ChatPage extends StatefulWidget {
   final Map<String, dynamic> map;
