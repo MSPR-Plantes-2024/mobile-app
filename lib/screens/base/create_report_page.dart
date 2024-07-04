@@ -1,11 +1,15 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/models/report.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
+import 'package:mobile_app_arosaje/services/api_picture_service.dart';
+import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 
 import '../../models/plant.dart';
+import '../../models/plant_condition.dart';
 import '../../models/publication.dart';
 import '../../services/api_service.dart';
 import '../../widgets/date_time_picker.dart';
@@ -154,15 +158,33 @@ class _CreateReportPageState extends State<CreateReportPage> {
         TextButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                for
-                await ApiService.createReport(Report(
-                    date: pickedDateTime!,
-                    title: titleInput.text,
-                    publication: publication,
-                    pictures:
-                    ),
-                    text: textInput.text
-                ));
+                for(Plant plant in publication.plants){
+                  if(plantProblems[plant] == true){
+                    plant.plantCondition = PlantCondition(
+                      id: 4,
+                      name: "Problème",
+                    );
+                    await ApiPlantService.updatePlant(plant);
+                  }
+                }
+                final List<Picture> pictures = [];
+                log('plantPictures = $plantPictures');
+                for (File? file in plantPictures.values) {
+                  if (file != null) {
+                    // log('file = $file');
+                    // log('${(await ApiService.createPicture(
+                    //     Picture(data: file.readAsBytesSync())))!}');
+                    pictures.add((await ApiPictureService.createPicture(
+                        Picture(data: file.readAsBytesSync())))!);
+                  }
+                }
+                // await ApiService.createReport(
+                //     Report(
+                //         date: pickedDateTime!,
+                //         title: titleInput.text,
+                //         publication: publication,
+                //         pictures: pictures,
+                //         text: textInput.text));
                 if (mounted) {
                   Navigator.of(context).pop();
                 }

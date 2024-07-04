@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
+import 'package:mobile_app_arosaje/services/api_user_service.dart';
 import 'package:mobile_app_arosaje/widgets/attributed_gardenkeeping.dart';
 import 'package:mobile_app_arosaje/widgets/user_adresses.dart';
 
@@ -148,7 +149,7 @@ class _UserPageState extends State<UserPage> {
                                 onPressed: () {
                                   // Validate returns true if the form is valid, or false otherwise.
                                   if (_formKey.currentState!.validate()) {
-                                    ApiService.updateUser(User(
+                                    ApiUserService.updateUser(User(
                                         id: MyApp.currentUser!.id,
                                         firstName: firstNameController.text,
                                         lastName: lastNameController.text,

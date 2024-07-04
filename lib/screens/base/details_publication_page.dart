@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../main.dart';
@@ -20,21 +21,17 @@ class DetailsPublicationPage extends StatefulWidget {
 }
 
 class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
-
   @override
   Widget build(BuildContext context) {
     final Publication publication = widget.map['publication'];
-    log(publication.toString());
     final Widget toShow;
     TextEditingController dateTimeBeginInput = TextEditingController(
-        text: DateFormat('dd-MM-yyyy HH:mm')
-            .format(publication.dateTimeBegin));
+        text: DateFormat('dd-MM-yyyy HH:mm').format(publication.dateTimeBegin));
     TextEditingController dateTimeEndInput = TextEditingController(
-        text: DateFormat('dd-MM-yyyy HH:mm')
-            .format(publication.dateTimeEnd));
+        text: DateFormat('dd-MM-yyyy HH:mm').format(publication.dateTimeEnd));
     DateTime? pickedDateTime;
-    TextEditingController descriptionInput = TextEditingController(
-        text: publication.description ?? "");
+    TextEditingController descriptionInput =
+        TextEditingController(text: publication.description ?? "");
     if (publication.publisher.id == MyApp.currentUser?.id) {
       toShow = Scrollbar(
         child: Container(
@@ -61,25 +58,21 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                   style: const TextStyle(fontSize: 20)),
                               if (publication.publisher.id ==
                                       MyApp.currentUser!.id ||
-                                  (publication.gardenkeeper !=
-                                          null &&
-                                      publication.gardenkeeper
-                                              ?.id ==
+                                  (publication.gardenkeeper != null &&
+                                      publication.gardenkeeper?.id ==
                                           MyApp.currentUser!.id))
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                          publication.address
-                                              .postalAddress,
+                                      Text(publication.address.postalAddress,
                                           style: const TextStyle(fontSize: 20)),
-                                      if (publication.address
-                                              .otherInformations !=
+                                      if (publication
+                                              .address.otherInformations !=
                                           null)
                                         Text(
-                                            publication.address
-                                                .otherInformations!,
+                                            publication
+                                                .address.otherInformations!,
                                             style:
                                                 const TextStyle(fontSize: 20))
                                     ])
@@ -104,7 +97,8 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                     //set it true, so that user will not able to edit text
                                     onTap: () async {
                                       pickedDateTime =
-                                          await DateTimePicker.getDateTime(context);
+                                          await DateTimePicker.getDateTime(
+                                              context);
                                       if (pickedDateTime != null) {
                                         setState(() {
                                           publication.dateTimeBegin =
@@ -122,11 +116,12 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                     //set it true, so that user will not able to edit text
                                     onTap: () async {
                                       pickedDateTime =
-                                      await DateTimePicker.getDateTime(context);
+                                          await DateTimePicker.getDateTime(
+                                              context);
                                       if (pickedDateTime != null) {
                                         setState(() {
                                           publication.dateTimeEnd =
-                                          pickedDateTime!;
+                                              pickedDateTime!;
                                         });
                                       }
                                     },
@@ -152,8 +147,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           margin: const EdgeInsets.only(top: 5, bottom: 5),
                           child: Scrollbar(
                             child: ListView.builder(
-                                itemCount:
-                                    publication.plants.length,
+                                itemCount: publication.plants.length,
                                 itemBuilder: (context, index) {
                                   return ExpansionTile(
                                     title: Text(widget
@@ -197,7 +191,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           children: [
                             ElevatedButton(
                               onPressed: () async {
-                                await ApiService.updatePublication(publication);
+                                await ApiPublicationService.updatePublication(publication);
                                 setState(() {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -211,7 +205,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                await ApiService.deletePublication(publication);
+                                await ApiPublicationService.deletePublication(publication);
                                 setState(() {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -234,6 +228,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
       );
     }
     else {
+      print(publication.gardenkeeper);
       toShow = Scrollbar(
         child: Container(
           margin: const EdgeInsets.only(left: 10, right: 10),
@@ -252,8 +247,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           margin: const EdgeInsets.only(right: 5),
                           child: const Icon(Icons.location_on)),
                       if (publication.gardenkeeper == null ||
-                          publication.gardenkeeper !=
-                              MyApp.currentUser)
+                          publication.gardenkeeper != MyApp.currentUser)
                         Text(
                             "${publication.address.city} (${publication.address.zipCode})",
                             style: const TextStyle(fontSize: 20))
@@ -302,9 +296,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             itemCount: publication.plants.length,
                             itemBuilder: (context, index) {
                               Uint8List? pictureData;
-                              if (publication.plants[index]
-                                      .picture !=
-                                  null) {
+                              if (publication.plants[index].picture != null) {
                                 pictureData = publication
                                     .plants[index].picture!.data as Uint8List;
                               }
@@ -339,15 +331,14 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
               ),
             ),
             if (publication.gardenkeeper != null &&
-                publication.gardenkeeper == MyApp.currentUser)
+                publication.gardenkeeper!.id == MyApp.currentUser!.id)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                       onPressed: () async {
                         publication.gardenkeeper = null;
-                        await ApiService.updatePublication(
-                            publication);
+                        await ApiPublicationService.updatePublication(publication);
                         setState(() {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -359,7 +350,9 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           textAlign: TextAlign.center)),
                   ElevatedButton(
                       onPressed: () {
-                        setState(() {});
+                        context.push('/report-creation',
+                            extra: Map<String, dynamic>.from(
+                                {'publication': publication}));
                       },
                       child: const Text('Publier un rapport',
                           textAlign: TextAlign.center))
@@ -369,7 +362,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
               ElevatedButton(
                 onPressed: () async {
                   publication.gardenkeeper = MyApp.currentUser;
-                  await ApiService.updatePublication(publication);
+                  await ApiPublicationService.updatePublication(publication);
                   setState(() {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

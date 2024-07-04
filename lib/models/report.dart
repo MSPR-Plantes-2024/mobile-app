@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:mobile_app_arosaje/models/publication.dart';
 
@@ -20,8 +21,8 @@ class Report {
     this.id,
     required this.title,
     required this.date,
-    this.publication,
-    this.pictures = const [],
+    required this.publication,
+    required this.pictures,
     this.text,
   });
 
@@ -37,12 +38,13 @@ class Report {
   }
 
   Map<String, dynamic> toJson() {
+    log('pictures = $pictures');
     return {
       "id": id,
       "title": title,
       "publishingDate": date.toIso8601String(),
       "publication": publication?.toJson(),
-      "pictures": List<Picture>.from(pictures.map((x) => x.toJson())),
+      "pictures": pictures.map((x) => x.toJson()).toList(),
       "text": text,
     };
   }

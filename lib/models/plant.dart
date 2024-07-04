@@ -11,13 +11,13 @@ String plantToJson(Plant data) => json.encode(data.toJson());
 
 
 class Plant {
-  final int? id;
-  final Address? address;
-  final String name;
-  final Picture? picture;
-  final String? description;
-  final User? user;
-  final PlantCondition plantCondition;
+  int? id;
+  Address? address;
+  String name;
+  Picture? picture;
+  String? description;
+  User? user;
+  PlantCondition plantCondition;
 
   Plant({
     this.id,

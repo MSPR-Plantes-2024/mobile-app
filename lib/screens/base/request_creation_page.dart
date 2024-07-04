@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
+import 'package:mobile_app_arosaje/services/api_address_service.dart';
+import 'package:mobile_app_arosaje/services/api_plant_service.dart';
+import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 import 'package:mobile_app_arosaje/widgets/date_time_picker.dart';
 
 import '../../main.dart';
@@ -34,7 +37,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
   TextEditingController descriptionImput = TextEditingController();
 
   Future<void> setPlantList(Address address) async {
-    List<Plant> plants = await ApiService.getPlantsByAddress(address);
+    List<Plant> plants = await ApiPlantService.getPlantsByAddress(address);
     if (plants.isNotEmpty) {
       setState(() {
         plantSelections = {};
@@ -52,7 +55,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
   @override
   void initState() {
     super.initState();
-    ApiService.getAddressesByUser(MyApp.currentUser!).then((value) {
+    ApiAddressService.getAddressesByUser(MyApp.currentUser!).then((value) {
       if (value.isNotEmpty) {
         setState(() {
           addresses = value;
@@ -268,7 +271,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       .where((entry) => entry.value)
                                       .map((entry) => entry.key)
                                       .toList();
-                                  await ApiService.createPublication(Publication(
+                                  await ApiPublicationService.createPublication(Publication(
                                       dateTimeBegin: pickedDateTimeBegin!,
                                       dateTimeEnd: pickedDateTimeEnd!,
                                       address: selectedAddressNotifier.value!,

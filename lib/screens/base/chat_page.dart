@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/services/api_message_service.dart';
 import 'package:mobile_app_arosaje/widgets/message_bubble.dart';
 
 import '../../models/message.dart';
@@ -28,7 +29,7 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     return FutureBuilder<List<Message>>(
-      future: ApiService.getMessageByUser(contact),
+      future: ApiMessageService.getMessageByUser(contact),
       builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -69,7 +70,7 @@ class _ChatPageState extends State<ChatPage> {
                     suffix: IconButton(
                         icon: const Icon(Icons.send),
                         onPressed: () async {
-                          await ApiService.createMessage(
+                          await ApiMessageService.createMessage(
                               Message(
                                   text: newMessageController.text,
                                   date: DateTime.now(),

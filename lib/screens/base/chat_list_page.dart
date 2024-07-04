@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/models/message.dart';
+import 'package:mobile_app_arosaje/services/api_message_service.dart';
 
 import '../../services/api_service.dart';
 
@@ -18,7 +19,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
   Future<List<List<Message>>> prepareMessages() async {
     List<List<Message>> messages = [];
-    messagesToSort = await ApiService.getMessageByUser(MyApp.currentUser!);
+    messagesToSort = await ApiMessageService.getMessageByUser(MyApp.currentUser!);
     if (messagesToSort.isNotEmpty) {
       List<Message> messagesToSortCopy = List<Message>.from(messagesToSort);
       for (Message message in messagesToSortCopy) {

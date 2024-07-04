@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/plant_condition.dart';
+import 'package:mobile_app_arosaje/services/api_address_service.dart';
+import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import 'package:mobile_app_arosaje/widgets/add_plant.dart';
 
 import '../../main.dart';
@@ -109,7 +111,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                 width: 250,
                                 child: Scrollbar(
                                   child: FutureBuilder<List<Plant>>(
-                                      future: ApiService.getPlantsByAddress(
+                                      future: ApiPlantService.getPlantsByAddress(
                                           address),
                                       builder: (BuildContext context,
                                           AsyncSnapshot<List<Plant>> snapshot) {
@@ -166,7 +168,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                       child: ElevatedButton(
                           onPressed: () {
                             if (_addressFormKey.currentState!.validate()) {
-                              ApiService.updateAddress(Address(
+                              ApiAddressService.updateAddress(Address(
                                   id: address.id,
                                   user: MyApp.currentUser!,
                                   postalAddress: postalAddressController.text,
@@ -206,7 +208,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                           child: const Text('Annuler')),
                                       TextButton(
                                           onPressed: () {
-                                            ApiService.deleteAddress(address);
+                                            ApiAddressService.deleteAddress(address);
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
                                                     content: Text(

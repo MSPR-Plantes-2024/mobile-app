@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
+import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 
 import '../main.dart';
 import '../services/api_service.dart';
@@ -14,7 +15,7 @@ class AttributedGardenkeeping extends StatefulWidget {
 }
 
 class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
-  Future<List<Publication>> gardenkeepings = ApiService.getPublications().then(
+  Future<List<Publication>> gardenkeepings = ApiPublicationService.getPublications().then(
       (value) => value
           .where((element) =>
               element.gardenkeeper != null &&
@@ -66,7 +67,7 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
                                               setState(() {
                                                 snapshot.data![index]
                                                     .gardenkeeper = null;
-                                                ApiService.updatePublication(
+                                                ApiPublicationService.updatePublication(
                                                     snapshot.data![index]);
                                               });
                                               context.pop;

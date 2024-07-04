@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_app_arosaje/services/api_address_service.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../main.dart';
@@ -84,7 +85,7 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                       child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              ApiService.createAddress(Address(
+                              ApiAddressService.createAddress(Address(
                                   user: MyApp.currentUser!,
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,

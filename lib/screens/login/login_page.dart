@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/services/api_auth_service.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                   onPressed: () async {
                     if (emailController.text != "" && passwordController.text != "") {
-                      if (await ApiService.login(emailController.text.trim(), passwordController.text.trim())) {
+                      if (await ApiAuthService.login(emailController.text.trim(), passwordController.text.trim())) {
                         log("User connected");
                         RestartWidget.restartApp(context);
                       } else {

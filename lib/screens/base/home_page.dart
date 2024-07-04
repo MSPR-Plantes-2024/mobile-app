@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
-import 'package:mobile_app_arosaje/services/api_service.dart';
+import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 
 import '../../models/publication.dart';
 
@@ -49,11 +49,10 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
       child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: FutureBuilder<List<Publication>>(
-              future: ApiService.getPublications(),
+              future: ApiPublicationService.getPublications(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Publication>> snapshot) {
                 if (snapshot.hasData) {
-                  dev.log(snapshot.data!.toString());
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -176,11 +175,10 @@ class _MyPublicationsState extends State<MyPublications> {
       child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: FutureBuilder<List<Publication>>(
-              future: ApiService.getPublicationsByUser(MyApp.currentUser!),
+              future: ApiPublicationService.getPublicationsByUser(MyApp.currentUser!),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Publication>> snapshot) {
                 if (snapshot.hasData) {
-                  dev.log(snapshot.data!.toString());
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {

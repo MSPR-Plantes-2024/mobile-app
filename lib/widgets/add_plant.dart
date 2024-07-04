@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
+import 'package:mobile_app_arosaje/services/api_picture_service.dart';
+import 'package:mobile_app_arosaje/services/api_plant_condition.dart';
+import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import 'package:mobile_app_arosaje/widgets/picture_form_field.dart';
 
 import '../main.dart';
@@ -32,7 +35,7 @@ class _AddPlantState extends State<AddPlant> {
   @override
   void initState() {
     super.initState();
-    ApiService.getPlantConditions().then((value) {
+    ApiPlantConditionService.getPlantConditions().then((value) {
       setState(() {
         if (value.isNotEmpty) {
           plantConditions = value;
@@ -108,13 +111,13 @@ class _AddPlantState extends State<AddPlant> {
         TextButton(
             onPressed: () async {
               if (_plantFormKey.currentState!.validate()) {
-                await ApiService.createPlant(Plant(
+                await ApiPlantService.createPlant(Plant(
                     address: widget.address,
                     user: MyApp.currentUser!,
                     name: plantNameController.text,
                     description: plantDescriptionController.text,
                     plantCondition: selectedPlantCondition!,
-                    picture: await ApiService.createPicture(Picture(
+                    picture: await ApiPictureService.createPicture(Picture(
                       date: DateTime.now(),
                       data: _picture!.readAsBytesSync(),
                     ))));

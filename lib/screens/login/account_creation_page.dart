@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/services/api_auth_service.dart';
 import 'package:mobile_app_arosaje/services/api_service.dart';
 
 import '../../models/user.dart';
@@ -67,7 +68,7 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                           email: emailController.text,
                           password: passwordController.text,
                           userType: "USER");
-                      if (await ApiService.logon(currentUser)) {
+                      if (await ApiAuthService.logon(currentUser)) {
                         log("Account created");
                         RestartWidget.restartApp(context);
                       } else {

@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
                     return ChatPage(map: state.extra as Map<String, dynamic>);
                   }),
               GoRoute(
-                  path: '/create-report',
+                  path: '/report-creation',
                   builder: (context, state) {
                     return CreateReportPage(
                         map: state.extra as Map<String, dynamic>);
