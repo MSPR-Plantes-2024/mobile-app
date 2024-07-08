@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_app_arosaje/models/address.dart';
 import 'package:mobile_app_arosaje/screens/base/address_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/address_managment_page.dart';
 import 'package:mobile_app_arosaje/screens/base/base_layout.dart';
@@ -16,8 +15,8 @@ import 'package:mobile_app_arosaje/screens/base/user_page.dart';
 import 'package:mobile_app_arosaje/screens/login/account_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/login/login_layout.dart';
 import 'package:mobile_app_arosaje/screens/login/login_page.dart';
-import 'package:mobile_app_arosaje/widgets/contextual_dialogs/add_plant.dart';
-import 'package:mobile_app_arosaje/widgets/contextual_dialogs/delete_address.dart';
+import 'package:mobile_app_arosaje/widgets/contextual_dialogs/add_edit_plant.dart';
+import 'package:mobile_app_arosaje/widgets/contextual_dialogs/delete_plant.dart';
 
 import 'models/user.dart';
 
@@ -70,10 +69,9 @@ class _MyAppState extends State<MyApp> {
                     GoRoute(
                         path: 'request-creation',
                         builder: (context, state) {
-                          print(state.extra.toString());
                           return state.extra != null
                               ? RequestCreationPage(
-                                map: state.extra as Map<String, dynamic>)
+                                  map: state.extra as Map<String, dynamic>)
                               : const RequestCreationPage();
                         }),
                     GoRoute(
@@ -84,13 +82,15 @@ class _MyAppState extends State<MyApp> {
                         },
                         routes: [
                           GoRoute(
-                            path: 'delete-address',
-                            pageBuilder: (BuildContext context, GoRouterState state) {
-                            return DialogPage(
-                                builder: (_) => DeleteAddress(
-                                    map: state.extra as Map<String, dynamic>));
-                        },
-                    )
+                            path: 'delete-plant',
+                            pageBuilder:
+                                (BuildContext context, GoRouterState state) {
+                              return DialogPage(
+                                  builder: (_) => DeletePlant(
+                                      map:
+                                          state.extra as Map<String, dynamic>));
+                            },
+                          ),
                         ]),
                     GoRoute(
                         path: 'address-creation',
@@ -119,10 +119,10 @@ class _MyAppState extends State<MyApp> {
                               map: state.extra as Map<String, dynamic>);
                         }),
                     GoRoute(
-                      path: 'add-plant',
+                      path: 'add-edit-plant',
                       pageBuilder: (BuildContext context, GoRouterState state) {
                         return DialogPage(
-                            builder: (_) => AddPlant(
+                            builder: (_) => AddEditPlant(
                                 map: state.extra as Map<String, dynamic>));
                       },
                     ),

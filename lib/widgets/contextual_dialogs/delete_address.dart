@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
-import 'package:mobile_app_arosaje/models/comment.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/models/report.dart';

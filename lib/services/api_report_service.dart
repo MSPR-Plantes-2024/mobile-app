@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 
 class ApiReportService {
   static Future<void> create(Report report) async {
-    print(report.pictures.toString());
     try {
       var url = Uri.parse(constants.BASE_URL + constants.REPORTS_ENDPOINT);
       var response = await http.post(url,

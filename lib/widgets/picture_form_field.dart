@@ -7,7 +7,7 @@ class PictureFormField extends StatefulWidget {
   final File? picture;
   final Function(File?) onPictureChanged;
 
-  PictureFormField({required this.picture, required this.onPictureChanged});
+  const PictureFormField({super.key, required this.picture, required this.onPictureChanged});
 
   @override
   _PictureFormFieldState createState() => _PictureFormFieldState();

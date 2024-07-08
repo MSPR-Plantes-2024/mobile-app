@@ -113,25 +113,65 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                           AsyncSnapshot<List<Plant>> snapshot) {
                                         if (snapshot.hasData) {
                                           List<Plant> plants = snapshot.data!;
-                                          Map<Plant, bool> plantSelections = {};
-                                          for (Plant plant in plants) {
-                                            plantSelections[plant] = false;
-                                          }
+
                                           return ListView.builder(
-                                              itemCount: snapshot.data!.length,
+                                              itemCount: plants.length,
                                               itemBuilder: (context, index) {
-                                                Plant plant =
-                                                    snapshot.data![index];
-                                                return CheckboxListTile(
+                                                Plant plant = plants[index];
+                                                final Color statusColor;
+                                                switch (plant.plantCondition.name) {
+                                                  case 'Problème':
+                                                    statusColor = Colors.orange;
+                                                    break;
+                                                  case 'Abimé':
+                                                    statusColor = Colors.red;
+                                                    break;
+                                                  case 'Malade':
+                                                    statusColor = Colors.purple;
+                                                    break;
+                                                  default:
+                                                    statusColor = Colors.green;
+                                                }
+                                                return ListTile(
+                                                    leading: Icon(
+                                                        Icons.eco, color: statusColor),
                                                     title: Text(plant.name),
-                                                    value:
-                                                        plantSelections[plant],
-                                                    onChanged: (bool? value) {
-                                                      setState(() {
-                                                        plantSelections[plant] =
-                                                            value!;
-                                                      });
-                                                    });
+                                                    subtitle: Text(
+                                                        'Status : ${plant.plantCondition.name}'),
+                                                    trailing: SizedBox(
+                                                      width: 60,
+                                                      child: Row(
+
+                                                        children: [
+                                                          IconButton(
+                                                            icon: const Icon(
+                                                                Icons.edit_outlined,
+                                                              size: 20,
+                                                            ),
+                                                            onPressed: () {
+                                                              context.push('/add-edit-plant',
+                                                                  extra: {
+                                                                    'plant': plant,
+                                                                    'originRoute': '/address-management'
+                                                                  });
+                                                            },
+                                                          ),
+                                                          IconButton(
+                                                            icon: const Icon(
+                                                                Icons.delete_outline,
+                                                              size: 20,
+                                                            ),
+                                                            onPressed: () {
+                                                              context.push(
+                                                                  '/address-management/delete-plant',
+                                                                  extra: {
+                                                                    'plant': plant,
+                                                                  });
+                                                            }),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                );
                                               });
                                         } else if (snapshot.hasError) {
                                           return Text("${snapshot.error}");

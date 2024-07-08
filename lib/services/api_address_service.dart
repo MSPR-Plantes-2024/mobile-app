@@ -47,11 +47,9 @@ class ApiAddressService {
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/user/${user.id}');
-      print(url);
       var response = await http.get(url, headers: <String, String>{
         'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
-      print(response.body);
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
         return addresses;

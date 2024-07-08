@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:mobile_app_arosaje/models/publication.dart';
 

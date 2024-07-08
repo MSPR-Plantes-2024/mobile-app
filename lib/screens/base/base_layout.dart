@@ -14,7 +14,7 @@ class _BaseLayoutState extends State<BaseLayout> {
   late int bottomNavigationBarIndex = 0;
 
   @override
-  Widget build(BuildContext context) {;
+  Widget build(BuildContext context) {
     _routeNameNotifier.value = GoRouterState.of(context).fullPath ?? '/';
     return Scaffold(
         appBar: PreferredSize(

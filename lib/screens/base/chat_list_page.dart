@@ -7,7 +7,7 @@ import 'package:mobile_app_arosaje/services/api_message_service.dart';
 
 
 class ChatListPage extends StatefulWidget {
-  const ChatListPage({Key? key}) : super(key: key);
+  const ChatListPage({super.key});
 
   @override
   _ChatListPageState createState() => _ChatListPageState();

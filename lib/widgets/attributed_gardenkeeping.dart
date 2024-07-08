@@ -88,7 +88,7 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
             return Text("${snapshot.error}");
           }
           // By default, show a loading spinner.
-          return SizedBox(
+          return const SizedBox(
               height: 50, width: 50, child: CircularProgressIndicator());
         });
   }
