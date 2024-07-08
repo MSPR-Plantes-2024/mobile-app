@@ -4,18 +4,18 @@ import 'dart:developer';
 import 'package:mobile_app_arosaje/models/address.dart';
 
 import '../models/plant.dart';
-import 'constants.dart';
+import 'constants.dart' as constants;
 
 import 'package:http/http.dart' as http;
 
 class ApiPlantService {
-  static Future<void> createPlant(Plant plant) async {
+  static Future<void> create(Plant plant) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.plantsEndpoint);
+      var url = Uri.parse(constants.BASE_URL + constants.PLANTS_ENDPOINT);
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: plantToJson(plant));
       if (response.statusCode == 200) {
@@ -26,14 +26,14 @@ class ApiPlantService {
     }
   }
 
-  static Future<void> updatePlant(Plant plant) async {
+  static Future<void> update(Plant plant) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/${plant.id}');
+          '${constants.BASE_URL}${constants.PLANTS_ENDPOINT}/${plant.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: plantToJson(plant));
       if (response.statusCode == 200) {
@@ -44,12 +44,12 @@ class ApiPlantService {
     }
   }
 
-  static Future<void> deletePlant(Plant plant) async {
+  static Future<void> delete(Plant plant) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/${plant.id}');
+          '${constants.BASE_URL}${constants.PLANTS_ENDPOINT}/${plant.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         log('Plant deleted');
@@ -59,12 +59,12 @@ class ApiPlantService {
     }
   }
 
-  static Future<Plant> getPlantById(int id) async {
+  static Future<Plant> getById(int id) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/$id');
+          '${constants.BASE_URL}${constants.PLANTS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         Plant plant = Plant.fromJson(json.decode(response.body));
@@ -76,12 +76,12 @@ class ApiPlantService {
     throw Exception('Failed to load plant');
   }
 
-  static Future<List<Plant>> getPlantsByAddress(Address address) async {
+  static Future<List<Plant>> getByAddress(Address address) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.plantsEndpoint}/address/${address.id}');
+          '${constants.BASE_URL}${constants.PLANTS_ENDPOINT}/address/${address.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         List<Plant> plants = plantsFromJson(response.body);

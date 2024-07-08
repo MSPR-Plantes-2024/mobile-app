@@ -5,16 +5,16 @@ import 'package:http/http.dart' as http;
 
 import '../models/address.dart';
 import '../models/user.dart';
-import 'constants.dart';
+import 'constants.dart' as constants;
 
 
 class ApiAddressService {
-  static Future<Address> getAddressById(int id) async {
+  static Future<Address> getById(int id) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/$id');
+          '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         Address address = Address.fromJson(json.decode(response.body));
@@ -26,12 +26,12 @@ class ApiAddressService {
     throw Exception('Failed to load address');
   }
 
-  static Future<List<Address>> getAddresses() async {
+  static Future<List<Address>> getAll() async {
     try {
       var url =
-      Uri.parse(ApiConstants.baseUrl + ApiConstants.addressesEndpoint);
+      Uri.parse(constants.BASE_URL + constants.ADDRESSES_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
@@ -43,13 +43,15 @@ class ApiAddressService {
     return [];
   }
 
-  static Future<List<Address>> getAddressesByUser(User user) async {
+  static Future<List<Address>> getByUser(User user) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/user/${user.id}');
+          '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/user/${user.id}');
+      print(url);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
+      print(response.body);
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
         return addresses;
@@ -60,14 +62,14 @@ class ApiAddressService {
     return [];
   }
 
-  static Future<void> createAddress(Address address) async {
+  static Future<void> create(Address address) async {
     try {
       var url =
-      Uri.parse(ApiConstants.baseUrl + ApiConstants.addressesEndpoint);
+      Uri.parse(constants.BASE_URL + constants.ADDRESSES_ENDPOINT);
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: addressToJson(address));
       if (response.statusCode == 201) {
@@ -78,14 +80,14 @@ class ApiAddressService {
     }
   }
 
-  static Future<void> updateAddress(Address address) async {
+  static Future<void> update(Address address) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/${address.id}');
+          '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/${address.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: addressToJson(address));
       if (response.statusCode == 200) {
@@ -96,12 +98,12 @@ class ApiAddressService {
     }
   }
 
-  static Future<void> deleteAddress(Address address) async {
+  static Future<void> delete(Address address) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.addressesEndpoint}/${address.id}');
+          '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/${address.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         log('Address deleted');

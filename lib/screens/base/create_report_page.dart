@@ -1,11 +1,13 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
+import 'package:mobile_app_arosaje/models/report.dart';
 import 'package:mobile_app_arosaje/services/api_picture_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
+import 'package:mobile_app_arosaje/services/api_report_service.dart';
 
 import '../../models/plant.dart';
 import '../../models/plant_condition.dart';
@@ -45,151 +47,174 @@ class _CreateReportPageState extends State<CreateReportPage> {
   Widget build(BuildContext context) {
     final Publication publication = widget.map['publication'];
     return Scrollbar(
-        child: Form(
-      key: _formKey,
-      child: ListView(children: [
-        Container(
-          margin: const EdgeInsets.only(top: 10, bottom: 10),
-          child: const Text("Rapport d'entretient",
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center),
-        ),
-        const Text("Date et heure"),
-        TextFormField(
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Veuillez entrer une date';
-            }
-            return null;
-          },
-          controller: dateTimeInput,
-          //editing controller of this TextField
-          decoration: const InputDecoration(icon: Icon(Icons.calendar_today)),
-          readOnly: true,
-          //set it true, so that user will not able to edit text
-          onTap: () async {
-            pickedDateTime = await DateTimePicker.getDateTime(context);
-            if (pickedDateTime != null) {
-              setState(() {
-                dateTimeInput.text = DateFormat('dd-MM-yyyy HH:mm').format(
-                    pickedDateTime!); //set output date to TextField value.
-              });
-            }
-          },
-        ),
-        const Text("Titre"),
-        TextFormField(
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Veuillez entrer un titre';
-            }
-            return null;
-          },
-          controller: titleInput,
-        ),
-        const Text("Plantes"),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: publication.plants.length,
-          itemBuilder: (context, index) {
-            return Container(
-              child: Column(
-                children: [
-                  Text(publication.plants[index].name),
-                  Row(
+        child: Container(
+            padding: const EdgeInsets.all(20),
+          child: Form(
+                key: _formKey,
+                child: ListView(children: [
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            child: const Text("Rapport d'entretient",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center),
+          ),
+          const Text("Date et heure"),
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            child: TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Veuillez entrer une date';
+                }
+                return null;
+              },
+              controller: dateTimeInput,
+              //editing controller of this TextField
+              decoration: const InputDecoration(icon: Icon(Icons.calendar_today)),
+              readOnly: true,
+              //set it true, so that user will not able to edit text
+              onTap: () async {
+                pickedDateTime = await DateTimePicker.getDateTime(context);
+                if (pickedDateTime != null) {
+                  setState(() {
+                    dateTimeInput.text = DateFormat('dd-MM-yyyy HH:mm').format(
+                        pickedDateTime!); //set output date to TextField value.
+                  });
+                }
+              },
+            ),
+          ),
+          const Text("Titre"),
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            child: TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Veuillez entrer un titre';
+                }
+                return null;
+              },
+              controller: titleInput,
+            ),
+          ),
+          const Text("Plantes"),
+          Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black)),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: publication.plants.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      PictureFormField(
-                        picture: plantPictures[publication.plants[index]],
-                        onPictureChanged: (File? newPicture) {
-                          setState(() {
-                            plantPictures[publication.plants[index]] =
-                                newPicture;
-                          });
-                        },
-                      ),
-                      Column(children: [
-                        const Text("Un problème ?"),
-                        Row(children: [
-                          Column(
-                            children: [
-                              Radio(
-                                value: true,
-                                groupValue:
-                                    plantProblems[publication.plants[index]],
-                                onChanged: (value) {
-                                  setState(() {
-                                    plantProblems[publication.plants[index]] =
-                                        value!;
-                                  });
-                                },
-                              ),
-                              const Text("Oui")
-                            ],
-                          ),
-                          Column(children: [
-                            Radio(
-                              value: false,
-                              groupValue:
-                                  plantProblems[publication.plants[index]],
-                              onChanged: (value) {
+                      Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text(publication.plants[index].name)),
+                      IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PictureFormField(
+                              picture: plantPictures[publication.plants[index]],
+                              onPictureChanged: (File? newPicture) {
                                 setState(() {
-                                  plantProblems[publication.plants[index]] =
-                                      value!;
+                                  plantPictures[publication.plants[index]] =
+                                      newPicture;
                                 });
                               },
                             ),
-                            const Text("Non")
-                          ])
-                        ])
-                      ])
+                            const VerticalDivider(),
+                            Column(children: [
+                              const Text("Un problème ?"),
+                              Row(children: [
+                                Column(
+                                  children: [
+                                    Radio(
+                                      value: true,
+                                      groupValue:
+                                          plantProblems[publication.plants[index]],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          plantProblems[publication.plants[index]] =
+                                              value!;
+                                        });
+                                      },
+                                    ),
+                                    const Text("Oui")
+                                  ],
+                                ),
+                                Column(children: [
+                                  Radio(
+                                    value: false,
+                                    groupValue:
+                                        plantProblems[publication.plants[index]],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        plantProblems[publication.plants[index]] =
+                                            value!;
+                                      });
+                                    },
+                                  ),
+                                  const Text("Non")
+                                ])
+                              ])
+                            ])
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ],
+                );
+              },
+            ),
+          ),
+          const Text("Autre chose à ajouter ?"),
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            child: TextFormField(
+              controller: textInput
+            ),
+          ),
+          ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  for(Plant plant in publication.plants){
+                    if(plantProblems[plant] == true){
+                      plant.plantCondition = PlantCondition(
+                        id: 4,
+                        name: "Problème",
+                      );
+                      await ApiPlantService.update(plant);
+                    }
+                  }
+                  final List<Picture> pictures = [];
+                  for (File? file in plantPictures.values) {
+                    if (file != null) {
+                      await ApiPictureService.create(
+                          Picture(data: file.readAsBytesSync())).then((value) {
+                        pictures.add(value!);
+                      });
+                    }
+                  }
+                  ApiReportService.create(
+                      Report(
+                          date: pickedDateTime!,
+                          title: titleInput.text,
+                          publication: publication,
+                          pictures: pictures,
+                          text: textInput.text)).then((value) {
+                    if (mounted) {
+                      context.pop();
+                    }
+                  });
+                }
+              },
+              child: const Text('Ajouter'))
+                ]),
               ),
-            );
-          },
-        ),
-        const Text("Autre chose à ajouter ?"),
-        TextFormField(
-          controller: textInput,
-        ),
-        TextButton(
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                for(Plant plant in publication.plants){
-                  if(plantProblems[plant] == true){
-                    plant.plantCondition = PlantCondition(
-                      id: 4,
-                      name: "Problème",
-                    );
-                    await ApiPlantService.updatePlant(plant);
-                  }
-                }
-                final List<Picture> pictures = [];
-                log('plantPictures = $plantPictures');
-                for (File? file in plantPictures.values) {
-                  if (file != null) {
-                    // log('file = $file');
-                    // log('${(await ApiService.createPicture(
-                    //     Picture(data: file.readAsBytesSync())))!}');
-                    pictures.add((await ApiPictureService.createPicture(
-                        Picture(data: file.readAsBytesSync())))!);
-                  }
-                }
-                // await ApiService.createReport(
-                //     Report(
-                //         date: pickedDateTime!,
-                //         title: titleInput.text,
-                //         publication: publication,
-                //         pictures: pictures,
-                //         text: textInput.text));
-                if (mounted) {
-                  Navigator.of(context).pop();
-                }
-              }
-            },
-            child: const Text('Ajouter'))
-      ]),
-    ));
+        ));
   }
 }

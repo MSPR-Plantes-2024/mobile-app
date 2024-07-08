@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
 import 'package:mobile_app_arosaje/services/api_picture_service.dart';
@@ -8,19 +9,20 @@ import 'package:mobile_app_arosaje/services/api_plant_condition.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import 'package:mobile_app_arosaje/widgets/picture_form_field.dart';
 
-import '../main.dart';
-import '../models/address.dart';
-import '../models/plant_condition.dart';
+import '../../main.dart';
+import '../../models/address.dart';
+import '../../models/plant_condition.dart';
 
 class AddPlant extends StatefulWidget {
-  final Address address;
-  const AddPlant({super.key, required this.address});
+  final Map<String, dynamic> map;
+  const AddPlant({super.key, required this.map});
 
   @override
   _AddPlantState createState() => _AddPlantState();
 }
 
 class _AddPlantState extends State<AddPlant> {
+  late Address address;
   final _plantFormKey = GlobalKey<FormState>();
   File? _picture;
 
@@ -32,7 +34,8 @@ class _AddPlantState extends State<AddPlant> {
   @override
   void initState() {
     super.initState();
-    ApiPlantConditionService.getPlantConditions().then((value) {
+    address = widget.map['address'] as Address;
+    ApiPlantConditionService.getAll().then((value) {
       setState(() {
         if (value.isNotEmpty) {
           plantConditions = value;
@@ -75,10 +78,13 @@ class _AddPlantState extends State<AddPlant> {
                 decoration: const InputDecoration(
                   labelText: 'Condition',
                 )),
-            TextFormField(
-              controller: plantDescriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: TextFormField(
+                controller: plantDescriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                ),
               ),
             ),
             FormField(validator: (value) {
@@ -102,25 +108,36 @@ class _AddPlantState extends State<AddPlant> {
       actions: [
         TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
             child: const Text('Annuler')),
         TextButton(
             onPressed: () async {
               if (_plantFormKey.currentState!.validate()) {
-                await ApiPlantService.createPlant(Plant(
-                    address: widget.address,
-                    user: MyApp.currentUser!,
-                    name: plantNameController.text,
-                    description: plantDescriptionController.text,
-                    plantCondition: selectedPlantCondition!,
-                    picture: await ApiPictureService.createPicture(Picture(
-                      date: DateTime.now(),
-                      data: _picture!.readAsBytesSync(),
-                    ))));
-                if (mounted) {
-                  Navigator.of(context).pop();
-                }
+                ApiPlantService.create(Plant(
+                        address: address,
+                        user: MyApp.currentUser!,
+                        name: plantNameController.text,
+                        description: plantDescriptionController.text,
+                        plantCondition: selectedPlantCondition!,
+                        picture: await ApiPictureService.create(Picture(
+                          date: DateTime.now(),
+                          data: _picture!.readAsBytesSync(),
+                        ))))
+                    .then((value) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Plante ajoutée')),
+                    );
+                    setState(() {
+                      context.go(widget.map['originRoute'],
+                          extra:
+                              widget.map['originRoute'] == '/request-creation'
+                                  ? ({'address' : address})
+                                  : null);
+                    });
+                  }
+                });
               }
             },
             child: const Text('Ajouter'))

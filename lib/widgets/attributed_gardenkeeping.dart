@@ -14,7 +14,7 @@ class AttributedGardenkeeping extends StatefulWidget {
 }
 
 class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
-  Future<List<Publication>> gardenkeepings = ApiPublicationService.getPublications().then(
+  Future<List<Publication>> gardenkeepings = ApiPublicationService.getAll().then(
       (value) => value
           .where((element) =>
               element.gardenkeeper != null &&
@@ -36,48 +36,51 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
                         "Gardiennage à ${snapshot.data![index].address.city}"),
                     subtitle: Text(snapshot.data![index].dateTimeBegin.toString()),
                     leading: const Icon(Icons.nature_outlined),
-                    trailing: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              context.push('/create-report',
-                                  extra: Map<String, dynamic>.from(({
-                                    'publication': snapshot.data![index]
-                                  })));
-                            },
-                            icon: const Icon(Icons.note_add_outlined)),
-                        IconButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("Me désangager"),
-                                      content: const Text(
-                                          "Voulez-vous vraiment vous désangager de ce gardiennage ?"),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              context.pop;
-                                            },
-                                            child: const Text("Annuler")),
-                                        TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                snapshot.data![index]
-                                                    .gardenkeeper = null;
-                                                ApiPublicationService.updatePublication(
-                                                    snapshot.data![index]);
-                                              });
-                                              context.pop;
-                                            },
-                                            child: const Text("Supprimer")),
-                                      ],
-                                    );
-                                  });
-                            },
-                            icon: const Icon(Icons.delete_outline)),
-                      ],
+                    trailing: SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                context.push('/report-creation',
+                                    extra: Map<String, dynamic>.from(({
+                                      'publication': snapshot.data![index]
+                                    })));
+                              },
+                              icon: const Icon(Icons.note_add_outlined)),
+                          IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Me désangager"),
+                                        content: const Text(
+                                            "Voulez-vous vraiment vous désangager de ce gardiennage ?"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("Annuler")),
+                                          TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  snapshot.data![index]
+                                                      .gardenkeeper = null;
+                                                  ApiPublicationService.update(
+                                                      snapshot.data![index]);
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("Supprimer")),
+                                        ],
+                                      );
+                                    });
+                              },
+                              icon: const Icon(Icons.delete_outline)),
+                        ],
+                      ),
                     ));
               },
             );
@@ -85,7 +88,7 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
             return Text("${snapshot.error}");
           }
           // By default, show a loading spinner.
-          return const SizedBox(
+          return SizedBox(
               height: 50, width: 50, child: CircularProgressIndicator());
         });
   }

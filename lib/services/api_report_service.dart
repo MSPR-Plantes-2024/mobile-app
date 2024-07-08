@@ -3,21 +3,20 @@ import 'dart:developer';
 
 import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/models/report.dart';
-import 'package:mobile_app_arosaje/services/constants.dart';
+import 'package:mobile_app_arosaje/services/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
 class ApiReportService {
-  static Future<void> createReport(Report report) async {
+  static Future<void> create(Report report) async {
+    print(report.pictures.toString());
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.reportsEndpoint);
+      var url = Uri.parse(constants.BASE_URL + constants.REPORTS_ENDPOINT);
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: reportToJson(report));
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode == 200) {
         log('Report created');
       }
@@ -27,14 +26,14 @@ class ApiReportService {
   }
 
   //#endregion
-  static Future<void> updateReport(Report report) async {
+  static Future<void> update(Report report) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.reportsEndpoint}/${report.id}');
+          '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/${report.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: reportToJson(report));
       if (response.statusCode == 200) {
@@ -45,12 +44,12 @@ class ApiReportService {
     }
   }
 
-  static Future<void> deleteReport(Report report) async {
+  static Future<void> delete(Report report) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.reportsEndpoint}/${report.id}');
+          '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/${report.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         log('Report deleted');
@@ -60,12 +59,12 @@ class ApiReportService {
     }
   }
 
-  static Future<Report> getReportById(int id) async {
+  static Future<Report> getById(int id) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.reportsEndpoint}/$id');
+          '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         Report report = Report.fromJson(json.decode(response.body));
@@ -77,13 +76,13 @@ class ApiReportService {
     throw Exception('Failed to load report');
   }
 
-  static Future<List<Report>> getReportsByPublication(
+  static Future<List<Report>> getByPublication(
       Publication publication) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.reportsEndpoint}/publication/${publication.id}');
+          '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/publication/${publication.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         List<Report> reports = reportsFromJson(response.body);

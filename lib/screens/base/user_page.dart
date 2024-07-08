@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/services/api_auth_service.dart';
 import 'package:mobile_app_arosaje/services/api_user_service.dart';
 import 'package:mobile_app_arosaje/widgets/attributed_gardenkeeping.dart';
 import 'package:mobile_app_arosaje/widgets/user_adresses.dart';
@@ -15,12 +16,15 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   final _formKey = GlobalKey<FormState>();
+  final _passwordVerificationFormKey = GlobalKey<FormState>();
   TextEditingController firstNameController =
       TextEditingController(text: MyApp.currentUser!.firstName);
   TextEditingController lastNameController =
       TextEditingController(text: MyApp.currentUser!.lastName);
   TextEditingController emailController =
       TextEditingController(text: MyApp.currentUser!.email);
+  TextEditingController passwordVerificationController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +57,11 @@ class _UserPageState extends State<UserPage> {
             ),
             child: Column(
               children: [
-                const ExpansionTile(title: Text('Adresses et plantes'), children: [
-                  UserAdresses(),
-                ]),
+                const ExpansionTile(
+                    title: Text('Adresses et plantes'),
+                    children: [
+                      UserAdresses(),
+                    ]),
                 ExpansionTile(
                     title: const Text('Informations personnelles'),
                     children: [
@@ -145,20 +151,94 @@ class _UserPageState extends State<UserPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               child: ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   // Validate returns true if the form is valid, or false otherwise.
                                   if (_formKey.currentState!.validate()) {
-                                    ApiUserService.updateUser(User(
-                                        id: MyApp.currentUser!.id,
-                                        firstName: firstNameController.text,
-                                        lastName: lastNameController.text,
-                                        userType: MyApp.currentUser!.userType));
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Changements sauvegardés !')),
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Vérification de mot de passe'),
+                                            content: Form(
+                                              key: _passwordVerificationFormKey,
+                                              child: Column(
+                                                children: [
+                                                  const Text(
+                                                      'Veuillez entrer votre mot de passe pour confirmer les changements'),
+                                                  TextFormField(
+                                                    controller:
+                                                        passwordVerificationController,
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return 'Veuillez entrer votre mot de passe';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text('Annuler'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  if (_passwordVerificationFormKey
+                                                      .currentState!
+                                                      .validate()) {
+                                                    if (await ApiAuthService.login(
+                                                        MyApp.currentUser!
+                                                            .email!,
+                                                        passwordVerificationController
+                                                            .text)) {
+                                                      await ApiUserService.update(User(
+                                                          id: MyApp
+                                                              .currentUser!.id,
+                                                          firstName:
+                                                              firstNameController
+                                                                  .text,
+                                                          lastName:
+                                                              lastNameController
+                                                                  .text,
+                                                          email: emailController
+                                                              .text,
+                                                          password:
+                                                              passwordVerificationController
+                                                                  .text,
+                                                          userType: MyApp
+                                                              .currentUser!
+                                                              .userType));
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                            content: Text(
+                                                                'Changements sauvegardés !')),
+                                                      );
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    } else {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                            content: Text(
+                                                                'Mot de passe incorrect')),
+                                                      );
+                                                    }
+                                                  }
+                                                },
+                                                child: const Text('Confirmer'),
+                                              ),
+                                            ],
+                                          );
+                                        });
                                   }
                                 },
                                 child: const Text(

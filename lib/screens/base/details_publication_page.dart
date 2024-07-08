@@ -189,7 +189,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           children: [
                             ElevatedButton(
                               onPressed: () async {
-                                await ApiPublicationService.updatePublication(publication);
+                                await ApiPublicationService.update(publication);
                                 setState(() {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -203,7 +203,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                await ApiPublicationService.deletePublication(publication);
+                                await ApiPublicationService.delete(publication);
                                 setState(() {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -226,7 +226,6 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
       );
     }
     else {
-      print(publication.gardenkeeper);
       toShow = Scrollbar(
         child: Container(
           margin: const EdgeInsets.only(left: 10, right: 10),
@@ -336,7 +335,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                   ElevatedButton(
                       onPressed: () async {
                         publication.gardenkeeper = null;
-                        await ApiPublicationService.updatePublication(publication);
+                        await ApiPublicationService.update(publication);
                         setState(() {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -360,7 +359,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
               ElevatedButton(
                 onPressed: () async {
                   publication.gardenkeeper = MyApp.currentUser;
-                  await ApiPublicationService.updatePublication(publication);
+                  await ApiPublicationService.update(publication);
                   setState(() {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'user.dart';
 
-List<Message> messagesFromJson(String str) => List<Message>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Message.fromJson(x)));
+//List<Message> messagesFromJson(String str) => List<Message>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => Message.fromJson(x)));
+List<List<Message>> messagesFromJson(String str) => List<List<Message>>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => List<Message>.from(x.map((x) => Message.fromJson(x)))));
 
 String messageToJson(Message data) => json.encode(data.toJson());
 

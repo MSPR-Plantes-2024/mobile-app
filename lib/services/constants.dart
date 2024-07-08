@@ -1,16 +1,15 @@
 import '../secrets.dart';
 
-class ApiConstants {
-  static const String baseUrl = 'http://$ipAddress:8080/api/v1';
-  static late String jdkToken;
-  static const String usersEndpoint = '/users';
-  static const String publicationsEndpoint = '/publications';
-  static const String addressesEndpoint = '/addresses';
-  static const String commentsEndpoint = '/comments';
-  static const String messagesEndpoint = '/messages';
-  static const String picturesEndpoint = '/pictures';
-  static const String plantConditionsEndpoint = '/plantsConditions';
-  static const String plantsEndpoint = '/plants';
-  static const String reportsEndpoint = '/reports';
-  static const String userTypesEndpoint = '/user_types';
-}
+const String BASE_URL = 'http://$ipAddress:8080/api/v1';
+late String JDK_TOKEN;
+const String USERS_ENDPOINT = '/users';
+const String PUBLICATION_ENDPOINT = '/publications';
+const String ADDRESSES_ENDPOINT = '/addresses';
+const String COMMENTS_ENDPOINT = '/comments';
+const String MESSAGES_ENDPOINT = '/messages';
+const String PICTURES_ENDPOINT = '/pictures';
+const String PLANT_CONDITIONS_ENDPOINT = '/plantsConditions';
+const String PLANTS_ENDPOINT = '/plants';
+const String REPORTS_ENDPOINT = '/reports';
+const String USER_TYPES_ENDPOINT = '/user_types';
+

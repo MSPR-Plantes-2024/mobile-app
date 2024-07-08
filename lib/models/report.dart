@@ -38,7 +38,6 @@ class Report {
   }
 
   Map<String, dynamic> toJson() {
-    log('pictures = $pictures');
     return {
       "id": id,
       "title": title,

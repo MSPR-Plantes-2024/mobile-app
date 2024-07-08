@@ -1,61 +1,58 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:mobile_app_arosaje/models/comment.dart';
+import 'package:mobile_app_arosaje/services/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
-import '../main.dart';
-import '../models/user.dart';
-import 'constants.dart' as constants;
-
-class ApiUserService {
-  static Future<void> update(User user) async {
+class ApiCommentService {
+  static Future<void> update(Comment comment) async {
     try {
       var url = Uri.parse(
-          '${constants.BASE_URL}${constants.USERS_ENDPOINT}/${user.id}');
+          '${constants.BASE_URL}${constants.COMMENTS_ENDPOINT}/${comment.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
-          body: userToJson(user));
+          body: commentToJson(comment));
       if (response.statusCode == 200) {
-        MyApp.currentUser = user;
-        log('User updated');
+        log('Comment updated');
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
   }
 
-  static Future<void> delete(User user) async {
+  static Future<void> delete(Comment comment) async {
     try {
       var url = Uri.parse(
-          '${constants.BASE_URL}${constants.USERS_ENDPOINT}/${user.id}');
+          '${constants.BASE_URL}${constants.COMMENTS_ENDPOINT}/${comment.id}');
       var response = await http.delete(url, headers: <String, String>{
         'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
-        log('User deleted');
+        log('Comment deleted');
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
   }
 
-  static Future<User> getById(int id) async {
+  static Future<Comment> getById(int id) async {
     try {
       var url =
-      Uri.parse('${constants.BASE_URL}${constants.USERS_ENDPOINT}/$id');
+      Uri.parse('${constants.BASE_URL}${constants.COMMENTS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
         'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
-        User user = User.fromJson(json.decode(response.body));
-        return user;
+        Comment comment = Comment.fromJson(json.decode(response.body));
+        return comment;
       }
     } catch (e, s) {
       log('Exception: $e\nStack trace: $s');
     }
-    throw Exception('Failed to load user');
+    throw Exception('Failed to load comment');
   }
 }

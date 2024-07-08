@@ -15,20 +15,13 @@ class UserAdresses extends StatefulWidget {
 }
 
 class _UserAdressesState extends State<UserAdresses> {
-  Future<List<Address>>? _futureAddresses;
-
-  @override
-  void initState() {
-    super.initState();
-    _futureAddresses = ApiAddressService.getAddressesByUser(MyApp.currentUser!);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         FutureBuilder<List<Address>>(
-            future: _futureAddresses,
+            future: ApiAddressService.getByUser(MyApp.currentUser!),
             builder: (context, AsyncSnapshot<List<Address>> snapshot) {
               if (snapshot.hasData) {
                 return SizedBox(
@@ -39,7 +32,7 @@ class _UserAdressesState extends State<UserAdresses> {
                         List<Address> addresses = snapshot.data!;
                         return ListTile(
                           onTap: () {
-                            context.go('/address-managment',
+                            context.go('/address-management',
                                 extra: Map<String, dynamic>.from(
                                     {'address': addresses[index],
                                     'originRoute': '/user'}));

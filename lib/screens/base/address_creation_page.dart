@@ -82,9 +82,9 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                     Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              ApiAddressService.createAddress(Address(
+                              await ApiAddressService.create(Address(
                                   user: MyApp.currentUser!,
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,

@@ -16,69 +16,70 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends State<ChatListPage> {
   late List<Message> messagesToSort;
 
-  Future<List<List<Message>>> prepareMessages() async {
-    List<List<Message>> messages = [];
-    messagesToSort = await ApiMessageService.getMessageByUser(MyApp.currentUser!);
-    if (messagesToSort.isNotEmpty) {
-      List<Message> messagesToSortCopy = List<Message>.from(messagesToSort);
-      for (Message message in messagesToSortCopy) {
-        if (message.sender.id == MyApp.currentUser!.id) {
-          if(messages.isNotEmpty) {
-            List<List<Message>> messagesCopy = List<List<Message>>.from(messages);
-            for (List<Message> messageList in messagesCopy) {
-              if (message.receiver.id == messageList.first.receiver.id) {
-                messages.remove(messageList);
-                messageList.add(message);
-                messages.add(messageList);
-                messagesToSort.remove(message);
-                break;
-              }
-            }
-            if (messagesToSort.contains(message)) {
-              messages.add([message]);
-              messagesToSort.remove(message);
-            }
-          } else {
-            messages.add([message]);
-            messagesToSort.remove(message);
-          }
-        }
-      }
-
-      messagesToSortCopy = List<Message>.from(messagesToSort);
-      for (Message message in messagesToSort) {
-        List<List<Message>> messagesCopy = List<List<Message>>.from(messages);
-        for (List<Message> messageList in messagesCopy) {
-          if (messageList.first.receiver.id == message.sender.id) {
-            messages.remove(messageList);
-            messageList.add(message);
-            messages.add(messageList);
-            messagesToSortCopy.remove(message);
-            break;
-          }
-        }
-        if (messagesToSortCopy.contains(message)) {
-          messages.add([message]);
-          messagesToSortCopy.remove(message);
-        }
-      }
-      for (List<Message> message in messages) {
-        message.sort((a, b) => a.date.compareTo(b.date));
-      }
-      messages.sort((a, b) => b.last.date.compareTo(a.last.date));
-      return messages;
-    }
-    return [];
-  }
+ // Future<List<List<Message>>> prepareMessages() async {
+ //    List<List<Message>> messages = [];
+ //    messagesToSort = await ApiMessageService.getMessagesByUser(MyApp.currentUser!);
+ //    if (messagesToSort.isNotEmpty) {
+ //      List<Message> messagesToSortCopy = List<Message>.from(messagesToSort);
+ //      for (Message message in messagesToSortCopy) {
+ //        if (message.sender.id == MyApp.currentUser!.id) {
+ //          if(messages.isNotEmpty) {
+ //            List<List<Message>> messagesCopy = List<List<Message>>.from(messages);
+ //            for (List<Message> messageList in messagesCopy) {
+ //              if (message.receiver.id == messageList.first.receiver.id) {
+ //                messages.remove(messageList);
+ //                messageList.add(message);
+ //                messages.add(messageList);
+ //                messagesToSort.remove(message);
+ //                break;
+ //              }
+ //            }
+ //            if (messagesToSort.contains(message)) {
+ //              messages.add([message]);
+ //              messagesToSort.remove(message);
+ //            }
+ //          } else {
+ //            messages.add([message]);
+ //            messagesToSort.remove(message);
+ //          }
+ //        }
+ //      }
+ //
+ //      messagesToSortCopy = List<Message>.from(messagesToSort);
+ //      for (Message message in messagesToSort) {
+ //        List<List<Message>> messagesCopy = List<List<Message>>.from(messages);
+ //        for (List<Message> messageList in messagesCopy) {
+ //          if (messageList.first.receiver.id == message.sender.id) {
+ //            messages.remove(messageList);
+ //            messageList.add(message);
+ //            messages.add(messageList);
+ //            messagesToSortCopy.remove(message);
+ //            break;
+ //          }
+ //        }
+ //        if (messagesToSortCopy.contains(message)) {
+ //          messages.add([message]);
+ //          messagesToSortCopy.remove(message);
+ //        }
+ //      }
+ //      for (List<Message> message in messages) {
+ //        message.sort((a, b) => a.date.compareTo(b.date));
+ //      }
+ //      messages.sort((a, b) => b.last.date.compareTo(a.last.date));
+ //      return messages;
+ //    }
+ //    return [];
+ //  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<List<Message>>>(
-      future: prepareMessages(),
+      //future: prepareMessages(),
+      future: ApiMessageService.getByUser(MyApp.currentUser!),
       builder:
           (BuildContext context, AsyncSnapshot<List<List<Message>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

@@ -20,30 +20,28 @@ class _BaseLayoutState extends State<BaseLayout> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70),
           child: AppBar(
-            automaticallyImplyLeading: false,
             leading: IconButton(
                 onPressed: () {
                   context.push('/user');
                 },
                 icon: const Icon(Icons.account_circle_outlined)),
-            title: const Center(
-              child: SizedBox(
+            title: Center(
+              child: Container(
+                  padding: const EdgeInsets.only(right: 8),
                   height: 60,
-                  child: Image(
+                  child: const Image(
                     image: AssetImage("assets/images/logo.png"),
-                    height: 65,
+                    height: 60,
                   ),
               ),
             ),
             actions: [
-              Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: IconButton(
-                    onPressed: () {
-                      context.push("/chat-list");
-                    },
-                    icon: const Icon(Icons.chat_outlined),
-                  ))
+              IconButton(
+                onPressed: () {
+                  context.push("/chat-list");
+                },
+                icon: const Icon(Icons.chat_outlined),
+              )
             ],
             backgroundColor: Colors.white,
             elevation: 5,
@@ -54,7 +52,7 @@ class _BaseLayoutState extends State<BaseLayout> {
             valueListenable: _routeNameNotifier,
             builder: (context, value, child) {
               return Visibility(
-                  visible: value == '/' || value == '/my_publications'
+                  visible: value == '/' || value == '/my-publications'
                       ? true
                       : false,
                   child: FloatingActionButton(
@@ -84,7 +82,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                     bottomNavigationBarIndex = index;
                   });
                 } else {
-                  context.go('/my_publications');
+                  context.go('/my-publications');
                   setState(() {
                     bottomNavigationBarIndex = index;
                   });

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_app_arosaje/models/address.dart';
 import 'package:mobile_app_arosaje/screens/base/address_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/address_managment_page.dart';
 import 'package:mobile_app_arosaje/screens/base/base_layout.dart';
@@ -15,6 +16,8 @@ import 'package:mobile_app_arosaje/screens/base/user_page.dart';
 import 'package:mobile_app_arosaje/screens/login/account_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/login/login_layout.dart';
 import 'package:mobile_app_arosaje/screens/login/login_page.dart';
+import 'package:mobile_app_arosaje/widgets/contextual_dialogs/add_plant.dart';
+import 'package:mobile_app_arosaje/widgets/contextual_dialogs/delete_address.dart';
 
 import 'models/user.dart';
 
@@ -41,64 +44,89 @@ class _MyAppState extends State<MyApp> {
         ShellRoute(
             routes: [
               GoRoute(
-                path: '/',
-                builder: (context, state) => MyApp.currentUser != null
-                    ? HomePage(
+                  path: '/',
+                  builder: (context, state) => MyApp.currentUser != null
+                      ? HomePage(
+                          key: ValueKey(state.name),
+                          myPublications: false,
+                        )
+                      : const LoginPage(),
+                  routes: [
+                    GoRoute(
+                      path: 'account-creation',
+                      builder: (context, state) => const AccountCreationPage(),
+                    ),
+                    GoRoute(
+                      path: 'my-publications',
+                      builder: (context, state) => HomePage(
                         key: ValueKey(state.name),
-                        myPublications: false,
-                      )
-                    : const LoginPage(),
-              ),
-              GoRoute(
-                path: '/account-creation',
-                builder: (context, state) => const AccountCreationPage(),
-              ),
-              GoRoute(
-                path: '/my_publications',
-                builder: (context, state) => HomePage(
-                  key: ValueKey(state.name),
-                  myPublications: true,
-                ),
-              ),
-              GoRoute(
-                path: '/user',
-                builder: (context, state) => const UserPage(),
-              ),
-              GoRoute(
-                path: '/request-creation',
-                builder: (context, state) => RequestCreationPage(),
-              ),
-              GoRoute(
-                  path: '/address-managment',
-                  builder: (context, state) {
-                    return AddressManagmentPage(
-                        map: state.extra as Map<String, dynamic>);
-                  }),
-              GoRoute(
-                  path: '/address-creation',
-                  builder: (context, state) => AddressCreationPage(
-                      map: state.extra as Map<String, dynamic>)),
-              GoRoute(
-                  path: '/details-publication',
-                  builder: (context, state) {
-                    return DetailsPublicationPage(
-                        map: state.extra as Map<String, dynamic>);
-                  }),
-              GoRoute(
-                path: '/chat-list',
-                builder: (context, state) => const ChatListPage(),
-              ),
-              GoRoute(
-                  path: '/chat',
-                  builder: (context, state) {
-                    return ChatPage(map: state.extra as Map<String, dynamic>);
-                  }),
-              GoRoute(
-                  path: '/report-creation',
-                  builder: (context, state) {
-                    return CreateReportPage(
-                        map: state.extra as Map<String, dynamic>);
-                  }),
+                        myPublications: true,
+                      ),
+                    ),
+                    GoRoute(
+                      path: 'user',
+                      builder: (context, state) => const UserPage(),
+                    ),
+                    GoRoute(
+                        path: 'request-creation',
+                        builder: (context, state) {
+                          print(state.extra.toString());
+                          return state.extra != null
+                              ? RequestCreationPage(
+                                map: state.extra as Map<String, dynamic>)
+                              : const RequestCreationPage();
+                        }),
+                    GoRoute(
+                        path: 'address-management',
+                        builder: (context, state) {
+                          return AddressManagmentPage(
+                              map: state.extra as Map<String, dynamic>);
+                        },
+                        routes: [
+                          GoRoute(
+                            path: 'delete-address',
+                            pageBuilder: (BuildContext context, GoRouterState state) {
+                            return DialogPage(
+                                builder: (_) => DeleteAddress(
+                                    map: state.extra as Map<String, dynamic>));
+                        },
+                    )
+                        ]),
+                    GoRoute(
+                        path: 'address-creation',
+                        builder: (context, state) => AddressCreationPage(
+                            map: state.extra as Map<String, dynamic>)),
+                    GoRoute(
+                        path: 'details-publication',
+                        builder: (context, state) {
+                          return DetailsPublicationPage(
+                              map: state.extra as Map<String, dynamic>);
+                        }),
+                    GoRoute(
+                      path: 'chat-list',
+                      builder: (context, state) => const ChatListPage(),
+                    ),
+                    GoRoute(
+                        path: 'chat',
+                        builder: (context, state) {
+                          return ChatPage(
+                              map: state.extra as Map<String, dynamic>);
+                        }),
+                    GoRoute(
+                        path: 'report-creation',
+                        builder: (context, state) {
+                          return CreateReportPage(
+                              map: state.extra as Map<String, dynamic>);
+                        }),
+                    GoRoute(
+                      path: 'add-plant',
+                      pageBuilder: (BuildContext context, GoRouterState state) {
+                        return DialogPage(
+                            builder: (_) => AddPlant(
+                                map: state.extra as Map<String, dynamic>));
+                      },
+                    ),
+                  ]),
             ],
             builder: (context, state, child) {
               log(GoRouterState.of(context).fullPath!);
@@ -128,6 +156,44 @@ class _MyAppState extends State<MyApp> {
       routerConfig: _router,
     );
   }
+}
+
+/// A dialog page with Material entrance and exit animations, modal barrier color,
+/// and modal barrier behavior (dialog is dismissible with a tap on the barrier).
+class DialogPage<T> extends Page<T> {
+  final Offset? anchorPoint;
+  final Color? barrierColor;
+  final bool barrierDismissible;
+  final String? barrierLabel;
+  final bool useSafeArea;
+  final CapturedThemes? themes;
+  final WidgetBuilder builder;
+
+  const DialogPage({
+    required this.builder,
+    this.anchorPoint,
+    this.barrierColor = Colors.black54,
+    this.barrierDismissible = true,
+    this.barrierLabel,
+    this.useSafeArea = true,
+    this.themes,
+    super.key,
+    super.name,
+    super.arguments,
+    super.restorationId,
+  });
+
+  @override
+  Route<T> createRoute(BuildContext context) => DialogRoute<T>(
+      context: context,
+      settings: this,
+      builder: builder,
+      anchorPoint: anchorPoint,
+      barrierColor: barrierColor,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: barrierLabel,
+      useSafeArea: useSafeArea,
+      themes: themes);
 }
 
 class RestartWidget extends StatefulWidget {

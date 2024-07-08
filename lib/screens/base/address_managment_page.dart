@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
-import 'package:mobile_app_arosaje/widgets/add_plant.dart';
 
 import '../../main.dart';
 import '../../models/address.dart';
@@ -107,8 +106,9 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                 width: 250,
                                 child: Scrollbar(
                                   child: FutureBuilder<List<Plant>>(
-                                      future: ApiPlantService.getPlantsByAddress(
-                                          address),
+                                      future:
+                                          ApiPlantService.getByAddress(
+                                              address),
                                       builder: (BuildContext context,
                                           AsyncSnapshot<List<Plant>> snapshot) {
                                         if (snapshot.hasData) {
@@ -146,11 +146,10 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                 padding: const EdgeInsets.only(top: 5),
                                 child: IconButton(
                                     onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AddPlant(address: address);
-                                          });
+                                      context.push('/add-plant', extra: {
+                                        'address': address,
+                                        'originRoute': '/address-management'
+                                      });
                                     },
                                     icon: const Icon(Icons.add)),
                               )
@@ -162,9 +161,9 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                     Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_addressFormKey.currentState!.validate()) {
-                              ApiAddressService.updateAddress(Address(
+                              await ApiAddressService.update(Address(
                                   id: address.id,
                                   user: MyApp.currentUser!,
                                   postalAddress: postalAddressController.text,
@@ -184,41 +183,13 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                           child: const Text("Modifier l'addresse")),
                     ),
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      child: ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Supprimer l\'adresse'),
-                                    content: const Text(
-                                        'Êtes-vous sûr(e) de vouloir supprimer cette adresse ?'
-                                            '\nCette action est irréversible et cela supprimera également'
-                                            ' les plantes liées à cette adresse.'),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Annuler')),
-                                      TextButton(
-                                          onPressed: () {
-                                            ApiAddressService.deleteAddress(address);
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        'Adresse supprimée')));
-                                            context.go(widget.map['originRoute']);
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Confirmer'))
-                                    ],
-                                  );
-                                });
-                          },
-                          child: const Text("Supprimer l'addresse")
-                    ))
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              context.push('/address-management/delete-address',
+                                  extra: {'address': address});
+                            },
+                            child: const Text("Supprimer l'addresse")))
                   ],
                 ),
               )

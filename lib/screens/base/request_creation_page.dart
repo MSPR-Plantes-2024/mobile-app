@@ -10,10 +10,10 @@ import 'package:mobile_app_arosaje/widgets/date_time_picker.dart';
 import '../../main.dart';
 import '../../models/address.dart';
 import '../../models/plant.dart';
-import '../../widgets/add_plant.dart';
 
 class RequestCreationPage extends StatefulWidget {
-  const RequestCreationPage({super.key});
+  final Map<String, dynamic> map;
+  const RequestCreationPage({super.key, this.map = const {}});
 
   @override
   _RequestCreationPageState createState() => _RequestCreationPageState();
@@ -34,7 +34,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
   TextEditingController descriptionImput = TextEditingController();
 
   Future<void> setPlantList(Address address) async {
-    List<Plant> plants = await ApiPlantService.getPlantsByAddress(address);
+    List<Plant> plants = await ApiPlantService.getByAddress(address);
     if (plants.isNotEmpty) {
       setState(() {
         plantSelections = {};
@@ -52,16 +52,20 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
   @override
   void initState() {
     super.initState();
-    ApiAddressService.getAddressesByUser(MyApp.currentUser!).then((value) {
+    ApiAddressService.getByUser(MyApp.currentUser!).then((value) {
       if (value.isNotEmpty) {
         setState(() {
           addresses = value;
-          selectedAddressNotifier.value = addresses.first;
+          if (widget.map['address'] != null) {
+            selectedAddressNotifier.value = addresses.firstWhere(
+                (element) => element.id == widget.map['address'].id);
+          } else {
+            selectedAddressNotifier.value = addresses.first;
+          }
           setPlantList(addresses.first);
         });
       }
     });
-
     selectedAddressNotifier.addListener(() {
       setPlantList(selectedAddressNotifier.value!);
     });
@@ -188,14 +192,11 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                               const EdgeInsets.only(top: 5),
                                           child: IconButton(
                                               onPressed: () {
-                                                showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AddPlant(
-                                                          address:
-                                                              selectedAddressNotifier
-                                                                  .value!);
+                                                context.push('/add-plant',
+                                                    extra:
+                                                    {
+                                                      'address' : selectedAddressNotifier.value,
+                                                      'originRoute': '/request-creation'
                                                     });
                                                 },
                                               icon: const Icon(Icons.add)),
@@ -268,7 +269,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       .where((entry) => entry.value)
                                       .map((entry) => entry.key)
                                       .toList();
-                                  await ApiPublicationService.createPublication(Publication(
+                                  await ApiPublicationService.create(Publication(
                                       dateTimeBegin: pickedDateTimeBegin!,
                                       dateTimeEnd: pickedDateTimeEnd!,
                                       address: selectedAddressNotifier.value!,

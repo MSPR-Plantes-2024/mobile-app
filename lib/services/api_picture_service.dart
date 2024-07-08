@@ -5,16 +5,16 @@ import 'package:mobile_app_arosaje/models/picture.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'constants.dart';
+import 'constants.dart' as constants;
 
 class ApiPictureService {
-  static Future<Picture?> createPicture(Picture picture) async {
+  static Future<Picture?> create(Picture picture) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.picturesEndpoint);
+      var url = Uri.parse(constants.BASE_URL + constants.PICTURES_ENDPOINT);
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
           },
           body: pictureToJson(picture));
       if (response.statusCode == 200) {
@@ -27,11 +27,11 @@ class ApiPictureService {
     return null;
   }
 
-  static Future<List<Picture>> getPictures() async {
+  static Future<List<Picture>> getAll() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.picturesEndpoint);
+      var url = Uri.parse(constants.BASE_URL + constants.PICTURES_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         List<Picture> pictures = picturesFromJson(response.body);
@@ -43,12 +43,12 @@ class ApiPictureService {
     return [];
   }
 
-  static Future<Picture> getPictureById(int id) async {
+  static Future<Picture> getById(int id) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.picturesEndpoint}/$id');
+          '${constants.BASE_URL}${constants.PICTURES_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${ApiConstants.jdkToken}'
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
       });
       if (response.statusCode == 200) {
         Picture picture = Picture.fromJson(json.decode(response.body));
@@ -58,5 +58,20 @@ class ApiPictureService {
       log('Exception: $e\nStack trace: $s');
     }
     throw Exception('Failed to load plant');
+  }
+
+  static Future<void> delete(Picture picture) async {
+    try {
+      var url = Uri.parse(
+          '${constants.BASE_URL}${constants.PICTURES_ENDPOINT}/${picture.id}');
+      var response = await http.delete(url, headers: <String, String>{
+        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+      });
+      if (response.statusCode == 200) {
+        log('Picture deleted');
+      }
+    } catch (e, s) {
+      log('Exception: $e\nStack trace: $s');
+    }
   }
 }

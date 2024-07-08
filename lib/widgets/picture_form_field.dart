@@ -25,27 +25,43 @@ class _PictureFormFieldState extends State<PictureFormField> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          icon: const Icon(Icons.add_a_photo_outlined),
-          onPressed: () {
-            _openImagePicker(ImageSource.camera).then((pickedFile) {
-              setState(() {
-                widget.onPictureChanged(pickedFile);
-              });
-            });
-          },
+        Container(
+          margin: const EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey,
+              width: 1,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.add_a_photo_outlined),
+                onPressed: () {
+                  _openImagePicker(ImageSource.camera).then((pickedFile) {
+                    setState(() {
+                      widget.onPictureChanged(pickedFile);
+                    });
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.folder_outlined),
+                onPressed: () {
+                  _openImagePicker(ImageSource.gallery).then((pickedFile) {
+                    setState(() {
+                      widget.onPictureChanged(pickedFile);
+                    });
+                  });
+                },
+              ),
+            ],
+          ),
         ),
-        IconButton(
-          icon: const Icon(Icons.folder_outlined),
-          onPressed: () {
-            _openImagePicker(ImageSource.gallery).then((pickedFile) {
-              setState(() {
-                widget.onPictureChanged(pickedFile);
-              });
-            });
-          },
-        ),
-        Icon(widget.picture == null ? Icons.close : Icons.check),
+        Icon((widget.picture == null ? Icons.close : Icons.check),
+            color: (widget.picture == null ? Colors.red : Colors.green)
+    ),
       ],
     );
   }
