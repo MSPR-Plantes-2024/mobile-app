@@ -1,7 +1,6 @@
 import '../secrets.dart';
 
 const String BASE_URL = 'http://$ipAddress:8080/api/v1';
-late String JDK_TOKEN;
 const String USERS_ENDPOINT = '/users';
 const String PUBLICATION_ENDPOINT = '/publications';
 const String ADDRESSES_ENDPOINT = '/addresses';

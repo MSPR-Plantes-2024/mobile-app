@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_message_service.dart';
 import 'package:mobile_app_arosaje/widgets/message_bubble.dart';
@@ -16,6 +17,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   List<Message> messages = [];
+  User currentUser = User.getCurrent();
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +62,12 @@ class _ChatPageState extends State<ChatPage> {
                     await ApiMessageService.create(Message(
                         text: newMessageController.text,
                         date: DateTime.now(),
-                        sender: MyApp.currentUser!,
+                        sender: currentUser,
                         receiver: contact));
                     messages.add((Message(
                         text: newMessageController.text,
                         date: DateTime.now(),
-                        sender: MyApp.currentUser!,
+                        sender: currentUser,
                         receiver: contact)));
                     newMessageController.clear();
                     setState(() {});

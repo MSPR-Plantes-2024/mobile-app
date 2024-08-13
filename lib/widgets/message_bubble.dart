@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 
 import '../main.dart';
 import '../models/message.dart';
@@ -11,11 +13,10 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isMe = message.sender.id == MyApp.currentUser!.id;
     return Container(
       decoration: BoxDecoration(
-        color: isMe ? Colors.green[300] : Colors.grey[300],
-        borderRadius: isMe
+        color: User.isCurrent(message.sender) ? Colors.green[300] : Colors.grey[300],
+        borderRadius: User.isCurrent(message.sender)
             ? const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -30,8 +31,8 @@ class MessageBubble extends StatelessWidget {
         horizontal: 16,
       ),
       margin:  EdgeInsets.only(
-        left: isMe ? 50 : 6,
-        right: isMe ? 6 : 80,
+        left: User.isCurrent(message.sender) ? 50 : 6,
+        right: User.isCurrent(message.sender) ? 6 : 80,
         top: 8,
         bottom: 8,
       ),
@@ -41,7 +42,7 @@ class MessageBubble extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (!isMe)
+              if (!User.isCurrent(message.sender))
                 Text(
                   '${message.sender.firstName} ${message.sender.lastName}',
                   style: const TextStyle(
@@ -59,7 +60,7 @@ class MessageBubble extends StatelessWidget {
                 DateFormat('dd/MM/yyyy HH:mm').format(message.date),
                 style: TextStyle(
                   fontSize: 12,
-                  color: isMe ? Colors.white : Colors.grey,
+                  color: User.isCurrent(message.sender) ? Colors.white : Colors.grey,
                 ),
               ),
             ],

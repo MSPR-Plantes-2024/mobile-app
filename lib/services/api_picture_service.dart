@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 
 import 'package:http/http.dart' as http;
@@ -14,7 +15,7 @@ class ApiPictureService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: pictureToJson(picture));
       if (response.statusCode == 200) {
@@ -31,7 +32,7 @@ class ApiPictureService {
     try {
       var url = Uri.parse(constants.BASE_URL + constants.PICTURES_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<Picture> pictures = picturesFromJson(response.body);
@@ -48,7 +49,7 @@ class ApiPictureService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PICTURES_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         Picture picture = Picture.fromJson(json.decode(response.body));
@@ -65,7 +66,7 @@ class ApiPictureService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PICTURES_ENDPOINT}/${picture.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         log('Picture deleted');

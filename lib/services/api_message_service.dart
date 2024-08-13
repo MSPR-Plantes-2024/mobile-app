@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/models/message.dart';
 import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +12,7 @@ class ApiMessageService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.MESSAGES_ENDPOINT}/user/${user.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<List<Message>> messages = messagesFromJson( response.body);
@@ -29,7 +30,7 @@ class ApiMessageService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: messageToJson(message));
       if (response.statusCode == 201) {
@@ -47,7 +48,7 @@ class ApiMessageService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: messageToJson(message));
       if (response.statusCode == 200) {
@@ -63,7 +64,7 @@ class ApiMessageService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.MESSAGES_ENDPOINT}/${message.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         log('Message deleted');

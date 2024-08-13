@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 
 import '../../main.dart';
@@ -15,10 +17,12 @@ class AddressCreationPage extends StatefulWidget {
 
 class _AddressCreationPageState extends State<AddressCreationPage> {
   final _formKey = GlobalKey<FormState>();
+  User currentUser = User.getCurrent();
   TextEditingController postalAddressController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController zipCodeController = TextEditingController();
   TextEditingController otherInformationsController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +89,7 @@ class _AddressCreationPageState extends State<AddressCreationPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               await ApiAddressService.create(Address(
-                                  user: MyApp.currentUser!,
+                                  user: currentUser,
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,
                                   zipCode: zipCodeController.text,

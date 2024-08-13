@@ -1,4 +1,7 @@
 import 'dart:convert';
+
+import 'package:get_storage/get_storage.dart';
+
 List<User> usersFromJson(String str) =>
     List<User>.from(json.decode(utf8.decode(str.codeUnits)).map((x) => User.fromJson(x)));
 String userToJson(User data) => json.encode(data.toJson());
@@ -42,4 +45,23 @@ class User {
         "password": password,
         "userType": userType,
       };
+
+  static User getCurrent() {
+    if (GetStorage().read('currentUser') is User) {
+      return GetStorage().read('currentUser');
+    }
+    return User.fromJson(GetStorage().read('currentUser'));
+  }
+  static void setCurrent(User user) {
+    GetStorage().write('currentUser', user);
+  }
+  static void removeCurrent() {
+    GetStorage().remove('currentUser');
+  }
+  static bool isCurrent(User user) {
+    return user.id == GetStorage().read('currentUser').id;
+  }
+  static bool isCurrentNull() {
+    return GetStorage().read('currentUser') == null;
+  }
 }

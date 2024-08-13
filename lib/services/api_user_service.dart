@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
@@ -15,11 +16,11 @@ class ApiUserService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: userToJson(user));
       if (response.statusCode == 200) {
-        MyApp.currentUser = user;
+        User.setCurrent(user);
         log('User updated');
       }
     } catch (e, s) {
@@ -32,7 +33,7 @@ class ApiUserService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.USERS_ENDPOINT}/${user.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         log('User deleted');
@@ -47,7 +48,7 @@ class ApiUserService {
       var url =
       Uri.parse('${constants.BASE_URL}${constants.USERS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         User user = User.fromJson(json.decode(response.body));

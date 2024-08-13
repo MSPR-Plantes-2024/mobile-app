@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/models/report.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 import 'package:mobile_app_arosaje/services/api_picture_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
@@ -37,7 +39,7 @@ class _DeleteAddressState extends State<DeleteAddress> {
         TextButton(
             onPressed: () async {
               List<Plant> plants = await ApiPlantService.getByAddress(address);
-              List<Publication> publications = await ApiPublicationService.getByUser(MyApp.currentUser!);
+              List<Publication> publications = await ApiPublicationService.getByUser(User.getCurrent());
               for (Plant plant in plants) {
                 for (Publication publication in publications) {
                   // List<Comment> comments = await ApiCommentService.getCommentsByPublication(publication);

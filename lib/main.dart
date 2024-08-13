@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/screens/base/address_creation_page.dart';
 import 'package:mobile_app_arosaje/screens/base/address_managment_page.dart';
 import 'package:mobile_app_arosaje/screens/base/base_layout.dart';
@@ -18,15 +20,12 @@ import 'package:mobile_app_arosaje/screens/login/login_page.dart';
 import 'package:mobile_app_arosaje/widgets/contextual_dialogs/add_edit_plant.dart';
 import 'package:mobile_app_arosaje/widgets/contextual_dialogs/delete_plant.dart';
 
-import 'models/user.dart';
-
-void main() {
+Future<void> main() async {
+  await GetStorage.init();
   runApp(const RestartWidget(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
-  static User? currentUser;
-
   const MyApp({super.key});
 
   @override
@@ -44,12 +43,12 @@ class _MyAppState extends State<MyApp> {
             routes: [
               GoRoute(
                   path: '/',
-                  builder: (context, state) => MyApp.currentUser != null
-                      ? HomePage(
+                  builder: (context, state) => User.isCurrentNull()
+                      ? const LoginPage()
+                      : HomePage(
                           key: ValueKey(state.name),
                           myPublications: false,
-                        )
-                      : const LoginPage(),
+                        ),
                   routes: [
                     GoRoute(
                       path: 'account-creation',
@@ -130,9 +129,9 @@ class _MyAppState extends State<MyApp> {
             ],
             builder: (context, state, child) {
               log(GoRouterState.of(context).fullPath!);
-              return MyApp.currentUser != null
-                  ? BaseLayout(child: child)
-                  : LoginLayout(child: child);
+              return User.isCurrentNull()
+                  ? LoginLayout(child: child)
+                  : BaseLayout(child: child);
             }),
       ],
     );

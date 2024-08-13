@@ -3,8 +3,9 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 
 import '../../models/publication.dart';
@@ -35,6 +36,8 @@ class GlobalPublications extends StatefulWidget {
 }
 
 class _GlobalPublicationsState extends State<GlobalPublications> {
+  User currentUser = User.getCurrent();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +56,7 @@ class _GlobalPublicationsState extends State<GlobalPublications> {
                 if (snapshot.hasData) {
                   List<Publication> publications = snapshot.data!
                       .where((element) =>
-                          element.publisher.id != MyApp.currentUser!.id)
+                          element.publisher.id != currentUser.id)
                       .toList();
                   return ListView.builder(
                     itemCount: publications.length,
@@ -161,6 +164,8 @@ class MyPublications extends StatefulWidget {
 }
 
 class _MyPublicationsState extends State<MyPublications> {
+  User currentUser = User.getCurrent();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -173,14 +178,14 @@ class _MyPublicationsState extends State<MyPublications> {
       child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: FutureBuilder<List<Publication>>(
-              //future: ApiPublicationService.getPublicationsByUser(MyApp.currentUser!),
+              //future: ApiPublicationService.getPublicationsByUser(GetStorage().read('currentUser')!),
               future: ApiPublicationService.getAll(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Publication>> snapshot) {
                 if (snapshot.hasData) {
                   List<Publication> publications = snapshot.data!
                       .where((element) =>
-                          element.publisher.id == MyApp.currentUser!.id)
+                         User.isCurrent(element.publisher))
                       .toList();
                   return ListView.builder(
                     itemCount: publications.length,

@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 
-import '../../main.dart';
 import '../../models/publication.dart';
 import '../../widgets/date_time_picker.dart';
 import '../../widgets/image_carousel.dart';
@@ -19,6 +20,8 @@ class DetailsPublicationPage extends StatefulWidget {
 }
 
 class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
+  User currentUser = User.getCurrent();
+  
   @override
   Widget build(BuildContext context) {
     final Publication publication = widget.map['publication'];
@@ -30,7 +33,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
     DateTime? pickedDateTime;
     TextEditingController descriptionInput =
         TextEditingController(text: publication.description ?? "");
-    if (publication.publisher.id == MyApp.currentUser?.id) {
+    if (User.isCurrent(publication.publisher)) {
       toShow = Scrollbar(
         child: Container(
           margin: const EdgeInsets.only(left: 10, right: 10),
@@ -55,10 +58,10 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                                   "${publication.address.city} (${publication.address.zipCode})",
                                   style: const TextStyle(fontSize: 20)),
                               if (publication.publisher.id ==
-                                      MyApp.currentUser!.id ||
+                                  currentUser.id ||
                                   (publication.gardenkeeper != null &&
                                       publication.gardenkeeper?.id ==
-                                          MyApp.currentUser!.id))
+                                          currentUser.id))
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -244,7 +247,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
                           margin: const EdgeInsets.only(right: 5),
                           child: const Icon(Icons.location_on)),
                       if (publication.gardenkeeper == null ||
-                          publication.gardenkeeper != MyApp.currentUser)
+                          publication.gardenkeeper != currentUser)
                         Text(
                             "${publication.address.city} (${publication.address.zipCode})",
                             style: const TextStyle(fontSize: 20))
@@ -328,7 +331,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
               ),
             ),
             if (publication.gardenkeeper != null &&
-                publication.gardenkeeper!.id == MyApp.currentUser!.id)
+                User.isCurrent(publication.gardenkeeper!))
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -358,7 +361,7 @@ class _DetailsPublicationPageState extends State<DetailsPublicationPage> {
             else
               ElevatedButton(
                 onPressed: () async {
-                  publication.gardenkeeper = MyApp.currentUser;
+                  publication.gardenkeeper = currentUser;
                   await ApiPublicationService.update(publication);
                   setState(() {
                     ScaffoldMessenger.of(context).showSnackBar(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_publication_service.dart';
 
 import '../main.dart';
@@ -18,7 +20,7 @@ class _AttributedGardenkeepingState extends State<AttributedGardenkeeping> {
       (value) => value
           .where((element) =>
               element.gardenkeeper != null &&
-              element.gardenkeeper!.id == MyApp.currentUser!.id)
+                  User.isCurrent(element.gardenkeeper!))
           .toList());
   int index = 0;
   @override

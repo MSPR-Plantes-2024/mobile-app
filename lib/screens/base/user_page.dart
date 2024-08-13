@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/main.dart';
 import 'package:mobile_app_arosaje/services/api_auth_service.dart';
 import 'package:mobile_app_arosaje/services/api_user_service.dart';
@@ -17,17 +18,21 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   final _formKey = GlobalKey<FormState>();
   final _passwordVerificationFormKey = GlobalKey<FormState>();
-  TextEditingController firstNameController =
-      TextEditingController(text: MyApp.currentUser!.firstName);
-  TextEditingController lastNameController =
-      TextEditingController(text: MyApp.currentUser!.lastName);
-  TextEditingController emailController =
-      TextEditingController(text: MyApp.currentUser!.email);
+  User currentUser = User.getCurrent();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordVerificationController =
       TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    firstNameController.text =
+        currentUser.firstName;
+    lastNameController.text =
+        currentUser.lastName;
+    emailController.text =
+        currentUser.email!;
     return ListView(children: [
       Column(children: [
         Container(
@@ -193,13 +198,12 @@ class _UserPageState extends State<UserPage> {
                                                       .currentState!
                                                       .validate()) {
                                                     if (await ApiAuthService.login(
-                                                        MyApp.currentUser!
+                                                        currentUser
                                                             .email!,
                                                         passwordVerificationController
                                                             .text)) {
                                                       await ApiUserService.update(User(
-                                                          id: MyApp
-                                                              .currentUser!.id,
+                                                          id: currentUser.id,
                                                           firstName:
                                                               firstNameController
                                                                   .text,
@@ -211,8 +215,7 @@ class _UserPageState extends State<UserPage> {
                                                           password:
                                                               passwordVerificationController
                                                                   .text,
-                                                          userType: MyApp
-                                                              .currentUser!
+                                                          userType: currentUser
                                                               .userType));
                                                       ScaffoldMessenger.of(
                                                               context)
@@ -256,7 +259,7 @@ class _UserPageState extends State<UserPage> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      MyApp.currentUser = null;
+                      User.removeCurrent();
                     });
                     RestartWidget.restartApp(context);
                   },

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/address.dart';
@@ -14,7 +15,7 @@ class ApiAddressService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         Address address = Address.fromJson(json.decode(response.body));
@@ -31,7 +32,7 @@ class ApiAddressService {
       var url =
       Uri.parse(constants.BASE_URL + constants.ADDRESSES_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
@@ -48,7 +49,7 @@ class ApiAddressService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/user/${user.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<Address> addresses = addressesFromJson(response.body);
@@ -67,7 +68,7 @@ class ApiAddressService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: addressToJson(address));
       if (response.statusCode == 201) {
@@ -85,7 +86,7 @@ class ApiAddressService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: addressToJson(address));
       if (response.statusCode == 200) {
@@ -101,7 +102,7 @@ class ApiAddressService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.ADDRESSES_ENDPOINT}/${address.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         log('Address deleted');

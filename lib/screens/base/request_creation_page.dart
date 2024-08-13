@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import 'package:mobile_app_arosaje/services/api_publication_service.dart';
@@ -32,6 +34,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
   TextEditingController addPlantInput = TextEditingController();
   TextEditingController addAddressInput = TextEditingController();
   TextEditingController descriptionImput = TextEditingController();
+  User currentUser = User.getCurrent();
 
   Future<void> setPlantList(Address address) async {
     List<Plant> plants = await ApiPlantService.getByAddress(address);
@@ -52,7 +55,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
   @override
   void initState() {
     super.initState();
-    ApiAddressService.getByUser(MyApp.currentUser!).then((value) {
+    ApiAddressService.getByUser(currentUser).then((value) {
       if (value.isNotEmpty) {
         setState(() {
           addresses = value;
@@ -273,7 +276,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                       dateTimeBegin: pickedDateTimeBegin!,
                                       dateTimeEnd: pickedDateTimeEnd!,
                                       address: selectedAddressNotifier.value!,
-                                      publisher: MyApp.currentUser!,
+                                      publisher: currentUser,
                                       description: descriptionImput.text,
                                       plants: selectedPlants));
                                   ScaffoldMessenger.of(context).showSnackBar(

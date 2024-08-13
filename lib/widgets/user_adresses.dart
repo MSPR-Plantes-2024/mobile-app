@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/main.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 
 import '../models/address.dart';
@@ -21,7 +23,7 @@ class _UserAdressesState extends State<UserAdresses> {
     return Column(
       children: [
         FutureBuilder<List<Address>>(
-            future: ApiAddressService.getByUser(MyApp.currentUser!),
+            future: ApiAddressService.getByUser(User.getCurrent()),
             builder: (context, AsyncSnapshot<List<Address>> snapshot) {
               if (snapshot.hasData) {
                 return SizedBox(
@@ -46,7 +48,7 @@ class _UserAdressesState extends State<UserAdresses> {
                       }),
                 );
               } else if (snapshot.hasError) {
-                return const Text('Erreur lors du chargement des addresses.');
+                return const Text('Erreur lors du chargement des adresses.');
               }
               return const SizedBox(
                   height: 50, width: 50, child: CircularProgressIndicator());

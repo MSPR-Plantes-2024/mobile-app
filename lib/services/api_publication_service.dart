@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/models/user.dart';
 
 import '../models/publication.dart';
@@ -16,7 +17,7 @@ class ApiPublicationService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: publicationToJson(publication));
       if (response.statusCode == 200) {
@@ -34,7 +35,7 @@ class ApiPublicationService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: publicationToJson(publication));
       if (response.statusCode == 200) {
@@ -50,7 +51,7 @@ class ApiPublicationService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/${publication.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         log('Publication deleted');
@@ -65,7 +66,7 @@ class ApiPublicationService {
       var url =
       Uri.parse(constants.BASE_URL + constants.PUBLICATION_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<Publication> publications = publicationsFromJson(response.body);
@@ -82,7 +83,7 @@ class ApiPublicationService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         Publication publication =
@@ -100,7 +101,7 @@ class ApiPublicationService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/user/${user.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<Publication> publications = publicationsFromJson(response.body);

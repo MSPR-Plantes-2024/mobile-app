@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
@@ -15,9 +16,10 @@ class ApiAuthService {
           body: json.encode({'email': email, 'password': password}));
       log(response.statusCode.toString());
       if (response.statusCode == 200) {
-        constants.JDK_TOKEN = jsonDecode(response.body)['access_token'];
-        MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
-        MyApp.currentUser!.email = email;
+        GetStorage().write('jdkToken', jsonDecode(response.body)['access_token']);
+        User userToLogon = User.fromJson(jsonDecode(response.body)['user']);
+        userToLogon.email = email;
+        User.setCurrent(userToLogon);
         return true;
       }
     } catch (e, s) {
@@ -34,9 +36,10 @@ class ApiAuthService {
           body: userToJson(user));
       log(response.statusCode.toString());
       if (response.statusCode == 200) {
-        constants.JDK_TOKEN = jsonDecode(response.body)['access_token'];
-        MyApp.currentUser = User.fromJson(jsonDecode(response.body)['user']);
-        MyApp.currentUser!.email = user.email;
+        GetStorage().write('jdkToken', jsonDecode(response.body)['access_token']);
+        User userToLogon = User.fromJson(jsonDecode(response.body)['user']);
+        userToLogon.email = user.email;
+        User.setCurrent(userToLogon);
         return true;
       }
     } catch (e, s) {

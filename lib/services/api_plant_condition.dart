@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/models/plant_condition.dart';
 
 import 'package:http/http.dart' as http;
@@ -10,7 +11,7 @@ class ApiPlantConditionService {
     try {
       var url = Uri.parse(constants.BASE_URL + constants.PLANT_CONDITIONS_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<PlantCondition> plantConditions = plantConditionsFromJson(response.body);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_address_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 
@@ -17,6 +19,7 @@ class AddressManagmentPage extends StatefulWidget {
 
 class _AddressManagmentPageState extends State<AddressManagmentPage> {
   final _addressFormKey = GlobalKey<FormState>();
+  User currentUser = User.getCurrent();
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +41,12 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
             child: Column(children: [
               Container(
                 margin: const EdgeInsets.only(top: 10),
-                child: const Text("Modifier une\naddresse",
+                child: const Text("Modifier une\nadresse",
                     style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center),
               ),
               SizedBox(
-                width: 310,
+                width: 350,
                 child: Column(
                   children: [
                     TextFormField(
@@ -103,7 +106,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                     border: Border.all(
                                         color: Colors.black, width: 1)),
                                 height: 200,
-                                width: 250,
+                                width: 300,
                                 child: Scrollbar(
                                   child: FutureBuilder<List<Plant>>(
                                       future:
@@ -139,35 +142,41 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                                     subtitle: Text(
                                                         'Status : ${plant.plantCondition.name}'),
                                                     trailing: SizedBox(
-                                                      width: 60,
+                                                      width: 70,
                                                       child: Row(
-
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          IconButton(
-                                                            icon: const Icon(
-                                                                Icons.edit_outlined,
-                                                              size: 20,
+                                                          SizedBox(
+                                                            width: 30,
+                                                            child: IconButton(
+                                                              iconSize: 20,
+                                                              icon: const Icon(
+                                                                  Icons.edit_outlined,
+                                                              ),
+                                                              onPressed: () {
+                                                                context.push('/add-edit-plant',
+                                                                    extra: {
+                                                                      'plant': plant,
+                                                                      'originRoute': '/address-management'
+                                                                    });
+                                                              },
                                                             ),
-                                                            onPressed: () {
-                                                              context.push('/add-edit-plant',
-                                                                  extra: {
-                                                                    'plant': plant,
-                                                                    'originRoute': '/address-management'
-                                                                  });
-                                                            },
                                                           ),
-                                                          IconButton(
-                                                            icon: const Icon(
-                                                                Icons.delete_outline,
-                                                              size: 20,
-                                                            ),
-                                                            onPressed: () {
-                                                              context.push(
-                                                                  '/address-management/delete-plant',
-                                                                  extra: {
-                                                                    'plant': plant,
-                                                                  });
-                                                            }),
+                                                          SizedBox(
+                                                            width: 30,
+                                                            child: IconButton(
+                                                                iconSize: 20,
+                                                                icon: const Icon(
+                                                                  Icons.delete_outline
+                                                              ),
+                                                              onPressed: () {
+                                                                context.push(
+                                                                    '/address-management/delete-plant',
+                                                                    extra: {
+                                                                      'plant': plant,
+                                                                    });
+                                                              }),
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -186,7 +195,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                 padding: const EdgeInsets.only(top: 5),
                                 child: IconButton(
                                     onPressed: () {
-                                      context.push('/add-plant', extra: {
+                                      context.push('/add-edit-plant', extra: {
                                         'address': address,
                                         'originRoute': '/address-management'
                                       });
@@ -205,7 +214,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                             if (_addressFormKey.currentState!.validate()) {
                               await ApiAddressService.update(Address(
                                   id: address.id,
-                                  user: MyApp.currentUser!,
+                                  user: currentUser,
                                   postalAddress: postalAddressController.text,
                                   city: cityController.text,
                                   zipCode: zipCodeController.text,
@@ -220,7 +229,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                               context.go(widget.map['originRoute']);
                             }
                           },
-                          child: const Text("Modifier l'addresse")),
+                          child: const Text("Modifier l'adresse")),
                     ),
                     Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
@@ -229,7 +238,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                               context.push('/address-management/delete-address',
                                   extra: {'address': address});
                             },
-                            child: const Text("Supprimer l'addresse")))
+                            child: const Text("Supprimer l'adresse")))
                   ],
                 ),
               )

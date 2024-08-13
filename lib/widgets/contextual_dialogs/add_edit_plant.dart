@@ -1,10 +1,13 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
+import 'package:mobile_app_arosaje/models/user.dart';
 import 'package:mobile_app_arosaje/services/api_picture_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_condition.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
@@ -26,7 +29,7 @@ class _AddEditPlantState extends State<AddEditPlant> {
   late Address address;
   final _plantFormKey = GlobalKey<FormState>();
   File? _picture;
-
+  User currentUser = User.getCurrent();
   TextEditingController plantNameController = TextEditingController();
   TextEditingController plantDescriptionController = TextEditingController();
   List<PlantCondition> plantConditions = [];
@@ -67,61 +70,63 @@ class _AddEditPlantState extends State<AddEditPlant> {
           : 'Ajouter une plante'),
       content: Form(
         key: _plantFormKey,
-        child: ListView(
-          children: [
-            TextFormField(
-              controller: plantNameController,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Veuillez entrer un nom';
-                }
-                return null;
-              },
-              decoration: const InputDecoration(
-                labelText: 'Nom',
-              ),
-            ),
-            DropdownButtonFormField<PlantCondition>(
-                items: plantConditions.map<DropdownMenuItem<PlantCondition>>(
-                    (PlantCondition plantCondition) {
-                  return DropdownMenuItem(
-                      value: plantCondition, child: Text(plantCondition.name));
-                }).toList(),
-                value: selectedPlantCondition,
-                onChanged: (PlantCondition? value) {
-                  selectedPlantCondition = value;
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextFormField(
+                controller: plantNameController,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Veuillez entrer un nom';
+                  }
+                  return null;
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Condition',
-                )),
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: TextFormField(
-                controller: plantDescriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Nom',
                 ),
               ),
-            ),
-            FormField(validator: (value) {
-              if (_picture == null) {
-                return 'Veuillez ajouter une photo';
-              }
-              return null;
-            }, builder: (FormFieldState state) {
-              return PictureFormField(
-                picture: _picture,
-                onPictureChanged: (File? newPicture) {
-                  setState(() {
-                    _picture = newPicture;
-                  });
-                },
-              );
-            }),
-            _picture != null
-                ? Image.file(_picture!, height: 100)
-                : const SizedBox(),
-          ],
+              DropdownButtonFormField<PlantCondition>(
+                  items: plantConditions.map<DropdownMenuItem<PlantCondition>>(
+                      (PlantCondition plantCondition) {
+                    return DropdownMenuItem(
+                        value: plantCondition, child: Text(plantCondition.name));
+                  }).toList(),
+                  value: selectedPlantCondition,
+                  onChanged: (PlantCondition? value) {
+                    selectedPlantCondition = value;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Condition',
+                  )),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: TextFormField(
+                  controller: plantDescriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                  ),
+                ),
+              ),
+              FormField(validator: (value) {
+                if (_picture == null) {
+                  return 'Veuillez ajouter une photo';
+                }
+                return null;
+              }, builder: (FormFieldState state) {
+                return PictureFormField(
+                  picture: _picture,
+                  onPictureChanged: (File? newPicture) {
+                    setState(() {
+                      _picture = newPicture;
+                    });
+                  },
+                );
+              }),
+              _picture != null
+                  ? Image.file(_picture!, height: 100)
+                  : const SizedBox(),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -136,7 +141,7 @@ class _AddEditPlantState extends State<AddEditPlant> {
                 if (widget.map['plant'] != null) {
                   ApiPlantService.update(Plant(
                           address: address,
-                          user: MyApp.currentUser!,
+                          user: currentUser,
                           name: plantNameController.text,
                           description: plantDescriptionController.text,
                           plantCondition: selectedPlantCondition!,
@@ -159,7 +164,7 @@ class _AddEditPlantState extends State<AddEditPlant> {
                 } else {
                   ApiPlantService.create(Plant(
                           address: address,
-                          user: MyApp.currentUser!,
+                          user: currentUser,
                           name: plantNameController.text,
                           description: plantDescriptionController.text,
                           plantCondition: selectedPlantCondition!,

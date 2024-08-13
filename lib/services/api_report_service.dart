@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/models/report.dart';
 import 'package:mobile_app_arosaje/services/constants.dart' as constants;
@@ -13,7 +14,7 @@ class ApiReportService {
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: reportToJson(report));
       if (response.statusCode == 200) {
@@ -32,7 +33,7 @@ class ApiReportService {
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
           },
           body: reportToJson(report));
       if (response.statusCode == 200) {
@@ -48,7 +49,7 @@ class ApiReportService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/${report.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         log('Report deleted');
@@ -63,7 +64,7 @@ class ApiReportService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         Report report = Report.fromJson(json.decode(response.body));
@@ -81,7 +82,7 @@ class ApiReportService {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/publication/${publication.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${constants.JDK_TOKEN}'
+        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
       });
       if (response.statusCode == 200) {
         List<Report> reports = reportsFromJson(response.body);
