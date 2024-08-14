@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get_storage/get_storage.dart';
+import 'package:mobile_app_arosaje/models/jdk_token.dart';
 import 'package:mobile_app_arosaje/models/publication.dart';
 import 'package:mobile_app_arosaje/models/report.dart';
 import 'package:mobile_app_arosaje/services/constants.dart' as constants;
@@ -9,12 +10,13 @@ import 'package:http/http.dart' as http;
 
 class ApiReportService {
   static Future<void> create(Report report) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(constants.BASE_URL + constants.REPORTS_ENDPOINT);
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+            'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
           },
           body: reportToJson(report));
       if (response.statusCode == 200) {
@@ -27,13 +29,14 @@ class ApiReportService {
 
   //#endregion
   static Future<void> update(Report report) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/${report.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+            'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
           },
           body: reportToJson(report));
       if (response.statusCode == 200) {
@@ -45,11 +48,12 @@ class ApiReportService {
   }
 
   static Future<void> delete(Report report) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/${report.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         log('Report deleted');
@@ -60,11 +64,12 @@ class ApiReportService {
   }
 
   static Future<Report> getById(int id) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         Report report = Report.fromJson(json.decode(response.body));
@@ -78,11 +83,12 @@ class ApiReportService {
 
   static Future<List<Report>> getByPublication(
       Publication publication) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.REPORTS_ENDPOINT}/publication/${publication.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         List<Report> reports = reportsFromJson(response.body);

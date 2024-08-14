@@ -11,4 +11,7 @@ const String PLANT_CONDITIONS_ENDPOINT = '/plantsConditions';
 const String PLANTS_ENDPOINT = '/plants';
 const String REPORTS_ENDPOINT = '/reports';
 const String USER_TYPES_ENDPOINT = '/user_types';
+const String REGISTER_ENDPOINT = '/auth/register';
+const String AUTHENTICATE_ENDPOINT = '/auth/authenticate';
+const String REFRESH_ENDPOINT = '/auth/refresh-token';
 

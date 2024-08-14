@@ -157,6 +157,7 @@ class _AddressManagmentPageState extends State<AddressManagmentPage> {
                                                                 context.push('/add-edit-plant',
                                                                     extra: {
                                                                       'plant': plant,
+                                                                      'address': address,
                                                                       'originRoute': '/address-management'
                                                                     });
                                                               },

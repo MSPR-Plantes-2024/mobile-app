@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app_arosaje/models/jdk_token.dart';
 
 import '../main.dart';
 import '../models/user.dart';
@@ -10,13 +11,14 @@ import 'constants.dart' as constants;
 
 class ApiUserService {
   static Future<void> update(User user) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.USERS_ENDPOINT}/${user.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+            'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
           },
           body: userToJson(user));
       if (response.statusCode == 200) {
@@ -29,11 +31,12 @@ class ApiUserService {
   }
 
   static Future<void> delete(User user) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.USERS_ENDPOINT}/${user.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         log('User deleted');
@@ -44,11 +47,12 @@ class ApiUserService {
   }
 
   static Future<User> getById(int id) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url =
       Uri.parse('${constants.BASE_URL}${constants.USERS_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         User user = User.fromJson(json.decode(response.body));

@@ -1,9 +1,7 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_app_arosaje/models/picture.dart';
 import 'package:mobile_app_arosaje/models/plant.dart';
@@ -12,10 +10,10 @@ import 'package:mobile_app_arosaje/services/api_picture_service.dart';
 import 'package:mobile_app_arosaje/services/api_plant_condition.dart';
 import 'package:mobile_app_arosaje/services/api_plant_service.dart';
 import 'package:mobile_app_arosaje/widgets/picture_form_field.dart';
+import 'package:mobile_app_arosaje/models/address.dart';
+import 'package:mobile_app_arosaje/models/plant_condition.dart';
+import 'package:path_provider/path_provider.dart';
 
-import '../../main.dart';
-import '../../models/address.dart';
-import '../../models/plant_condition.dart';
 
 class AddEditPlant extends StatefulWidget {
   final Map<String, dynamic> map;
@@ -35,15 +33,25 @@ class _AddEditPlantState extends State<AddEditPlant> {
   List<PlantCondition> plantConditions = [];
   PlantCondition? selectedPlantCondition;
 
+  Future<File> getFileFromUint8List(Uint8List data) async {
+    final tempDir = await getTemporaryDirectory();
+    final picture = File('${tempDir.path}/temp_picture_${DateTime.now().millisecondsSinceEpoch}.png');
+    return picture.writeAsBytes(data);
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.map['plant'] != null) {
       Plant plant = widget.map['plant'];
-      address = plant.address!;
+      address = widget.map['address'];
       plantNameController.text = plant.name;
       plantDescriptionController.text = plant.description ?? '';
-      _picture = File.fromRawPath(Uint8List.fromList(plant.picture!.data));
+      getFileFromUint8List(Uint8List.fromList(plant.picture!.data)).then((value) {
+        setState(() {
+          _picture = value;
+        });
+      });
     } else {
       address = widget.map['address'];
     }
@@ -179,10 +187,7 @@ class _AddEditPlantState extends State<AddEditPlant> {
                       );
                       setState(() {
                         context.go(widget.map['originRoute'],
-                            extra:
-                                widget.map['originRoute'] == '/request-creation'
-                                    ? ({'address': address})
-                                    : null);
+                            extra: {'address': address});
                       });
                     }
                   });

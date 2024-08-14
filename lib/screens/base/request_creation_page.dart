@@ -283,7 +283,7 @@ class _RequestCreationPageState extends State<RequestCreationPage> {
                                     const SnackBar(
                                         content: Text('Publication créée !')),
                                   );
-                                  context.go('/my_publications');
+                                  context.go('/my-publications');
                                 }
                               },
                               child: const Text('Publier',

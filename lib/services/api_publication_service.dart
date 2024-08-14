@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get_storage/get_storage.dart';
+import 'package:mobile_app_arosaje/models/jdk_token.dart';
 import 'package:mobile_app_arosaje/models/user.dart';
 
 import '../models/publication.dart';
@@ -11,13 +12,14 @@ import 'package:http/http.dart' as http;
 
 class ApiPublicationService {
   static Future<void> create(Publication publication) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url =
       Uri.parse(constants.BASE_URL + constants.PUBLICATION_ENDPOINT);
       var response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+            'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
           },
           body: publicationToJson(publication));
       if (response.statusCode == 200) {
@@ -29,13 +31,14 @@ class ApiPublicationService {
   }
 
   static Future<void> update(Publication publication) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/${publication.id}');
       var response = await http.put(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+            'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
           },
           body: publicationToJson(publication));
       if (response.statusCode == 200) {
@@ -47,11 +50,12 @@ class ApiPublicationService {
   }
 
   static Future<void> delete(Publication publication) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/${publication.id}');
       var response = await http.delete(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         log('Publication deleted');
@@ -62,11 +66,12 @@ class ApiPublicationService {
   }
 
   static Future<List<Publication>> getAll() async {
+    JdkToken.refreshIfNeeded();
     try {
       var url =
       Uri.parse(constants.BASE_URL + constants.PUBLICATION_ENDPOINT);
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         List<Publication> publications = publicationsFromJson(response.body);
@@ -79,11 +84,12 @@ class ApiPublicationService {
   }
 
   static Future<Publication> getById(int id) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/$id');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         Publication publication =
@@ -97,11 +103,12 @@ class ApiPublicationService {
   }
 
   static Future<List<Publication>> getByUser(User user) async {
+    JdkToken.refreshIfNeeded();
     try {
       var url = Uri.parse(
           '${constants.BASE_URL}${constants.PUBLICATION_ENDPOINT}/user/${user.id}');
       var response = await http.get(url, headers: <String, String>{
-        'Authorization': 'Bearer ${GetStorage().read('jdkToken')}'
+        'Authorization': 'Bearer ${JdkToken.getCurrent().token}'
       });
       if (response.statusCode == 200) {
         List<Publication> publications = publicationsFromJson(response.body);
